@@ -273,7 +273,7 @@ useEffect(() => {
       </div>
 
       {/* SharePostModal */}
-      {isModalOpen && <SharePostModal item={item} onClose={handleCloseModal} />}
+      {isModalOpen && <SharePostModal item={item} type="article" onClose={handleCloseModal} />}
     </div>
   );
 };

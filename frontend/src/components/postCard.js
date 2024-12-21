@@ -269,12 +269,12 @@ const PostCard = ({ onClick, item }) => {
       {/* Report Modal */}
       {showReportModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-[3000] flex items-center justify-center">
-          <Report item={item} onClose={() => setShowReportModal(false)} />
+          <Report item={item}  onClose={() => setShowReportModal(false)} />
         </div>
       )}
 
       {/* SharePostModal */}
-      {isModalOpen && <SharePostModal onClose={handleCloseModal} />}
+      {isModalOpen && <SharePostModal item={item} type="post" onClose={handleCloseModal} />}
     </div>
   );
 };

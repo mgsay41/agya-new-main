@@ -6,13 +6,21 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Set storage engine
+// Set storage engine with dynamic folder resolution
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "uploads")); // Uploads folder
+    // Check for custom folder based on request field or endpoint
+    const folder = req.baseUrl.includes("/articles") 
+      ? "uploads/articles" 
+      : req.baseUrl.includes("/profiles") 
+      ? "uploads/profiles" 
+      : "uploads";
+
+    cb(null, path.join(__dirname, folder));
   },
   filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`); // Unique filename
+    // Generate a unique filename with timestamp
+    cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
 
@@ -33,4 +41,4 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }, // Max file size: 5MB
 });
 
-export default upload; // Use ES Module export
+export default upload;

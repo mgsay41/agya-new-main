@@ -14,6 +14,7 @@ import Home from "./pages/home";
 import Activities from "./pages/Activites";
 import EditProfile from "./pages/EditProfile";
 import ArticleDetails from "./pages/ArticlesDetails";
+import PostDetails from "./pages/PostsDetails";
 
 const App = () => {
   return (
@@ -33,6 +34,9 @@ const App = () => {
         <Route path="/article" element={<ActivityDetailsLayout/>}>
           <Route path="/article/new-article" element={<AddActivity/>} />
           <Route path="/article/:id" element={<ArticleDetails/>}/>
+        </Route>
+        <Route path="/posts" element={<ActivityDetailsLayout/>}>
+          <Route path="/posts/:id" element={<PostDetails/>}/>
         </Route>
         <Route path="/activity" element={<ActivityDetailsLayout/>}>
           <Route path="/activity/new-activity" element={<AddActivity/>} />

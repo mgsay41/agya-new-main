@@ -5,22 +5,28 @@ import "react-quill/dist/quill.snow.css";
 import { FaFile } from "react-icons/fa";
 import { IoTrashBinOutline } from "react-icons/io5";
 import { IoMdAdd } from "react-icons/io";
+import { Edit3 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import Navbar from "../components/Navbar";
+import { GlobalContext } from "../context/GlobelContext";
 
-import { GlobalContext } from "../context/GlobelContext"; // Assuming this import is needed
-
-
-export default function NewArtical() {
+export default function NewArticle() {
+  const navigate = useNavigate();
   const { setIsAuthUser, isAuthUser } = useContext(GlobalContext);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState([]);
   const [adminTags, setAdminTags] = useState([]);
   const [references, setReferences] = useState([]);
-  const [image, setImages] = useState("");
+  const [featuredImage, setFeaturedImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [imageUrl, setImageUrl] = useState("");
   const [editorValue, setEditorValue] = useState("");
   const [newReference, setNewReference] = useState("");
   const [searchText, setSearchText] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   useEffect(() => {
     setIsAuthUser(JSON.parse(localStorage.getItem("userInfo")));
@@ -49,29 +55,84 @@ export default function NewArtical() {
     "image",
   ];
 
-  const handleAddTag = (tag) => {
-    if (!tags.includes(tag)) {
-      setTags((prevTags) => [...prevTags, tag]);
+  async function uploadImage(file, articleId) {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch(`http://localhost:4000/api/uploads/articles/${articleId}`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload image");
+      }
+
+      const data = await response.json();
+      return data.article.image;
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      throw error;
+    }
+  }
+
+  const validateForm = () => {
+    if (!title.trim()) {
+      toast.error("Please enter an article title");
+      return false;
+    }
+    if (!editorValue.trim()) {
+      toast.error("Please enter article content");
+      return false;
+    }
+    if (!featuredImage && !imageUrl) {
+      toast.error("Please upload a featured image");
+      return false;
+    }
+    if (tags.length === 0) {
+      toast.error("Please select at least one tag");
+      return false;
+    }
+    if (!agreedToTerms) {
+      toast.error("Please agree to the terms before publishing");
+      return false;
+    }
+    return true;
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("Image size should be less than 5MB");
+        return;
+      }
+      setFeaturedImage(file);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+      setImageUrl("");
     }
   };
 
-  const handleRemoveTag = (tag) => {
-    setTags((prevTags) => prevTags.filter((t) => t !== tag));
-  };
-
-  const filteredAdminTags = adminTags.filter((tag) =>
-    tag.name.toLowerCase().includes(searchText.toLowerCase())
-  );
-
   async function createArticle() {
+    if (!validateForm()) return;
+
     try {
+      setUploading(true);
+
+      // First create the article without the image
       const articleData = {
-        title: title,
+        title,
         content: editorValue,
         authorId: isAuthUser.id,
-        tags: tags,
-        references: references,
-        authorName: isAuthUser.firstname
+        tags: JSON.stringify(tags),
+        references: JSON.stringify(references),
+        authorName: isAuthUser.firstname,
+        featuredImage: "" // This will be updated after upload
       };
 
       const response = await fetch("http://localhost:4000/api/articles", {
@@ -88,9 +149,20 @@ export default function NewArtical() {
       }
 
       const newArticle = await response.json();
-      console.log("Article created successfully:", newArticle);
+      
+      // Then upload the image using the article ID
+      if (featuredImage) {
+        const uploadedImageUrl = await uploadImage(featuredImage, newArticle._id);
+        setImageUrl(uploadedImageUrl);
+      }
+
+      toast.success("Article published successfully!");
+      navigate("/"); // Redirect to home page
     } catch (error) {
       console.error("Error creating article:", error.message);
+      toast.error(error.message || "Failed to publish article");
+    } finally {
+      setUploading(false);
     }
   }
 
@@ -117,40 +189,67 @@ export default function NewArtical() {
     }
   }
 
+  const handleAddTag = (tag) => {
+    if (!tags.includes(tag)) {
+      setTags((prevTags) => [...prevTags, tag]);
+    }
+  };
+
+  const handleRemoveTag = (tag) => {
+    setTags((prevTags) => prevTags.filter((t) => t !== tag));
+  };
+
+  const filteredAdminTags = adminTags.filter((tag) =>
+    tag.name.toLowerCase().includes(searchText.toLowerCase())
+  );
+
   return (
     <div className="px-[150px]">
-      <Navbar/>
-      <form className="articale">
+      <Navbar />
+      <form className="article" onSubmit={(e) => e.preventDefault()}>
         <div className="mt-8">
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Article Title"
+            className="w-full mb-4 p-2 border border-gray-300 rounded-md"
+          />
+          
           <ReactQuill
             theme="snow"
             value={editorValue}
             onChange={setEditorValue}
             modules={modules}
             formats={formats}
-            placeholder=" write something ..."
+            placeholder="write something ..."
           />
+
           <h3 className="font-semibold my-5">Featured Image</h3>
-          <div className="flex flex-col">
-            <div>
-              <input
-                type="radio"
-                className="accent-main w-[15px] h-[15px]"
-                id=""
-                name="feat-input"
+          <div className="flex flex-col items-center mb-6">
+            <div className="relative">
+              <img
+                src={imagePreview || "https://via.placeholder.com/400x200"}
+                alt="Featured"
+                className="w-[400px] h-[200px] object-cover rounded-lg"
               />
-              <label htmlFor=""> Use first image as featured image</label>
-            </div>
-            <div>
+              <label
+                htmlFor="featuredImage"
+                className="absolute bottom-2 right-2 bg-white border border-main p-2 rounded-full cursor-pointer hover:bg-gray-100"
+              >
+                <Edit3 className="w-5 h-5 text-main" />
+              </label>
               <input
-                type="radio"
-                className="accent-main w-[15px] h-[15px]"
-                name="feat-input"
+                id="featuredImage"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageChange}
               />
-              <label htmlFor=""> Upload another image</label>
             </div>
           </div>
-          <div className="tages">
+
+          <div className="tags">
             <h3 className="font-semibold my-5">Article Tags</h3>
             <div className="flex h-[10px] items-center relative mb-[10px]">
               <CiSearch className="absolute top-[-9px] left-1 w-[25px]" />
@@ -162,8 +261,8 @@ export default function NewArtical() {
                 placeholder="Search tags"
               />
             </div>
-            {/* Selected Tags */}
-            <div className="flex gap-[10px]">
+            
+            <div className="flex gap-[10px] flex-wrap">
               {tags.map((tag) => (
                 <div
                   key={tag._id}
@@ -174,7 +273,8 @@ export default function NewArtical() {
                 </div>
               ))}
             </div>
-            <div className="flex gap-[10px] mt-[10px]">
+            
+            <div className="flex gap-[10px] mt-[10px] flex-wrap">
               {filteredAdminTags.map((tag) => (
                 <div
                   key={tag._id}
@@ -185,6 +285,7 @@ export default function NewArtical() {
                 </div>
               ))}
             </div>
+
             <div>
               <h3 className="font-semibold my-5">Article References</h3>
               <div className="flex flex-col w-full">
@@ -197,7 +298,7 @@ export default function NewArtical() {
                     onChange={(e) => setNewReference(e.target.value)}
                   />
                   <IoMdAdd 
-                    className="absolute right-0 bg-main text-white w-[25px] h-[25px] rounded-[5px] top-[6px] py-[2px] px-[8px]"
+                    className="absolute right-0 bg-main text-white w-[25px] h-[25px] rounded-[5px] top-[6px] py-[2px] px-[8px] cursor-pointer"
                     onClick={() => {
                       if (newReference.trim()) {
                         setReferences([...references, newReference]);
@@ -207,12 +308,13 @@ export default function NewArtical() {
                   />
                 </div>
                 {references.map((ref, index) => (
-                  <div key={index} className="flex items-center gap-[5px] w-full">
+                  <div key={index} className="flex items-center gap-[5px] w-full mb-2">
                     <FaFile className="text-main" />
                     <p className="text-main w-full text-[14px] underline">
                       {ref}
                     </p>
                     <IoTrashBinOutline 
+                      className="cursor-pointer"
                       onClick={() => {
                         const newRefs = references.filter((_, i) => i !== index);
                         setReferences(newRefs);
@@ -222,11 +324,12 @@ export default function NewArtical() {
                 ))}
               </div>
             </div>
-            <div className="submit-articale">
-              <h4 className="mt-5">
+
+            <div className="submit-article mt-8">
+              <h4 className="font-medium mb-3">
                 By submitting this article, I certify that:
               </h4>
-              <ol start="1">
+              <ol className="list-decimal pl-5 space-y-2 mb-4">
                 <li>
                   Content Accuracy: The content is based on credible evidence
                   and research.
@@ -236,13 +339,17 @@ export default function NewArtical() {
                   have obtained necessary permissions.
                 </li>
                 <li>
-                  Consent to Use: I grant [Platform Name] a non-exclusive,
-                  worldwide, royalty-free license to reproduce, distribute,
-                  display, and perform the uploaded assets.
+                  Consent to Use: I grant permission for this platform to publish
+                  and distribute this content.
                 </li>
               </ol>
-              <div className="flex gap-[5px]">
-                <input type="checkbox" className="accent-main w-[15px]" />
+              <div className="flex gap-[5px] items-start mb-6">
+                <input 
+                  type="checkbox" 
+                  className="accent-main w-[15px] mt-1"
+                  checked={agreedToTerms}
+                  onChange={(e) => setAgreedToTerms(e.target.checked)}
+                />
                 <p className="text-[13px]">
                   I understand that providing false or misleading information or
                   unauthorized assets may result in the removal of my article
@@ -252,13 +359,15 @@ export default function NewArtical() {
             </div>
           </div>
         </div>
+
         <div className="flex justify-center items-center">
           <button 
             type="button"
             onClick={createArticle}
-            className="bg-main text-white py-[12px] px-[100px] rounded-[5px] my-8"
+            disabled={uploading}
+            className="bg-main text-white py-[12px] px-[100px] rounded-[5px] my-8 disabled:opacity-50"
           >
-            Publish
+            {uploading ? "Publishing..." : "Publish"}
           </button>
         </div>
       </form>

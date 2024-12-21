@@ -3,15 +3,16 @@ import { X, Clipboard } from "lucide-react"; // Ensure lucide-react is installed
 import { FaFacebookF, FaWhatsapp } from 'react-icons/fa';
 import { BsTwitterX } from "react-icons/bs";
 
-const SharePostModal = ({ onClose, item }) => {
+
+const SharePostModal = ({ onClose, item ,type}) => {
   const handleCopyLink = () => {
-    if (item.type = "post") {
-      const link = "http://localhost:3000";
+    if (type === "post") {
+      const link = `http://localhost:3000/posts/${item._id}`;
       navigator.clipboard.writeText(link);
       alert("Link copied to clipboard!");
     }
     else {
-      const link = `http://http://localhost:3000/article/${item._id}`;
+      const link = `http://localhost:3000/article/${item._id}`;
       navigator.clipboard.writeText(link);
       alert("Link copied to clipboard!");
     }
@@ -70,10 +71,10 @@ const SharePostModal = ({ onClose, item }) => {
           <input
             type="text"
             value={
-              item.type === "post"
-                ? "http://localhost:3000"
+              type === "post"
+                ? `http://localhost:3000/posts/${item._id}`
                 : `http://localhost:3000/article/${item._id}`
-            }
+            }            
             readOnly
             className="flex-1 px-2 py-1 bg-transparent text-sm text-center text-gray-700 focus:outline-none"
           />

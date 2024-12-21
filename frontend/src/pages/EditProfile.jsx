@@ -68,7 +68,7 @@ const EditProfile = () => {
         imageData.append("file", selectedImage); // The key should match the multer configuration
   
         // Upload the image to the backend
-        const imageUploadResponse = await api.post(`/uploads/${userInfo._id}`, imageData, {
+        const imageUploadResponse = await api.post(`/uploads/profiles/${userInfo._id}`, imageData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
   

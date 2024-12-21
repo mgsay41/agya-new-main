@@ -21,7 +21,9 @@ import messageRoutes from "./routes/messageRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import TagsRoutes from "./routes/TagsRoutes.js";
 import FeaturedRoutes from "./routes/featuredArticleRoute.js";
-import uploadRoutes from "./routes/uploads.js";
+import profileuploadRoutes from "./routes/profileuploads.js";
+import articleuploadRoutes from "./routes/articleuploads.js";
+
 
 
 import path from "path";
@@ -82,7 +84,10 @@ app.use("/api/messages", messageRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/tags", TagsRoutes);
 app.use("/api/FeaturedArticles", FeaturedRoutes);
-app.use("/api/uploads", uploadRoutes);
+app.use("/api/uploads/profiles", profileuploadRoutes);
+app.use("/api/uploads/articles", articleuploadRoutes);
+
+
 
 // Root Route
 app.get("/", (req, res) => {
