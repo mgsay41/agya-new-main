@@ -92,7 +92,8 @@ const SidebarGuest = () => {
   return (
     <>
       {loginPopup === true ? (
-        <form onSubmit={login} className=" absolute z-[2000] top-16 w-[1100px]  bg-background text-main-font flex flex-col md:flex-row">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <form onSubmit={login} className="relative w-[90%] md:w-[1100px] bg-background text-main-font rounded-lg shadow-lg overflow-hidden flex flex-col md:flex-row">
           {/* Left Section: Login Form */}
           <div className="w-[1900px] md:w-1/2 px-6 py-8 md:px-12 flex flex-col justify-center">
             <div className="max-w-md w-[1900px] mx-auto">
@@ -188,12 +189,13 @@ const SidebarGuest = () => {
               <X size={18} />
             </button>
           </div>
-        </form>
+        </form></div>
       ) : signupPopup === true ? (
-        <form
-          onSubmit={register}
-          className=" absolute z-[2000] top-16 w-[1100px] bg-background text-main-font flex flex-col md:flex-row"
-        >
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-auto pb-20">
+  <form
+    onSubmit={register}
+    className="absolute z-[2000] top-10 w-[1100px] rounded-lg shadow-lg mb-20 bg-background text-main-font flex flex-col md:flex-row "
+  >
           {/* Left Section: Sign-Up Form */}
           <div className="w-full md:w-1/2 px-6 py-8 md:px-12 flex flex-col justify-center">
             <div className="max-w-md w-full mx-auto">
@@ -385,14 +387,14 @@ const SidebarGuest = () => {
               <X size={18} />
             </button>
           </div>
-        </form>
+        </form></div>
       ) : null}
       <div className="flex flex-col h-screen w-64 text-main-font rounded-lg shadow-lg">
         {/* Profile Section */}
         <div className="flex flex-col items-center py-8 bg-background">
           {/* Profile Image */}
           <img
-            src="https://via.placeholder.com/80" // Replace with the actual image URL
+            src="http://localhost:4000/uploads/default.png" // Replace with the actual image URL
             alt="Profile"
             className="w-20 h-20 rounded-full mb-4"
           />

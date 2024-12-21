@@ -10,6 +10,12 @@ import SharePostModal from "./SharePostModal";
 import DOMPurify from "dompurify";
 import CommentPopup from "./commentsPopUp.js";
 import { GlobalContext } from "../context/GlobelContext.js"; 
+import Report from "./report.js";
+import ReactDOM from "react-dom";
+
+
+
+
 
 
 
@@ -18,8 +24,23 @@ const SocialCard = ({onClick,item}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCommentPopupOpen, setCommentPopupOpen] = useState(false);
   const { setIsAuthUser, isAuthUser } = useContext(GlobalContext);
-  const [likes, setLikes] = useState();
-  const [dislikes, setDislikes] = useState();
+  const [likes, setLikes] = useState(0);
+  const [dislikes, setDislikes] = useState(0);
+  const [voted, setVoted] = useState(null);
+  const [showReportButton, setShowReportButton] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+
+
+  const [reportButtonPosition, setReportButtonPosition] = useState(null);
+
+  const handleReportClick = (event) => {
+    const buttonRect = event.currentTarget.getBoundingClientRect();
+    setReportButtonPosition({
+      top: buttonRect.bottom + window.scrollY, // Account for scrolling
+      left: buttonRect.left + window.scrollX, // Account for scrolling
+    });
+    setShowReportButton((prev) => !prev);
+  };
 
 useEffect(() => {
       setIsAuthUser(JSON.parse(localStorage.getItem("userInfo")));
@@ -64,7 +85,39 @@ useEffect(() => {
     setIsModalOpen(false);
   };
 
-  const handleDisLike = async () => {
+  const handleLike = async () => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/articles/like/${item._id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: isAuthUser.id, // Pass the user's ID
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to like article");
+      }
+
+      const data = await response.json();
+      console.log(data.message);
+
+      setLikes(data.article.likes);
+      setDislikes(data.article.dislikes);
+
+      if (voted === "upvote") {
+        setVoted(null); // Undo like
+      } else {
+        setVoted("upvote");
+      }
+    } catch (error) {
+      console.error("Error handling like:", error);
+    }
+  };
+
+  const handleDislike = async () => {
     try {
       const response = await fetch(`http://localhost:4000/api/articles/dislike/${item._id}`, {
         method: "POST",
@@ -75,46 +128,27 @@ useEffect(() => {
           userId: isAuthUser.id, // Pass the user's ID
         }),
       });
-  
+
       if (!response.ok) {
-        throw new Error('Failed to dislike article');
+        throw new Error("Failed to dislike article");
       }
-  
-      // Assuming the response contains the updated data
+
       const data = await response.json();
       console.log(data.message);
-      setDislikes(data.article.dislikes)
-      setLikes(data.article.likes)
-      // Optionally, update state or UI based on the updated data
+
+      setLikes(data.article.likes);
+      setDislikes(data.article.dislikes);
+
+      if (voted === "downvote") {
+        setVoted(null); // Undo dislike
+      } else {
+        setVoted("downvote");
+      }
     } catch (error) {
       console.error("Error handling dislike:", error);
     }
   };
-  
-  const handleLike = async () => {
-    try {
-      const response = await fetch(`http://localhost:4000/api/articles/like/${item._id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },  
-        body: JSON.stringify({
-          userId: isAuthUser.id, // Pass the user's ID
-        }),
-      });
-  
-      if (!response.ok) {
-        throw new Error('Failed to like article');
-      }
-  
-      const data = await response.json();
-      console.log(data.message);
-      setDislikes(data.article.dislikes)
-      setLikes(data.article.likes)
-    } catch (error) {
-      console.error("Error handling like:", error);
-    }
-  };
+
 
   const sanitizedContent = DOMPurify.sanitize(item.title);
   return (
@@ -153,20 +187,38 @@ useEffect(() => {
       {/* Footer */}
       <div className="px-4 py-2 flex items-center bg-SoftMain border-t border-main/50">
         <div className="flex items-center space-x-3">
-          <div className="flex rounded-full border border-gray-200 divide-x bg-[#e0d1cc]">
-            <button className="flex items-center space-x-1 px-3 py-1"
-            onClick={()=>handleLike()}
-            >
-              <ArrowBigUp className="w-5 h-5 text-main" />
-              <span className="text-sm text-main">Upvote {likes}</span>
-            </button>
-            <button className="px-3 py-1 hover:bg-[#d4c5c0] rounded-r-full"
-            onClick={()=>handleDisLike()}
-            >
-              <ArrowBigDown className="w-5 h-5 text-main" />
-              <span className="text-sm text-main">Downvote {dislikes}</span>
-            </button>
-          </div>
+        <div className="flex rounded-full border border-gray-200 divide-x bg-[#e0d1cc]">
+      <button
+        className={`flex items-center space-x-1 px-3 py-1 hover:bg-[#d4c5c0] rounded-l-full ${
+          voted === "upvote" ? "bg-main hover:bg-main" : ""
+        }`}
+        onClick={handleLike}
+      >
+        <ArrowBigUp className={`w-5 h-5 ${
+          voted === "upvote" ? "text-white" : "text-main"
+        }`} />
+        {voted === "upvote" && (
+          <span className={`text-sm ${
+          voted === "upvote" ? "text-white" : "text-main"
+        }`}>Upvote {likes}</span>
+        )}
+      </button>
+      <button
+        className={`flex items-center space-x-1 px-3 py-1 hover:bg-[#d4c5c0] rounded-r-full ${
+          voted === "downvote" ? "bg-main hover:bg-main" : ""
+        }`}
+        onClick={handleDislike}
+      >
+        <ArrowBigDown className={`w-5 h-5 ${
+          voted === "downvote" ? "text-white" : "text-main"
+        }`} />
+        {voted === "downvote" && (
+          <span className={`text-sm ${
+          voted === "downvote" ? "text-white" : "text-main"
+        }`}>Downvote {dislikes}</span>
+        )}
+      </button>
+    </div>
 
           <button
             className="p-2 hover:bg-gray-50 rounded-full"
@@ -187,15 +239,41 @@ useEffect(() => {
       />
         </div>
 
-        <div className="ml-auto">
-          <button className="p-2 hover:bg-gray-50 rounded-full">
-            <MoreVertical className="h-5 w-5 text-main" />
-          </button>
+        <div className="ml-auto relative">
+        <button
+          className="p-2 hover:bg-gray-50 rounded-full"
+          onClick={handleReportClick}
+        >
+          <MoreVertical className="h-5 w-5 text-main" />
+        </button>
+        {showReportButton &&
+          ReactDOM.createPortal(
+            <button
+              className="absolute bg-white text-black border border-gray-300 shadow-md hover:bg-gray-100 px-4 py-1 rounded-md text-sm font-medium"
+              style={{
+                position: "absolute",
+                top: reportButtonPosition?.top || 0,
+                left: reportButtonPosition?.left || 0,
+                zIndex: 1000,
+              }}
+              onClick={() => setShowReportModal(true)}
+            >
+              Report
+            </button>,
+            document.body // Render outside of the container
+          )}
+      </div>
+
+      {/* Report Component Modal */}
+      {showReportModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-[3000] flex items-center justify-center">
+          <Report item={item} onClose={() => setShowReportModal(false)} />
         </div>
+      )}
       </div>
 
       {/* SharePostModal */}
-      {isModalOpen && <SharePostModal onClose={handleCloseModal} />}
+      {isModalOpen && <SharePostModal item={item} onClose={handleCloseModal} />}
     </div>
   );
 };
