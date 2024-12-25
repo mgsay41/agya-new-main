@@ -15,13 +15,11 @@ export default function NewArticle() {
   const navigate = useNavigate();
   const { setIsAuthUser, isAuthUser } = useContext(GlobalContext);
   const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
   const [tags, setTags] = useState([]);
   const [adminTags, setAdminTags] = useState([]);
   const [references, setReferences] = useState([]);
   const [featuredImage, setFeaturedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const [imageUrl, setImageUrl] = useState("");
   const [editorValue, setEditorValue] = useState("");
   const [newReference, setNewReference] = useState("");
   const [searchText, setSearchText] = useState("");
@@ -43,48 +41,9 @@ export default function NewArticle() {
   };
 
   const formats = [
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "list",
-    "bullet",
-    "indent",
-    "link",
-    "image",
+    "header", "bold", "italic", "underline", "strike",
+    "list", "bullet", "indent", "link", "image"
   ];
-
-  async function uploadImage(file, articleId) {
-    if (!articleId) {
-      console.error("Invalid article ID provided for image upload.");
-      throw new Error("Cannot upload image without a valid article ID.");
-    }
-  
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-  
-      const response = await fetch(`http://localhost:4000/api/uploads/articles/${articleId}`, {
-        method: "POST",
-        body: formData,
-      });
-  
-      console.log("Image upload response:", response);
-  
-      if (!response.ok) {
-        const errorResponse = await response.json();
-        throw new Error(errorResponse.message || "Failed to upload image");
-      }
-  
-      const data = await response.json();
-      return data.article.image; // Ensure this path exists in the response
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      throw error;
-    }
-  }
-  
 
   const validateForm = () => {
     if (!title.trim()) {
@@ -95,7 +54,7 @@ export default function NewArticle() {
       toast.error("Please enter article content");
       return false;
     }
-    if (!featuredImage && !imageUrl) {
+    if (!featuredImage) {
       toast.error("Please upload a featured image");
       return false;
     }
@@ -123,53 +82,57 @@ export default function NewArticle() {
         setImagePreview(reader.result);
       };
       reader.readAsDataURL(file);
-      setImageUrl("");
     }
   };
 
   async function createArticle() {
     if (!validateForm()) return;
-
+  
     try {
       setUploading(true);
-
-      // First create the article without the image
+  
       const articleData = {
         title,
         content: editorValue,
         authorId: isAuthUser.id,
         tags: JSON.stringify(tags),
         references,
-        authorName: isAuthUser.firstname,
-        featuredImage: "" // This will be updated after upload
+        authorName: isAuthUser.firstname
       };
-
-      const response = await fetch("http://localhost:4000/api/articles", {
+  
+      const articleResponse = await fetch("http://localhost:4000/api/articles", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(articleData),
       });
-      console.log("article response ");
-      console.log(response);
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Failed to create article");
+  
+      if (!articleResponse.ok) {
+        throw new Error("Failed to create article");
       }
-
-      const newArticle = await response.json();
-      
-      // Then upload the image using the article ID
+  
+      const newArticle = await articleResponse.json();
+  
       if (featuredImage) {
-        const uploadedImageUrl = await uploadImage(featuredImage, newArticle._id);
-        setImageUrl(uploadedImageUrl);
+        const formData = new FormData();
+        formData.append("file", featuredImage);
+  
+        const imageResponse = await fetch(
+          `http://localhost:4000/api/uploads/articles/${newArticle._id}`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+  
+        if (!imageResponse.ok) {
+          throw new Error("Failed to upload image");
+        }
       }
-
+  
       toast.success("Article published successfully!");
-      navigate("/"); // Redirect to home page
+      navigate("/");
     } catch (error) {
-      console.error("Error creating article:", error.message);
+      console.error("Error:", error);
       toast.error(error.message || "Failed to publish article");
     } finally {
       setUploading(false);

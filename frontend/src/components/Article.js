@@ -111,6 +111,12 @@ function Article() {
             __html: DOMPurify.sanitize(articles.content || ""),
           }}
         ></p>
+        <div className="">
+          <img
+            src={articles.featuredImage}
+            className="w-full h-full object-cover"
+          />
+        </div>
       </div>
 
       {/* Tags */}

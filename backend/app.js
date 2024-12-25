@@ -35,7 +35,7 @@ const __dirname = path.dirname(__filename);
 
 
 const app = express();
-
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Middleware
 app.use(express.json());
 app.use(cookieParser());

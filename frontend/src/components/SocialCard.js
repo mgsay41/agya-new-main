@@ -17,9 +17,6 @@ import ReactDOM from "react-dom";
 
 
 
-
-
-
 const SocialCard = ({onClick,item}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCommentPopupOpen, setCommentPopupOpen] = useState(false);
