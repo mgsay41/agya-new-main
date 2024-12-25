@@ -10,7 +10,7 @@ const ArticleSchema = new mongoose.Schema({
     required: true,
   },
   tags: { type: [String] }, // Array of strings
-  references: {type: [String]},
+  references: {type: [String],required: true},
   likes: { type: Number, default: 0 },
   dislikes: { type: Number, default: 0 },
   likedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],

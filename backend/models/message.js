@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const MessageSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // User who will receive the message
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: false }, // User who will receive the message
   subject: { type: String, required: true }, // Subject of the message
   message: { type: String, required: true }, // Content of the message
   senderName: { type: String, required: true }, // Name of the sender

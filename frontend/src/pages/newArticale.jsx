@@ -56,26 +56,35 @@ export default function NewArticle() {
   ];
 
   async function uploadImage(file, articleId) {
+    if (!articleId) {
+      console.error("Invalid article ID provided for image upload.");
+      throw new Error("Cannot upload image without a valid article ID.");
+    }
+  
     try {
       const formData = new FormData();
       formData.append("file", file);
-
+  
       const response = await fetch(`http://localhost:4000/api/uploads/articles/${articleId}`, {
         method: "POST",
         body: formData,
       });
-
+  
+      console.log("Image upload response:", response);
+  
       if (!response.ok) {
-        throw new Error("Failed to upload image");
+        const errorResponse = await response.json();
+        throw new Error(errorResponse.message || "Failed to upload image");
       }
-
+  
       const data = await response.json();
-      return data.article.image;
+      return data.article.image; // Ensure this path exists in the response
     } catch (error) {
       console.error("Error uploading image:", error);
       throw error;
     }
   }
+  
 
   const validateForm = () => {
     if (!title.trim()) {
@@ -130,7 +139,7 @@ export default function NewArticle() {
         content: editorValue,
         authorId: isAuthUser.id,
         tags: JSON.stringify(tags),
-        references: JSON.stringify(references),
+        references,
         authorName: isAuthUser.firstname,
         featuredImage: "" // This will be updated after upload
       };
@@ -142,7 +151,8 @@ export default function NewArticle() {
         },
         body: JSON.stringify(articleData),
       });
-
+      console.log("article response ");
+      console.log(response);
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || "Failed to create article");

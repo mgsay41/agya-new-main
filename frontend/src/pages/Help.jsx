@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
+import axios from 'axios';
 
 const Help = () => {
   const faqs = [
@@ -10,6 +11,42 @@ const Help = () => {
     "Can I collaborate with others on conservation projects through this platform?",
     "What types of articles or content can I publish on the platform?",
   ];
+
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [subject, setSubject] =useState('');
+  const [description, setDescription] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const userId = localStorage.getItem('id'); // Assuming the user ID is saved in localStorage
+
+    // Create a message object with form data
+    const messageData = {
+      userId, // Assuming the userId is stored in localStorage
+      subject, // You can customize the subject
+      message: description,
+      senderName: name,
+    };
+
+    try {
+      // Send a POST request to the backend to save the message
+      const response = await axios.post('http://localhost:4000/api/messages', messageData);
+      console.log('Message sent successfully:', response.data);
+      alert('Your message has been sent successfully.');
+      // Optionally, clear the form fields after submission
+      setEmail('');
+      setName('');
+      setSubject('');
+      setDescription('');
+
+      
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('An error occurred while sending your message.');
+    }
+  };
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-12">
@@ -73,7 +110,82 @@ const Help = () => {
           ))}
         </div>
       </div>
+
+      {/* Message form */}
+
+      <div className="space-y-4">
+        <h2 className="text-xl font-semibold text-center text-gray-800">Have a Question</h2>
+        
+
+
+      <form onSubmit={handleSubmit}>
+        {/* Email Field */}
+        <div className="mb-4">
+          <label htmlFor="email" className="block text-gray-700 text-sm font-semibold">Your Email</label>
+          <input
+            type="email"
+            id="email"
+            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md"
+            placeholder="Enter an accessible e-mail"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+
+        {/* Name Field */}
+        <div className="mb-4">
+          <label htmlFor="name" className="block text-gray-700 text-sm font-semibold">Your Name</label>
+          <input
+            type="text"
+            id="name"
+            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md"
+            placeholder="Enter your full name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+        </div>
+
+        {/* Subject Field */}
+        <div className="mb-4">
+          <label htmlFor="name" className="block text-gray-700 text-sm font-semibold">Subject</label>
+          <input
+            type="text"
+            id="subject"
+            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md"
+            placeholder="Enter the subject"
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            required
+          />
+        </div>
+
+        {/* Description Field */}
+        <div className="mb-4">
+          <label htmlFor="description" className="block text-gray-700 text-sm font-semibold">Description</label>
+          <textarea
+            id="description"
+            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md"
+            placeholder="Write your message here"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+            rows="4"
+          />
+        </div>
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          className="w-full py-2 px-4 bg-main text-white rounded-md hover:bg-main/80 transition duration-200"
+        >
+          Submit
+        </button>
+      </form>
     </div>
+
+      </div>
   );
 };
 

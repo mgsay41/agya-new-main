@@ -10,7 +10,6 @@ router.post("/", async (req, res) => {
 
   // Validate references format
   if (references && !Array.isArray(references)) {
-    console.log("jjjjjj")
     return res
       .status(400)
       .json({ error: "References must be an array of objects" });

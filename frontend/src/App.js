@@ -26,7 +26,6 @@ const App = () => {
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/help" element={<Help />} />
           <Route path="/profile" element={<UserProfile />} />
-          <Route path="/activities" element={<Activities />} />
           <Route path="/editprofile" element={<EditProfile/>}/>
         </Route>
         <Route path="/edit-profile" element={<EditProfile/>}/>
@@ -38,6 +37,11 @@ const App = () => {
         <Route path="/posts" element={<ActivityDetailsLayout/>}>
           <Route path="/posts/:id" element={<PostDetails/>}/>
         </Route>
+
+        <Route path="/activities" element={<ActivityDetailsLayout/>}>
+          <Route path="/activities" element={<Activities />} />
+        </Route>
+
         <Route path="/activity" element={<ActivityDetailsLayout/>}>
           <Route path="/activity/new-activity" element={<AddActivity/>} />
           <Route path="/activity/edit-activity" element={<EditActivity/>} />
