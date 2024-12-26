@@ -7,8 +7,10 @@ const storage = multer.diskStorage({
       ? "uploads/articles"
       : req.baseUrl.includes("/profiles")
       ? "uploads/profiles"
+      : req.baseUrl.includes("/activities")
+      ? "uploads/activities"
       : "uploads";
-    
+
     cb(null, path.join(process.cwd(), folder));
   },
   filename: (req, file, cb) => {
@@ -28,7 +30,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 }
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB limit
 });
 
 export default upload;

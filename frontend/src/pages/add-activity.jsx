@@ -1,365 +1,495 @@
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import { useEffect, useState } from "react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Calendar } from "primereact/calendar";
 import { IoTrashBinOutline } from "react-icons/io5";
+import { Edit3 } from "lucide-react";
+import { toast } from "react-toastify";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import { GlobalContext } from "../context/GlobelContext";
 
-function AddActivity() {
-  const [age, setAge] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState(null);
-  const [images, setImages] = useState([]);
-  const [imagesPreview, setImagesPreview] = useState([]);
-  const [location, setLocation] = useState("offline");
-  const [type, setType] = useState("Workshop");
-  const [price, setPrice] = useState("Free");
+const AddActivity = () => {
+  const navigate = useNavigate();
+  const { setIsAuthUser, isAuthUser } = useContext(GlobalContext);
+  const [uploading, setUploading] = useState(false);
+  const [formData, setFormData] = useState({
+    activityName: "",
+    type: "Workshop",
+    date: "",
+    time: null,
+    institution: "",
+    location: "offline",
+    locationDetails: "",
+    price: "Free",
+    priceAmount: "",
+    description: "",
+    timeline: "",
+    externalLink: "",
+    callToAction: "register",
+  });
 
-  const handleChange = (event) => {
-    setAge(event.target.value);
-  };
-  const modules = {
-    toolbar: [
-      [{ header: [1, 2, false] }],
-      ["bold", "italic", "underline", "strike"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      ["link", "image", "video"],
-    ],
-  };
-
-  const formats = [
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "list",
-    "bullet",
-    "indent",
-    "link",
-    "image",
-  ];
-
-  const [value, setValue] = useState("");
-  const [Description, setDescription] = useState("");
+  const [featuredImage, setFeaturedImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [sponsorImages, setSponsorImages] = useState([]);
+  const [sponsorPreviews, setSponsorPreviews] = useState([]);
 
   useEffect(() => {
-    const files = Array.from(images);
-    setImagesPreview([]);
+    setIsAuthUser(JSON.parse(localStorage.getItem("userInfo")));
+  }, [setIsAuthUser]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFeaturedImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("Image size should be less than 5MB");
+        return;
+      }
+      setFeaturedImage(file);
+      const reader = new FileReader();
+      reader.onload = () => setImagePreview(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSponsorImagesChange = (e) => {
+    const files = Array.from(e.target.files);
+    setSponsorImages(files);
+
+    const previews = [];
     files.forEach((file) => {
       const reader = new FileReader();
-
       reader.onload = () => {
-        if (reader.readyState === 2) {
-          setImagesPreview((oldArray) => [...oldArray, reader.result]);
+        previews.push(reader.result);
+        if (previews.length === files.length) {
+          setSponsorPreviews(previews);
         }
       };
       reader.readAsDataURL(file);
     });
-  }, [images]);
-  return (
-    <>
-      <div>
-        <span className=" pb-1 text-[#777]  border-b border-[#777]">
-          Activities
-        </span>
-        <span className=" text-[#777]"> /</span>{" "}
-        <span className=" pb-1 text-[#777]  border-b border-[#777]">
-          New Activity
-        </span>{" "}
-        <span className=" text-[#777]"> /</span>{" "}
-        <span className=" pb-1 text-[#777]  border-b border-[#777]">
-          Create
-        </span>
-        <div>
-          <h2 className=" text-3xl font-bold text-center mt-10">
-            New Activity
-          </h2>
-          <div className=" flex justify-between border-b pb-2">
-            <h3 className=" text-main text-xl">Basic Activity Info</h3>
-            <p className=" flex items-center text-black/40  ">
-              Fields obligatory to fill
-              <p className=" bg-red-600 rounded-full w-2 h-2 ml-2"> </p>
-            </p>
-          </div>
-          <form>
-            <div className=" flex justify-between ">
-              <div className=" w-[600px]">
-                <label className=" flex items-center my-4 w-full">
-                  <p className=" bg-red-600 rounded-full w-2 h-2 mr-2"> </p>{" "}
-                  Activity Name
-                </label>
-                <input
-                  type="text"
-                  className="w-[600px] outline-none border py-4 px-2 rounded-xl bg-white"
-                  placeholder="Activity name - short activity name "
-                />
-                <label className=" flex items-center my-4">
-                  <p className=" bg-red-600 rounded-full w-2 h-2 mr-2"> </p>{" "}
-                  Activity Type
-                </label>
-                <Select
-                  value={type}
-                  onChange={(event) => setType(event.target.value)}
-                  displayEmpty
-                  className=" w-full"
-                >
-                  <MenuItem value="Workshop">Workshop</MenuItem>
-                  <MenuItem value="Publication">Publication</MenuItem>
-                  <MenuItem value="Conference and talk">
-                    Conference and talk
-                  </MenuItem>
-                  <MenuItem value="Event">Event</MenuItem>
-                  <MenuItem value="Interview">Interview</MenuItem>
-                  <MenuItem value="competiton">competiton</MenuItem>
-                </Select>
-                <div className=" flex justify-between my-4">
-                  <div className=" flex flex-col">
-                    <label>Date</label>
-                    <Calendar
-                      value={date}
-                      className=" bg-secondary border-b border-black p-2 w-64 "
-                      onChange={(e) => setDate(e.value)}
-                      touchUI
-                    />
-                  </div>
-                  <div className=" flex flex-col flex-1 ml-[90px]">
-                    <label>Time</label>
-                    <Calendar
-                      id="calendar-timeonly"
-                      value={time}
-                      className=" bg-secondary border-b border-black p-2 w-64 "
-                      onChange={(e) => setTime(e.value)}
-                      timeOnly
-                      touchUI
-                      hourFormat="12"
-                    />
-                  </div>
-                </div>
-                <label className=" flex items-center my-4 w-full">
-                  <p className=" bg-red-600 rounded-full w-2 h-2 mr-2"> </p>{" "}
-                  Organizing Institution
-                </label>
-                <input
-                  type="text"
-                  className="w-[600px] outline-none border py-4 px-2 rounded-xl bg-white"
-                  placeholder="Activity name - short activity name "
-                />
-                <label className=" flex items-center my-4 w-full">
-                  <p className=" bg-red-600 rounded-full w-2 h-2 mr-2"> </p>{" "}
-                  Location
-                </label>
-                <div className=" flex justify-between">
-                  <Select
-                    value={location}
-                    onChange={(event) => {
-                      setLocation(event.target.value);
-                    }}
-                    className=" w-full"
-                  >
-                    <MenuItem value="offline">offline</MenuItem>
-                    <MenuItem value="online">online</MenuItem>
-                  </Select>
+  };
 
-                  <div>
-                    <input
-                      type="text"
-                      disabled={location === "online"}
-                      className=" disabled:cursor-no-drop ml-4 w-[250px] outline-none border py-4 px-2 rounded-xl bg-white"
-                    />
-                  </div>
-                </div>
-                <label className=" flex items-center my-4 w-full">
-                  <p className=" bg-red-600 rounded-full w-2 h-2 mr-2"> </p>{" "}
-                  Price
-                </label>
-                <div className=" flex justify-between">
-                  <Select
-                    value={price}
-                    onChange={(event) => {
-                      setPrice(event.target.value);
-                    }}
-                    className=" w-full"
-                  >
-                    <MenuItem value="Free">Free</MenuItem>
-                    <MenuItem value="Paid">Paid</MenuItem>
-                  </Select>
-                  <div>
-                    <input
-                      type="text"
-                      disabled={price === "Free"}
-                      className=" disabled:cursor-no-drop ml-4 w-[250px] outline-none border py-4 px-2 rounded-xl bg-white"
-                    />
-                  </div>
-                </div>
-                <label className=" flex items-center my-4 w-full">
-                  <p className=" bg-red-600 rounded-full w-2 h-2 mr-2"> </p>{" "}
-                  Sponsors and Exhibitors Logos
-                </label>
-                <input
-                  disabled
-                  type="text"
-                  className={` block  ${
-                    imagesPreview.length === 0 ? "py-4" : "py-10"
-                  } px-8 border w-full bg-white `}
-                  placeholder={
-                    imagesPreview.length === 0 ? "No image uploded" : ""
-                  }
-                />
-                <div className=" relative">
-                  <div className="flex gap-4 absolute -top-28">
-                    {imagesPreview.map((img) => (
-                      <div className=" relative">
-                        <IoTrashBinOutline  className=" absolute top-5 text-red-600 w-7 h-7 font-bold cursor-pointer right-0 " />
-                        <img
-                          src={img}
-                          key={img}
-                          alt="Preview"
-                          className="w-24 h-24 mx-2 border-[1px] p-1 rounded-md mt-3"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <p className=" text-black/40 text-sm mb-4">
-                  accepted file types: *.jpg, *.png of maximum size 280 x 280 -
-                  uplaods count: 1 and more.
-                </p>
-                <input
-                  type="file"
-                  multiple
-                  onChange={(e) => setImages((prev) => e.target.files)}
-                  className=" w-[125px] block rounded-xl overflow-hidden"
-                />
-              </div>
-              <div className=" mb-6 flex-1 ml-12 ">
-                <label className=" flex items-center my-4 w-full">
-                  <p className=" bg-red-600 rounded-full w-2 h-2 mr-2"> </p>{" "}
-                  Activity Banner/ Featured Image
-                </label>
-                <div className="flex items-center justify-center w-full mb-5 mt-3">
-                  <label
-                    htmlFor="dropzone-file"
-                    className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800"
-                  >
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                      <svg
-                        className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 20 16"
-                      >
-                        <path
-                          stroke="currentColor"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                        />
-                      </svg>
-                      <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                        <span className="font-semibold">Click to upload</span>{" "}
-                        or drag and drop
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        SVG, PNG, JPG or GIF (MAX. 800x400px)
-                      </p>
-                    </div>
-                    <input
-                      accept="image/*"
-                      id="dropzone-file"
-                      type="file"
-                      className="hidden"
-                      name="img"
-                    />
-                  </label>
-                </div>
-                <p className=" text-base text-black/40">
-                  accepted file types: *.jpg, *.png of maximum size: 720 x 300 -
-                  uploads count: 1.{" "}
-                </p>
-              </div>
-            </div>
-            <div className=" flex justify-center items-center">
-              <button className=" bg-main text-white py-2 px-[120px] rounded-xl mt-4">
-                Save
-              </button>
-            </div>
-          </form>
-        </div>
-        <div className=" add-activity my-4">
-          <form>
-            <div className=" flex justify-between border-b pb-2 mb-20">
-              <h3 className=" text-main text-xl">Event Brief</h3>
-              <p className=" flex items-center text-black/40 ">
-                Fields obligatory to fill
-                <p className=" bg-red-600 rounded-full w-2 h-2 ml-2 text-black/40">
-                  {" "}
-                </p>
-              </p>
-            </div>
-            <label className=" flex items-center my-4 w-full">
-              <p className=" bg-red-600 rounded-full w-2 h-2 mr-2"> </p>{" "}
-              Description
-            </label>
-            <ReactQuill
-              theme="snow"
-              value={Description}
-              onChange={setDescription}
-              className=" h-[200px]"
-              modules={modules}
-              formats={formats}
-              placeholder=" write something ..."
-            />
-            <p className=" mt-12 text-black/40">Maximum characters: 2500</p>
-            <label className=" flex items-center my-4 w-full">
-              <p className=" bg-red-600 rounded-full w-2 h-2 mr-2"> </p> Time
-              line and activities
-            </label>
-            <ReactQuill
-              theme="snow"
-              value={value}
-              onChange={setValue}
-              className=" h-[200px]"
-              modules={modules}
-              formats={formats}
-              placeholder=" write something ..."
-            />
-            <p className=" mt-12 text-black/40">Maximum characters: 2500</p>
-            <label className=" flex items-center my-4 w-full">
-              <p className=" bg-red-600 rounded-full w-2 h-2 mr-2"> </p>{" "}
-              Activity External Link
-            </label>
-            <input
-              type="text"
-              className="w-full outline-none border py-4 px-2 rounded-xl bg-white"
-              placeholder="Activity name - short activity name "
-            />
-            <label className=" flex items-center my-4 w-full">
-              <p className=" bg-red-600 rounded-full w-2 h-2 mr-2"> </p>Button
-              Call to Action
-            </label>
-            <Select
-              value={age}
-              onChange={handleChange}
-              displayEmpty
-              className=" w-full"
-            >
-              <MenuItem value="">offline</MenuItem>
-              <MenuItem value="">online</MenuItem>
-            </Select>
-            <div className="flex justify-center items-center mt-4 mb-10 ">
-              <button className="bg-main text-white px-[100px] rounded-xl py-2">
-                Submit Activity
-              </button>
-            </div>
-          </form>
-        </div>
+  const removeSponsorImage = (index) => {
+    setSponsorImages((prev) => prev.filter((_, i) => i !== index));
+    setSponsorPreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const validateForm = () => {
+    const required = [
+      "activityName",
+      "type",
+      "date",
+      "institution",
+      "description",
+    ];
+    const missing = required.filter((field) => !formData[field]);
+
+    if (missing.length) {
+      toast.error(`Required fields missing: ${missing.join(", ")}`);
+      return false;
+    }
+
+    if (formData.location === "offline" && !formData.locationDetails) {
+      toast.error("Location details required for offline activities");
+      return false;
+    }
+
+    if (formData.price === "Paid" && !formData.priceAmount) {
+      toast.error("Price amount required for paid activities");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    try {
+      setUploading(true);
+
+      const formattedDate =
+        formData.date instanceof Date
+          ? formData.date.toISOString().split("T")[0]
+          : formData.date;
+
+      const formattedTime =
+        formData.time instanceof Date
+          ? formData.time.toLocaleTimeString()
+          : formData.time;
+
+      const activityData = {
+        userId: isAuthUser?.id,
+        activityName: formData.activityName,
+        activityType: formData.type,
+        date: formattedDate,
+        time: formattedTime,
+        organization: formData.institution,
+        location:
+          formData.location === "offline"
+            ? formData.locationDetails
+            : formData.location,
+        price: formData.price === "Free" ? "Free" : formData.priceAmount,
+        description: formData.description,
+        timeline: formData.timeline,
+        activityExLink: formData.externalLink,
+        apply: formData.callToAction,
+        status: "pending",
+      };
+
+      const activityResponse = await fetch(
+        "http://localhost:4000/api/activities",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(activityData),
+        }
+      );
+
+      if (!activityResponse.ok) {
+        throw new Error("Failed to create activity");
+      }
+
+      const newActivity = await activityResponse.json();
+      const activityId = newActivity._id;
+
+      let featuredImageUrl;
+      if (featuredImage) {
+        const imageData = new FormData();
+        imageData.append("file", featuredImage);
+
+        const featuredResponse = await fetch(
+          `http://localhost:4000/api/uploads/activities/${activityId}/featured`,
+          { method: "POST", body: imageData }
+        );
+
+        if (!featuredResponse.ok) {
+          throw new Error("Failed to upload featured image");
+        }
+
+        const featuredData = await featuredResponse.json();
+        featuredImageUrl = featuredData.url;
+      }
+
+      let sponsorUrls = [];
+      if (sponsorImages.length) {
+        const sponsorsData = new FormData();
+        sponsorImages.forEach((image) => {
+          sponsorsData.append("sponsors", image);
+        });
+
+        const sponsorsResponse = await fetch(
+          `http://localhost:4000/api/uploads/activities/${activityId}/sponsors`,
+          { method: "POST", body: sponsorsData }
+        );
+
+        if (!sponsorsResponse.ok) {
+          throw new Error("Failed to upload sponsor images");
+        }
+
+        const sponsorsDataJson = await sponsorsResponse.json();
+        sponsorUrls = sponsorsDataJson.urls;
+      }
+
+      if (featuredImageUrl || sponsorUrls.length) {
+        const updateData = {
+          ...(featuredImageUrl && { featuredImage: featuredImageUrl }),
+          ...(sponsorUrls.length && { sponsorImages: sponsorUrls }),
+        };
+
+        await fetch(`http://localhost:4000/api/activities/${activityId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updateData),
+        });
+      }
+
+      toast.success("Activity created successfully!");
+      navigate("/activities");
+    } catch (error) {
+      toast.error(error.message || "Failed to create activity");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const quillModules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ["bold", "italic", "underline", "strike"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link", "image"],
+    ],
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="mb-8">
+        <nav className="text-gray-500 text-sm">
+          <span>Activities</span> / <span>New Activity</span> /{" "}
+          <span>Create</span>
+        </nav>
+        <h1 className="text-3xl font-bold text-center mt-6">New Activity</h1>
       </div>
-    </>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-6">
+            <div>
+              <label className="block mb-2">
+                <span className="text-red-500 mr-1">*</span>Activity Name
+              </label>
+              <input
+                type="text"
+                name="activityName"
+                value={formData.activityName}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded-lg"
+                placeholder="Enter activity name"
+              />
+            </div>
+
+            <div>
+              <label className="block mb-2">
+                <span className="text-red-500 mr-1">*</span>Activity Type
+              </label>
+              <select
+                name="type"
+                value={formData.type}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded-lg"
+              >
+                <option value="Workshop">Workshop</option>
+                <option value="Publication">Publication</option>
+                <option value="Conference">Conference and talk</option>
+                <option value="Event">Event</option>
+                <option value="Interview">Interview</option>
+                <option value="Competition">Competition</option>
+              </select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block mb-2">Date</label>
+                <Calendar
+                  value={formData.date}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, date: e.value }))
+                  }
+                  className="w-full"
+                />
+              </div>
+              <div>
+                <label className="block mb-2">Time</label>
+                <Calendar
+                  value={formData.time}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, time: e.value }))
+                  }
+                  timeOnly
+                  hourFormat="12"
+                  className="w-full"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block mb-2">
+                <span className="text-red-500 mr-1">*</span>Organization
+              </label>
+              <input
+                type="text"
+                name="institution"
+                value={formData.institution}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded-lg"
+                placeholder="Enter organization name"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block mb-2">Location Type</label>
+                <select
+                  name="location"
+                  value={formData.location}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-lg"
+                >
+                  <option value="offline">Offline</option>
+                  <option value="online">Online</option>
+                </select>
+              </div>
+              {formData.location === "offline" && (
+                <div>
+                  <label className="block mb-2">Location Details</label>
+                  <input
+                    type="text"
+                    name="locationDetails"
+                    value={formData.locationDetails}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border rounded-lg"
+                    placeholder="Enter location details"
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block mb-2">Price Type</label>
+                <select
+                  name="price"
+                  value={formData.price}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-lg"
+                >
+                  <option value="Free">Free</option>
+                  <option value="Paid">Paid</option>
+                </select>
+              </div>
+              {formData.price === "Paid" && (
+                <div>
+                  <label className="block mb-2">Price Amount</label>
+                  <input
+                    type="text"
+                    name="priceAmount"
+                    value={formData.priceAmount}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border rounded-lg"
+                    placeholder="Enter price amount"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div>
+              <h3 className="font-semibold mb-4">Featured Image</h3>
+              <div className="relative">
+                <img
+                  src={imagePreview || "/placeholder-image.jpg"}
+                  alt="Featured preview"
+                  className="w-full h-48 object-cover rounded-lg"
+                />
+                <label className="absolute bottom-2 right-2 bg-white p-2 rounded-full cursor-pointer">
+                  <Edit3 className="w-5 h-5" />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFeaturedImageChange}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="font-semibold mb-4">Sponsor Images</h3>
+              <div className="grid grid-cols-3 gap-4">
+                {sponsorPreviews.map((preview, index) => (
+                  <div key={index} className="relative">
+                    <img
+                      src={preview}
+                      alt={`Sponsor ${index + 1}`}
+                      className="w-full h-24 object-cover rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeSponsorImage(index)}
+                      className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full"
+                    >
+                      <IoTrashBinOutline className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleSponsorImagesChange}
+                className="mt-4"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <div>
+            <label className="block mb-2">
+              <span className="text-red-500 mr-1">*</span>Description
+            </label>
+            <ReactQuill
+              value={formData.description}
+              onChange={(value) =>
+                setFormData((prev) => ({ ...prev, description: value }))
+              }
+              modules={quillModules}
+              className="h-40"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2">Timeline</label>
+            <ReactQuill
+              value={formData.timeline}
+              onChange={(value) =>
+                setFormData((prev) => ({ ...prev, timeline: value }))
+              }
+              modules={quillModules}
+              className="h-40"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2">External Link</label>
+            <input
+              type="url"
+              name="externalLink"
+              value={formData.externalLink}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-lg"
+              placeholder="Enter external link"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2">Call to Action</label>
+            <select
+              name="callToAction"
+              value={formData.callToAction}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-lg"
+            >
+              <option value="register">Register Now</option>
+              <option value="learn">Learn More</option>
+              <option value="join">Join Event</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="flex justify-center">
+          <button
+            type="submit"
+            disabled={uploading}
+            className="bg-main text-white px-8 py-2 rounded-lg disabled:opacity-50"
+          >
+            {uploading ? "Creating Activity..." : "Submit Activity"}
+          </button>
+        </div>
+      </form>
+    </div>
   );
-}
+};
 
 export default AddActivity;

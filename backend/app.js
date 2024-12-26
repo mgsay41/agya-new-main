@@ -23,8 +23,8 @@ import TagsRoutes from "./routes/TagsRoutes.js";
 import FeaturedRoutes from "./routes/featuredArticleRoute.js";
 import profileuploadRoutes from "./routes/profileuploads.js";
 import articleuploadRoutes from "./routes/articleuploads.js";
-
-
+import activityUploadRoutes from "./routes/activityUploads.js";
+import sponsorUploadRoutes from "./routes/sponsorUploads.js";
 
 import path from "path";
 import { fileURLToPath } from "url";
@@ -32,7 +32,6 @@ import { fileURLToPath } from "url";
 // Resolve the current directory
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 
 const app = express();
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
@@ -86,8 +85,8 @@ app.use("/api/tags", TagsRoutes);
 app.use("/api/FeaturedArticles", FeaturedRoutes);
 app.use("/api/uploads/profiles", profileuploadRoutes);
 app.use("/api/uploads/articles", articleuploadRoutes);
-
-
+app.use("/api/uploads/activities", activityUploadRoutes);
+app.use("/api/uploads/sponsors", sponsorUploadRoutes);
 
 // Root Route
 app.get("/", (req, res) => {

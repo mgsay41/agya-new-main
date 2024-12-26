@@ -1,78 +1,82 @@
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { IoIosSearch } from "react-icons/io";
 
-const FilterSidebar = () => {
+// The Filter Sidebar component
+const FilterSidebar = ({ setFilteredData, activitiesData }) => {
   const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date()); // Added endDate state
+  const [endDate, setEndDate] = useState(new Date());
   const [selectedEventType, setSelectedEventType] = useState({
     online: false,
     offline: false,
     all: false,
   });
   const [selectedLocation, setSelectedLocation] = useState([]);
-  const [days, setDays] = useState(0); // State for number of days
   const [price, setPrice] = useState({
     free: false,
     paid: false,
     all: false,
   });
   const [rangeValue, setRangeValue] = useState(0); // Range slider value
+  const [days, setDays] = useState(0); // State for number of days
 
-  // Handle event checkbox changes
-  const handleEventChange = (event) => {
-    setSelectedEventType((prev) => ({
-      ...prev,
-      [event.target.name]: event.target.checked,
-    }));
-  };
-
-  // Handle location checkbox changes
-  const handleLocationChange = (country) => {
-    setSelectedLocation((prev) =>
-      prev.includes(country)
-        ? prev.filter((item) => item !== country)
-        : [...prev, country]
-    );
-  };
-
-  // Handle price checkbox changes
-  const handlePriceChange = (event) => {
-    setPrice((prev) => ({
-      ...prev,
-      [event.target.name]: event.target.checked,
-    }));
-  };
-
-  // Handle range slider change
   const handleRangeChange = (e) => {
     setRangeValue(e.target.value);
     setDays(e.target.value); // Update days based on slider
   };
 
-  // Clear filters function
+  const applyFilters = () => {
+    const filteredActivities = activitiesData.filter((activity) => {
+      // Filter by event type
+      if (selectedEventType.all) return true;
+      if (selectedEventType.online && activity.eventType === "Online")
+        return true;
+      if (selectedEventType.offline && activity.eventType === "Offline")
+        return true;
+
+      // Filter by location
+      if (
+        selectedLocation.length > 0 &&
+        !selectedLocation.includes(activity.location)
+      )
+        return false;
+
+      // Filter by price
+      if (price.free && activity.price !== "Free") return false;
+      if (price.paid && activity.price !== "Paid") return false;
+
+      // Filter by date range
+      const activityDate = new Date(activity.date);
+      if (activityDate < startDate || activityDate > endDate) return false;
+
+      return true;
+    });
+
+    setFilteredData(filteredActivities);
+  };
+
   const clearFilters = () => {
     setStartDate(new Date());
-    setEndDate(new Date()); // Reset endDate
+    setEndDate(new Date());
     setSelectedEventType({
       online: false,
       offline: false,
       all: false,
     });
     setSelectedLocation([]);
-    setDays(0);
     setPrice({
       free: false,
       paid: false,
       all: false,
     });
-    setRangeValue(0); // Reset the range slider
+
+    // Reset to all data when filters are cleared
+    setFilteredData(activitiesData);
   };
 
   return (
-    <div className="w-52 bg-white border rounded-lg p-4 shadow-md relative mt-4">
-      <h2 className="text-lg font-semibold mb-4">Narrow down your search</h2>
+    <div className="w-full bg-white border rounded-lg p-6 shadow-md relative mt-4">
+      <h2 className="text-lg font-semibold mb-6">Filter Activities</h2>
 
       {/* Calendar Section */}
       <div className="mb-4">
@@ -110,26 +114,34 @@ const FilterSidebar = () => {
         />
       </div>
 
-      {/* Virtual Event Section */}
+      {/* Event Type Section */}
       <div className="mb-4">
         <label className="block text-sm font-medium mb-2">Virtual Event</label>
-        <div>
-          <label className="flex items-center gap-2 mb-1">
+        <div className="space-y-2">
+          <label className="flex items-center gap-2">
             <input
               type="checkbox"
-              name="online"
               checked={selectedEventType.online}
-              onChange={handleEventChange}
+              onChange={() =>
+                setSelectedEventType({
+                  ...selectedEventType,
+                  online: !selectedEventType.online,
+                })
+              }
               className="border rounded accent-main"
             />
             Online
           </label>
-          <label className="flex items-center gap-2 mb-1">
+          <label className="flex items-center gap-2">
             <input
               type="checkbox"
-              name="offline"
               checked={selectedEventType.offline}
-              onChange={handleEventChange}
+              onChange={() =>
+                setSelectedEventType({
+                  ...selectedEventType,
+                  offline: !selectedEventType.offline,
+                })
+              }
               className="border rounded accent-main"
             />
             Offline
@@ -137,12 +149,16 @@ const FilterSidebar = () => {
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
-              name="all"
               checked={selectedEventType.all}
-              onChange={handleEventChange}
+              onChange={() =>
+                setSelectedEventType({
+                  ...selectedEventType,
+                  all: !selectedEventType.all,
+                })
+              }
               className="border rounded accent-main"
             />
-            All
+            All Types
           </label>
         </div>
       </div>
@@ -150,24 +166,22 @@ const FilterSidebar = () => {
       {/* Location Section */}
       <div className="mb-4">
         <label className="block text-sm font-medium mb-2">Location</label>
-        <div className="flex items-center border rounded-lg">
-          <IoIosSearch className="text-gray-400 mx-2" />
-          <input
-            type="text"
-            placeholder="Search for a country"
-            className="w-full border rounded-lg p-2 text-xs"
-          />
-        </div>
-        <div className="mt-2 space-y-1">
-          {["Egypt", "Germany", "USA", "UK", "UAE"].map((country) => (
-            <label className="flex items-center gap-2" key={country}>
+        <div className="space-y-2">
+          {["Egypt", "Germany", "USA", "UK", "UAE"].map((location) => (
+            <label className="flex items-center gap-2" key={location}>
               <input
                 type="checkbox"
-                checked={selectedLocation.includes(country)}
-                onChange={() => handleLocationChange(country)}
+                checked={selectedLocation.includes(location)}
+                onChange={() => {
+                  setSelectedLocation((prev) =>
+                    prev.includes(location)
+                      ? prev.filter((item) => item !== location)
+                      : [...prev, location]
+                  );
+                }}
                 className="border rounded accent-main"
               />
-              {country}
+              {location}
             </label>
           ))}
         </div>
@@ -176,50 +190,38 @@ const FilterSidebar = () => {
       {/* Price Section */}
       <div className="mb-4">
         <label className="block text-sm font-medium mb-2">Price</label>
-        <div>
-          <label className="flex items-center gap-2 mb-1">
+        <div className="space-y-2">
+          <label className="flex items-center gap-2">
             <input
               type="checkbox"
-              name="free"
               checked={price.free}
-              onChange={handlePriceChange}
+              onChange={() => setPrice({ ...price, free: !price.free })}
               className="border rounded accent-main"
             />
             Free
           </label>
-          <label className="flex items-center gap-2 mb-1">
+          <label className="flex items-center gap-2">
             <input
               type="checkbox"
-              name="paid"
               checked={price.paid}
-              onChange={handlePriceChange}
+              onChange={() => setPrice({ ...price, paid: !price.paid })}
               className="border rounded accent-main"
             />
             Paid
           </label>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              name="all"
-              checked={price.all}
-              onChange={handlePriceChange}
-              className="border rounded accent-main"
-            />
-            All
-          </label>
         </div>
       </div>
 
-      {/* Buttons */}
-      <div className="flex items-center justify-between">
-        <button
-          onClick={clearFilters}
-          className="text-sm text-main underline"
-        >
-          Clear Filter
+      {/* Apply & Clear Buttons */}
+      <div className="flex justify-between items-center mt-4">
+        <button onClick={clearFilters} className="text-sm text-main underline">
+          Clear Filters
         </button>
-        <button className="bg-main text-white px-4 py-2 rounded-lg">
-          Apply
+        <button
+          onClick={applyFilters}
+          className="bg-main text-white px-4 py-2 rounded-lg"
+        >
+          Apply Filters
         </button>
       </div>
     </div>
