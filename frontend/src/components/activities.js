@@ -180,7 +180,7 @@ const Activity = () => {
         <h2 className="text-xl font-semibold mt-8 mb-4">Latest Activities</h2>
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredData.slice(0, 3).map((activity) => (
-            <LatestActivityCard key={activity.id} {...activity} />
+            <LatestActivityCard key={activity._id} {...activity} />
           ))}
         </div>
 
@@ -192,7 +192,7 @@ const Activity = () => {
         />
         <div className="flex flex-col gap-4">
           {filteredData.map((activity) => (
-            <ActivityCard key={activity.id} {...activity} />
+            <ActivityCard key={activity._id} {...activity} />
           ))}
         </div>
       </div>

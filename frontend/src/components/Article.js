@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { FaLink, FaArrowUp, FaArrowDown, } from "react-icons/fa";
-import { IoSend,IoArrowRedoOutline } from "react-icons/io5";
-import { useParams } from "react-router-dom"; 
-import CommentPopup from "../components/commentsPopUp"
+import { FaLink, FaArrowUp, FaArrowDown } from "react-icons/fa";
+import { IoSend, IoArrowRedoOutline } from "react-icons/io5";
+import { useParams } from "react-router-dom";
+import CommentPopup from "../components/commentsPopUp";
 import api from "../axios";
-import DOMPurify from 'dompurify';
+import DOMPurify from "dompurify";
 
 function Article() {
   const [isLoading, setIsLoading] = useState(true);
@@ -41,21 +41,34 @@ function Article() {
       }
 
       try {
+        // Ensure articles.tags is an array of valid ObjectIds
+        const tagIds = articles.tags
+          .map((tag) => (typeof tag === "object" ? tag._id : tag)) // Extract `_id` if it's an object
+          .filter((id) => id && /^[a-f\d]{24}$/i.test(id)); // Ensure IDs are valid 24-character hex strings
+
+        if (tagIds.length === 0) {
+          console.warn("No valid tag IDs found.");
+          setTags([]);
+          return;
+        }
+
         const response = await api.post(
           `/tags/bulk-fetch`,
-          { tagIds: articles.tags },
+          { tagIds }, // Send as an array of IDs
           {
             headers: {
               "Content-Type": "application/json",
             },
           }
         );
+
         setTags(response.data || []);
       } catch (error) {
         console.error("Error fetching tags:", error);
         setTags([]);
       }
     };
+
     fetchTags();
   }, [articles]);
 
@@ -177,4 +190,3 @@ function Article() {
 }
 
 export default Article;
-

@@ -7,7 +7,7 @@ module.exports = {
         main: "#005F6A", // Main Color
         background: "#fefdfc", // Background Color
         secondary: "#e6e6d7", // Secondary Color
-        SoftMain: "#F7FFFC", // Soft Main Color
+        SoftMain: "#C5AD891A", // Soft Main Color
         accent: "#001F34", // Accent Color
         "main-font": "#010200", // Main Font Color
         "secondary-font": "#fefdfc", // Secondary Font Color

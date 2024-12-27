@@ -1,4 +1,3 @@
-// articleuploads.js
 import express from "express";
 import upload from "../multer.js";
 import Article from "../models/Article.js";
@@ -26,17 +25,23 @@ router.post("/:articleId", upload.single("file"), async (req, res) => {
     const { articleId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(articleId)) {
-      return res.status(400).json({ success: false, message: "Invalid article ID" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid article ID" });
     }
 
     if (!req.file) {
-      return res.status(400).json({ success: false, message: "No file uploaded" });
+      return res
+        .status(400)
+        .json({ success: false, message: "No file uploaded" });
     }
 
     const existingArticle = await Article.findById(articleId);
     if (!existingArticle) {
       if (req.file) await fs.unlink(req.file.path);
-      return res.status(404).json({ success: false, message: "Article not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Article not found" });
     }
 
     if (existingArticle.image) {
@@ -45,11 +50,13 @@ router.post("/:articleId", upload.single("file"), async (req, res) => {
       await fs.unlink(oldImagePath).catch(console.error);
     }
 
-    const imageUrl = `${process.env.BASE_URL || "http://localhost:4000"}/uploads/articles/${req.file.filename}`;
+    const imageUrl = `${
+      process.env.BASE_URL || "http://localhost:4000"
+    }/uploads/articles/${req.file.filename}`;
 
     const updatedArticle = await Article.findByIdAndUpdate(
       articleId,
-      { image: imageUrl },
+      { featuredImage: imageUrl },
       { new: true }
     );
 

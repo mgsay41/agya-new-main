@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import Activity from "../models/Activity.js";
 
 const router = express.Router();
+
 // Create a new activity
 router.post("/", async (req, res) => {
   const {
@@ -29,16 +30,6 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ error: "Invalid userId format" });
     }
 
-    // Check if sponsors are an array of objects (with name and logo)
-    if (
-      !Array.isArray(sponsors) ||
-      sponsors.some((sponsor) => !sponsor.name || !sponsor.logo)
-    ) {
-      return res.status(400).json({
-        error: "Sponsors must be an array of objects with 'name' and 'logo'",
-      });
-    }
-
     // Create new activity
     const newActivity = new Activity({
       userId: new mongoose.Types.ObjectId(userId), // Convert to ObjectId with 'new'
@@ -50,7 +41,7 @@ router.post("/", async (req, res) => {
       organization,
       location,
       price,
-      sponsors, // Array of sponsor objects with 'name' and 'logo'
+      sponsors, // Array of sponsor objects
       description,
       timeline,
       activityExLink,
@@ -71,10 +62,12 @@ router.post("/", async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     const { userId } = req.query;
-    
+
     // If userId is provided, filter activities
-    const filter = userId ? { userId: new mongoose.Types.ObjectId(userId) } : {};
-    
+    const filter = userId
+      ? { userId: new mongoose.Types.ObjectId(userId) }
+      : {};
+
     const activities = await Activity.find(filter);
     res.status(200).json(activities);
   } catch (err) {

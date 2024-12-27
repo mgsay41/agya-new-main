@@ -1,6 +1,7 @@
 import multer from "multer";
 import path from "path";
 
+// Configure multer storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const folder = req.baseUrl.includes("/articles")
@@ -18,6 +19,7 @@ const storage = multer.diskStorage({
   },
 });
 
+// File type filter
 const fileFilter = (req, file, cb) => {
   const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
   if (allowedTypes.includes(file.mimetype)) {
@@ -27,6 +29,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
+// Multer configuration with size limits and file filter
 const upload = multer({
   storage,
   fileFilter,

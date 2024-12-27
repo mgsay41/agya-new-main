@@ -1,4 +1,5 @@
 import express from "express";
+import mongoose from "mongoose";
 import Tag from "../models/Tag.js";
 
 const router = express.Router();
@@ -8,25 +9,29 @@ router.post("/", async (req, res) => {
   const { name, description } = req.body;
 
   try {
+    // Check if the tag already exists
     const existingTag = await Tag.findOne({ name });
     if (existingTag) {
       return res.status(400).json({ message: "Tag already exists" });
     }
 
+    // Create and save the new tag
     const newTag = new Tag({ name, description });
     await newTag.save();
     res.status(201).json(newTag);
   } catch (err) {
+    console.error("Error creating tag:", err);
     res.status(500).json({ error: err.message });
   }
 });
 
 // Get all tags
-router.get("/", async (req, res) => {
+router.get("/all", async (req, res) => {
   try {
     const tags = await Tag.find();
     res.status(200).json(tags);
   } catch (err) {
+    console.error("Error fetching all tags:", err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -40,25 +45,35 @@ router.get("/:id", async (req, res) => {
     }
     res.status(200).json(tag);
   } catch (err) {
+    console.error("Error fetching tag by ID:", err);
     res.status(500).json({ error: err.message });
   }
 });
 
-router.post('/bulk-fetch', async (req, res) => {
+// Bulk fetch tags by IDs
+router.post("/bulk-fetch", async (req, res) => {
   try {
     const { tagIds } = req.body;
 
     if (!Array.isArray(tagIds) || tagIds.length === 0) {
-      return res.status(400).json({ error: 'Invalid tag IDs.' });
+      return res.status(400).json({ error: "Invalid tag IDs." });
     }
 
-    // Find tags by IDs
-    const tags = await Tag.find({ _id: { $in: tagIds } });
+    // Validate each ID and filter invalid ones
+    const validTagIds = tagIds.filter((id) =>
+      mongoose.Types.ObjectId.isValid(id)
+    );
 
-    res.json(tags); // Return the tags
+    if (validTagIds.length === 0) {
+      return res.status(400).json({ error: "No valid tag IDs provided." });
+    }
+
+    // Find tags by valid IDs
+    const tags = await Tag.find({ _id: { $in: validTagIds } });
+    res.status(200).json(tags);
   } catch (error) {
-    console.error('Error fetching tags:', error);
-    res.status(500).json({ error: 'Failed to fetch tags.' });
+    console.error("Error fetching tags in bulk:", error);
+    res.status(500).json({ error: "Failed to fetch tags." });
   }
 });
 
@@ -67,16 +82,20 @@ router.put("/:id", async (req, res) => {
   const { name, description } = req.body;
 
   try {
+    // Find and update the tag
     const updatedTag = await Tag.findByIdAndUpdate(
       req.params.id,
       { name, description },
-      { new: true }
+      { new: true } // Return the updated document
     );
+
     if (!updatedTag) {
       return res.status(404).json({ message: "Tag not found" });
     }
+
     res.status(200).json(updatedTag);
   } catch (err) {
+    console.error("Error updating tag:", err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -84,12 +103,16 @@ router.put("/:id", async (req, res) => {
 // Delete a tag
 router.delete("/:id", async (req, res) => {
   try {
+    // Find and delete the tag
     const deletedTag = await Tag.findByIdAndDelete(req.params.id);
+
     if (!deletedTag) {
       return res.status(404).json({ message: "Tag not found" });
     }
-    res.status(204).json({ message: "Tag deleted" });
+
+    res.status(200).json({ message: "Tag deleted successfully" });
   } catch (err) {
+    console.error("Error deleting tag:", err);
     res.status(500).json({ error: err.message });
   }
 });

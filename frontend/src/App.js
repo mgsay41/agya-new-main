@@ -15,39 +15,43 @@ import Activities from "./pages/Activites";
 import EditProfile from "./pages/EditProfile";
 import ArticleDetails from "./pages/ArticlesDetails";
 import PostDetails from "./pages/PostsDetails";
+import Search from "./pages/search";
+import Filter from "./pages/filter";
 
 const App = () => {
   return (
     <>
       <Routes>
         <Route path="/" element={<AboutLayout />}>
-        <Route index element={<Home />} />
+          <Route index element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/help" element={<Help />} />
           <Route path="/profile" element={<UserProfile />} />
-          <Route path="/editprofile" element={<EditProfile/>}/>
+          <Route path="/editprofile" element={<EditProfile />} />
         </Route>
-        <Route path="/edit-profile" element={<EditProfile/>}/>
-        <Route path="/new-article" element={<NewArtical/>}/>
-        <Route path="/article" element={<ActivityDetailsLayout/>}>
-          <Route path="/article/new-article" element={<AddActivity/>} />
-          <Route path="/article/:id" element={<ArticleDetails/>}/>
+        <Route path="/edit-profile" element={<EditProfile />} />
+        <Route path="/new-article" element={<NewArtical />} />
+        <Route path="/article/search" element={<Search />} />
+        <Route path="/article/filter" element={<Filter />} />
+        <Route path="/article" element={<ActivityDetailsLayout />}>
+          <Route path="/article/new-article" element={<AddActivity />} />
+          <Route path="/article/:id" element={<ArticleDetails />} />
         </Route>
-        <Route path="/posts" element={<ActivityDetailsLayout/>}>
-          <Route path="/posts/:id" element={<PostDetails/>}/>
+        <Route path="/posts" element={<ActivityDetailsLayout />}>
+          <Route path="/posts/:id" element={<PostDetails />} />
         </Route>
 
-        <Route path="/activities" element={<ActivityDetailsLayout/>}>
+        <Route path="/activities" element={<ActivityDetailsLayout />}>
           <Route path="/activities" element={<Activities />} />
         </Route>
 
-        <Route path="/activity" element={<ActivityDetailsLayout/>}>
-          <Route path="/activity/new-activity" element={<AddActivity/>} />
-          <Route path="/activity/edit-activity" element={<EditActivity/>} />
-          <Route path="/activity/:id" element={<ActivityDetails/>}/>
+        <Route path="/activity" element={<ActivityDetailsLayout />}>
+          <Route path="/activity/new-activity" element={<AddActivity />} />
+          <Route path="/activity/edit-activity" element={<EditActivity />} />
+          <Route path="/activity/:id" element={<ActivityDetails />} />
         </Route>
-         <Route path="*" element={<Navigate to={"/"}/>}/>
+        <Route path="*" element={<Navigate to={"/"} />} />
       </Routes>
     </>
   );

@@ -6,9 +6,9 @@ const router = express.Router();
 
 // Create a new post
 router.post("/", async (req, res) => {
-  const { userId, content ,authorName } = req.body;
+  const { userId, content, authorName } = req.body;
   try {
-    const newPost = new Post({ userId, content , authorName });
+    const newPost = new Post({ userId, content, authorName });
     await newPost.save();
     res.status(201).json(newPost);
   } catch (err) {
@@ -17,20 +17,26 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Get all posts
+// Get all posts and populate user details
 router.get("/", async (req, res) => {
   try {
-    const posts = await Post.find();
+    const posts = await Post.find().populate(
+      "userId", // Populate the userId field with user details
+      "firstname lastname image" // Include specific fields from the user
+    );
     res.status(200).json(posts);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Get post by ID
+// Get post by ID and populate user details
 router.get("/:id", async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
+    const post = await Post.findById(req.params.id).populate(
+      "userId", // Populate the userId field with user details
+      "firstname lastname image" // Include specific fields from the user
+    );
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
@@ -49,9 +55,7 @@ router.get("/user/:userId", async (req, res) => {
       "firstname lastname image" // Include firstname, lastname, and image
     );
     if (posts.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No posts found for this user" });
+      return res.status(404).json({ message: "No posts found for this user" });
     }
     res.status(200).json(posts);
   } catch (err) {
@@ -78,9 +82,7 @@ router.post("/like/:id", async (req, res) => {
 
     // If the user has already liked the article, remove the like
     if (post.likedBy.includes(userId)) {
-      post.likedBy = post.likedBy.filter(
-        (id) => id.toString() !== userId
-      );
+      post.likedBy = post.likedBy.filter((id) => id.toString() !== userId);
       post.likes -= 1;
     } else {
       // Otherwise, add the like
@@ -92,7 +94,6 @@ router.post("/like/:id", async (req, res) => {
 
     res.status(200).json({ message: "post liked/unliked", post });
   } catch (err) {
-    
     res.status(500).json({ error: err.message });
   }
 });
@@ -108,9 +109,7 @@ router.post("/dislike/:id", async (req, res) => {
 
     // Remove the user from likedBy if they are there
     if (post.likedBy.includes(userId)) {
-      post.likedBy = post.likedBy.filter(
-        (id) => id.toString() !== userId
-      );
+      post.likedBy = post.likedBy.filter((id) => id.toString() !== userId);
       post.likes -= 1;
     }
 

@@ -41,8 +41,16 @@ export default function NewArticle() {
   };
 
   const formats = [
-    "header", "bold", "italic", "underline", "strike",
-    "list", "bullet", "indent", "link", "image"
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "list",
+    "bullet",
+    "indent",
+    "link",
+    "image",
   ];
 
   const validateForm = () => {
@@ -87,35 +95,38 @@ export default function NewArticle() {
 
   async function createArticle() {
     if (!validateForm()) return;
-  
+
     try {
       setUploading(true);
-  
+
       const articleData = {
         title,
         content: editorValue,
         authorId: isAuthUser.id,
         tags: JSON.stringify(tags),
         references,
-        authorName: isAuthUser.firstname
+        authorName: isAuthUser.firstname,
       };
-  
-      const articleResponse = await fetch("http://localhost:4000/api/articles", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(articleData),
-      });
-  
+
+      const articleResponse = await fetch(
+        "http://localhost:4000/api/articles",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(articleData),
+        }
+      );
+
       if (!articleResponse.ok) {
         throw new Error("Failed to create article");
       }
-  
+
       const newArticle = await articleResponse.json();
-  
+
       if (featuredImage) {
         const formData = new FormData();
         formData.append("file", featuredImage);
-  
+
         const imageResponse = await fetch(
           `http://localhost:4000/api/uploads/articles/${newArticle._id}`,
           {
@@ -123,12 +134,12 @@ export default function NewArticle() {
             body: formData,
           }
         );
-  
+
         if (!imageResponse.ok) {
           throw new Error("Failed to upload image");
         }
       }
-  
+
       toast.success("Article published successfully!");
       navigate("/");
     } catch (error) {
@@ -141,18 +152,18 @@ export default function NewArticle() {
 
   async function fetchTags() {
     try {
-      const response = await fetch("http://localhost:4000/api/tags", {
+      const response = await fetch("http://localhost:4000/api/tags/all", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
-  
+
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || "Failed to fetch tags");
       }
-  
+
       const tags = await response.json();
       setAdminTags(tags);
       console.log("Fetched tags successfully:", tags);
@@ -188,7 +199,7 @@ export default function NewArticle() {
             placeholder="Article Title"
             className="w-full mb-4 p-2 border border-gray-300 rounded-md"
           />
-          
+
           <ReactQuill
             theme="snow"
             value={editorValue}
@@ -234,7 +245,7 @@ export default function NewArticle() {
                 placeholder="Search tags"
               />
             </div>
-            
+
             <div className="flex gap-[10px] flex-wrap">
               {tags.map((tag) => (
                 <div
@@ -246,7 +257,7 @@ export default function NewArticle() {
                 </div>
               ))}
             </div>
-            
+
             <div className="flex gap-[10px] mt-[10px] flex-wrap">
               {filteredAdminTags.map((tag) => (
                 <div
@@ -270,7 +281,7 @@ export default function NewArticle() {
                     value={newReference}
                     onChange={(e) => setNewReference(e.target.value)}
                   />
-                  <IoMdAdd 
+                  <IoMdAdd
                     className="absolute right-0 bg-main text-white w-[25px] h-[25px] rounded-[5px] top-[6px] py-[2px] px-[8px] cursor-pointer"
                     onClick={() => {
                       if (newReference.trim()) {
@@ -281,15 +292,20 @@ export default function NewArticle() {
                   />
                 </div>
                 {references.map((ref, index) => (
-                  <div key={index} className="flex items-center gap-[5px] w-full mb-2">
+                  <div
+                    key={index}
+                    className="flex items-center gap-[5px] w-full mb-2"
+                  >
                     <FaFile className="text-main" />
                     <p className="text-main w-full text-[14px] underline">
                       {ref}
                     </p>
-                    <IoTrashBinOutline 
+                    <IoTrashBinOutline
                       className="cursor-pointer"
                       onClick={() => {
-                        const newRefs = references.filter((_, i) => i !== index);
+                        const newRefs = references.filter(
+                          (_, i) => i !== index
+                        );
                         setReferences(newRefs);
                       }}
                     />
@@ -312,13 +328,13 @@ export default function NewArticle() {
                   have obtained necessary permissions.
                 </li>
                 <li>
-                  Consent to Use: I grant permission for this platform to publish
-                  and distribute this content.
+                  Consent to Use: I grant permission for this platform to
+                  publish and distribute this content.
                 </li>
               </ol>
               <div className="flex gap-[5px] items-start mb-6">
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   className="accent-main w-[15px] mt-1"
                   checked={agreedToTerms}
                   onChange={(e) => setAgreedToTerms(e.target.checked)}
@@ -334,7 +350,7 @@ export default function NewArticle() {
         </div>
 
         <div className="flex justify-center items-center">
-          <button 
+          <button
             type="button"
             onClick={createArticle}
             disabled={uploading}

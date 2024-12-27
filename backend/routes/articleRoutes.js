@@ -6,7 +6,7 @@ const router = express.Router();
 
 // Create a new article
 router.post("/", async (req, res) => {
-  const { title, content, authorId, tags, references ,authorName } = req.body;
+  const { title, content, authorId, tags, references, authorName } = req.body;
 
   // Validate references format
   if (references && !Array.isArray(references)) {
@@ -16,10 +16,9 @@ router.post("/", async (req, res) => {
   }
 
   if (references) {
-    console.log(references)
+    console.log(references);
     for (const reference of references) {
       if (!reference) {
-        console.log("aaaaaaaaaaaa")
         return res
           .status(400)
           .json({ error: "Each reference must include a URL" });
@@ -35,16 +34,166 @@ router.post("/", async (req, res) => {
       authorName,
       tags,
       references,
-      
     });
     await newArticle.save();
     res.status(201).json(newArticle);
-    console.log("success")
+    console.log("success");
   } catch (err) {
-    console.log("ppppppppppppppppppppp")
-    console.log(err.message)
+    console.log(err.message);
     res.status(500).json({ error: err.message });
-    
+  }
+});
+
+router.get("/articles", async (req, res) => {
+  const page = req.query.page - 1 || 0;
+
+  const limit = req.query.limit || 9;
+
+  const search = req.query.search || "";
+
+  const articles = await Article.find({
+    title: { $regex: ".*" + search + ".*", $options: "i" },
+  })
+
+    .skip(page * limit)
+
+    .limit(limit)
+
+    .populate(
+      "authorId",
+
+      "firstname lastname"
+    );
+
+  const numberOfArticles = await Article.countDocuments({
+    title: { $regex: search, $options: "i" },
+  })
+    .populate("userId", "firstname lastname")
+
+    .skip(page * limit)
+
+    .limit(limit);
+
+  const pageCount = parseInt(numberOfArticles / limit);
+
+  if (articles) {
+    return res.json({
+      success: true,
+
+      numberOfArticles,
+
+      page: page + 1,
+
+      pageCount: pageCount + 1,
+
+      data: articles,
+    });
+  } else {
+    return res.json({
+      success: false,
+    });
+  }
+});
+
+router.get("/articles/search", async (req, res) => {
+  const page = req.query.page - 1 || 0;
+
+  const limit = req.query.limit || 9;
+
+  const search = req.query.search || "";
+
+  const articles = await Article.find({
+    title: { $regex: ".*" + search + ".*", $options: "i" },
+  })
+
+    .skip(page * limit)
+
+    .limit(limit)
+
+    .populate(
+      "authorId",
+
+      "firstname lastname"
+    );
+
+  const numberOfArticles = await Article.countDocuments({
+    title: { $regex: search, $options: "i" },
+  })
+    .populate("userId", "firstname lastname")
+
+    .skip(page * limit)
+
+    .limit(limit);
+
+  const pageCount = parseInt(numberOfArticles / limit);
+
+  if (articles) {
+    return res.json({
+      success: true,
+
+      numberOfArticles,
+
+      page: page + 1,
+
+      pageCount: pageCount + 1,
+
+      data: articles,
+    });
+  } else {
+    return res.json({
+      success: false,
+    });
+  }
+});
+
+router.get("/articles/filter", async (req, res) => {
+  const page = req.query.page - 1 || 0;
+
+  const limit = req.query.limit || 9;
+
+  const filter = req.query.filter || "";
+
+  const articles = await Article.find({
+    tags: filter,
+  })
+
+    .skip(page * limit)
+
+    .limit(limit)
+
+    .populate(
+      "authorId",
+
+      "firstname lastname"
+    );
+
+  const numberOfArticles = await Article.countDocuments({
+    tags: { $regex: filter, $options: "i" },
+  })
+    .populate("userId", "firstname lastname")
+
+    .skip(page * limit)
+
+    .limit(limit);
+
+  const pageCount = parseInt(numberOfArticles / limit);
+
+  if (articles) {
+    return res.json({
+      success: true,
+
+      numberOfArticles,
+
+      page: page + 1,
+
+      pageCount: pageCount + 1,
+
+      data: articles,
+    });
+  } else {
+    return res.json({
+      success: false,
+    });
   }
 });
 
@@ -53,9 +202,33 @@ router.get("/", async (req, res) => {
   try {
     const articles = await Article.find().populate(
       "authorId",
-      "firstname lastname"
+      "firstname lastname image"
     );
     res.status(200).json(articles);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get top article of the day
+router.get("/top-article", async (req, res) => {
+  try {
+    const threeDaysAgo = new Date();
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+
+    const topArticle = await Article.findOne({
+      createdAt: { $gte: threeDaysAgo },
+    })
+      .sort({ likes: -1 })
+      .populate("authorId", "firstname lastname image");
+
+    if (!topArticle) {
+      return res
+        .status(404)
+        .json({ message: "No articles found in the last 3 days" });
+    }
+
+    res.status(200).json(topArticle);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -136,7 +309,7 @@ router.post("/like/:id", async (req, res) => {
     if (!article) {
       return res.status(404).json({ message: "Article not found" });
     }
-     console.log(article)
+    console.log(article);
     // Remove the user from dislikedBy if they are there
     if (article.dislikedBy.includes(userId)) {
       article.dislikedBy = article.dislikedBy.filter(
@@ -161,7 +334,7 @@ router.post("/like/:id", async (req, res) => {
 
     res.status(200).json({ message: "Article liked/unliked", article });
   } catch (err) {
-    console.log(err.message)
+    console.log(err.message);
     res.status(500).json({ error: err.message });
   }
 });
@@ -202,7 +375,5 @@ router.post("/dislike/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-
 
 export default router;

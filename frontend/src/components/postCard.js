@@ -6,6 +6,7 @@ import {
   ArrowBigUp,
   ArrowBigDown,
 } from "lucide-react";
+import { RiShareForwardLine } from "react-icons/ri";
 import SharePostModal from "./SharePostModal";
 import DOMPurify from "dompurify";
 import CommentPopupPost from "./commentsPopUpPost.js";
@@ -25,7 +26,6 @@ const PostCard = ({ onClick, item }) => {
   const [dislikes, setDislikes] = useState(0);
   const [voted, setVoted] = useState(null);
 
-
   const handleReportClick = (event) => {
     const buttonRect = event.currentTarget.getBoundingClientRect();
     setReportButtonPosition({
@@ -34,8 +34,6 @@ const PostCard = ({ onClick, item }) => {
     });
     setShowReportButton((prev) => !prev);
   };
-
-  
 
   useEffect(() => {
     setIsAuthUser(JSON.parse(localStorage.getItem("userInfo")));
@@ -177,11 +175,11 @@ const PostCard = ({ onClick, item }) => {
       </div>
 
       {/* Footer */}
-      <div className="px-4 py-2 flex items-center bg-SoftMain border-t border-main/50">
+      <div className="px-4 py-2 flex items-center border-t border-main/50">
         <div className="flex items-center space-x-3">
-          <div className="flex rounded-full border border-gray-200 divide-x bg-[#e0d1cc]">
+          <div className="flex rounded-full border border-main divide-x divide-main bg-[#005F6A1A]">
             <button
-              className={`flex items-center space-x-1 px-3 py-1 hover:bg-[#d4c5c0] rounded-l-full ${
+              className={`flex items-center space-x-1 px-3 py-1 hover:bg-[#005f6a27] rounded-l-full ${
                 voted === "upvote" ? "bg-main hover:bg-main" : ""
               }`}
               onClick={handleLike}
@@ -202,7 +200,7 @@ const PostCard = ({ onClick, item }) => {
               )}
             </button>
             <button
-              className={`flex items-center space-x-1 px-3 py-1 hover:bg-[#d4c5c0] rounded-r-full ${
+              className={`flex items-center space-x-1 px-3 py-1 hover:bg-[#005f6a27] rounded-r-full ${
                 voted === "downvote" ? "bg-main hover:bg-main" : ""
               }`}
               onClick={handleDislike}
@@ -224,9 +222,12 @@ const PostCard = ({ onClick, item }) => {
             </button>
           </div>
 
-           {/* Share button */}
-          <button className="p-2 hover:bg-gray-50 rounded-full" onClick={handleShareClick}>
-            <Share2 className="h-5 w-5 text-main" />
+          {/* Share button */}
+          <button
+            className="p-2 hover:bg-gray-50 rounded-full"
+            onClick={handleShareClick}
+          >
+            <RiShareForwardLine className="h-6 w-6 text-main" />
           </button>
 
           <button
@@ -242,9 +243,12 @@ const PostCard = ({ onClick, item }) => {
           />
         </div>
 
-         {/* Report button */}
+        {/* Report button */}
         <div className="ml-auto relative">
-          <button className="p-2 hover:bg-gray-50 rounded-full" onClick={handleReportClick}>
+          <button
+            className="p-2 hover:bg-gray-50 rounded-full"
+            onClick={handleReportClick}
+          >
             <MoreVertical className="h-5 w-5 text-main" />
           </button>
           {showReportButton &&
@@ -269,12 +273,14 @@ const PostCard = ({ onClick, item }) => {
       {/* Report Modal */}
       {showReportModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-[3000] flex items-center justify-center">
-          <Report item={item}  onClose={() => setShowReportModal(false)} />
+          <Report item={item} onClose={() => setShowReportModal(false)} />
         </div>
       )}
 
       {/* SharePostModal */}
-      {isModalOpen && <SharePostModal item={item} type="post" onClose={handleCloseModal} />}
+      {isModalOpen && (
+        <SharePostModal item={item} type="post" onClose={handleCloseModal} />
+      )}
     </div>
   );
 };
