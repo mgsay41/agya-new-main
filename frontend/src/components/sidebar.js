@@ -1,11 +1,10 @@
-import React, { useState, useRef, useContext ,useEffect } from "react";
+import React, { useState, useRef, useContext, useEffect } from "react";
 import { Link } from "react-router-dom"; // Import Link for navigation
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 import { X } from "lucide-react";
 import { Toast } from "primereact/toast";
 import api from "../axios"; // Import your axios instance
-
-
+import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "../context/GlobelContext";
 
 import {
@@ -19,17 +18,14 @@ import {
 } from "lucide-react";
 
 const Sidebar = () => {
-
   const { setIsAuthUser, isAuthUser } = useContext(GlobalContext);
   const location = useLocation();
 
-    
   useEffect(() => {
     setIsAuthUser(JSON.parse(localStorage.getItem("userInfo")));
   }, [setIsAuthUser]);
   const [userInfo, setUserInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("userInfo"));
@@ -39,9 +35,9 @@ const Sidebar = () => {
       const fetchUserData = async () => {
         try {
           const userResponse = await api.get(`/users/${user.id}`);
-          setUserInfo(prevUserInfo => ({
+          setUserInfo((prevUserInfo) => ({
             ...prevUserInfo,
-            ...userResponse.data
+            ...userResponse.data,
           }));
         } catch (error) {
           console.error("Error fetching user data:", error);
@@ -56,6 +52,7 @@ const Sidebar = () => {
     }
   }, []);
 
+  const navigate = useNavigate();
 
   const logout = async (e) => {
     fetch("http://localhost:4000/api/auth/logout", {
@@ -64,6 +61,7 @@ const Sidebar = () => {
     }).then(() => {
       localStorage.removeItem("userInfo");
       setIsAuthUser(null);
+      navigate("/");
     });
   };
 
@@ -71,8 +69,8 @@ const Sidebar = () => {
     return <div>Loading...</div>;
   }
 
-  const name = isAuthUser?.firstname
-  
+  const name = isAuthUser?.firstname;
+
   return (
     <div className="flex flex-col max-h-fit w-64 text-main-font rounded-lg border border-gray-300 bg-white shadow">
       {/* Profile Section */}
@@ -84,10 +82,12 @@ const Sidebar = () => {
           className="w-20 h-20 rounded-full mb-4"
         />
         {/* Name */}
-        <h2 className="text-lg font-semibold">{userInfo.firstname} {userInfo.lastname}</h2>
+        <h2 className="text-lg font-semibold">
+          {userInfo.firstname} {userInfo.lastname}
+        </h2>
         {/* Description */}
         <p className="text-sm text-gray-500 text-center px-4">
-        {userInfo.affiliation} | {userInfo.academic_title}
+          {userInfo.affiliation} | {userInfo.academic_title}
         </p>
       </div>
 
@@ -99,45 +99,95 @@ const Sidebar = () => {
             className="flex items-center text-sm font-medium hover:text-main w-40"
           >
             <span className="w-12 inline-flex justify-end">
-              <Home className={`w-5 h-5 ${location.pathname === "/" ? "text-main" : ""}`} />
+              <Home
+                className={`w-5 h-5 ${
+                  location.pathname === "/" ? "text-main" : ""
+                }`}
+              />
             </span>
-            <span className={`ml-4 ${location.pathname === "/" ? "text-main" : ""} `}>Home</span>
+            <span
+              className={`ml-4 ${
+                location.pathname === "/" ? "text-main" : ""
+              } `}
+            >
+              Home
+            </span>
           </Link>
           <Link
             to="/about"
             className="flex items-center text-sm font-medium hover:text-main w-40"
           >
             <span className="w-12 inline-flex justify-end">
-              <Info className={`w-5 h-5 ${location.pathname === "/about" ? "text-main" : ""}`}/>
+              <Info
+                className={`w-5 h-5 ${
+                  location.pathname === "/about" ? "text-main" : ""
+                }`}
+              />
             </span>
-            <span className={`ml-4 ${location.pathname === "/about" ? "text-main" : ""} `}>About</span>
+            <span
+              className={`ml-4 ${
+                location.pathname === "/about" ? "text-main" : ""
+              } `}
+            >
+              About
+            </span>
           </Link>
           <Link
             to="/activities"
             className="flex items-center text-sm font-medium hover:text-main w-40"
           >
             <span className="w-12 inline-flex justify-end">
-              <Calendar className={`w-5 h-5 ${location.pathname === "/activities" ? "text-main" : ""}`}/>
+              <Calendar
+                className={`w-5 h-5 ${
+                  location.pathname === "/activities" ? "text-main" : ""
+                }`}
+              />
             </span>
-            <span className={`ml-4 ${location.pathname === "/activities" ? "text-main" : ""} `}>Activities</span>
+            <span
+              className={`ml-4 ${
+                location.pathname === "/activities" ? "text-main" : ""
+              } `}
+            >
+              Activities
+            </span>
           </Link>
           <Link
             to="/gallery"
             className="flex items-center text-sm font-medium hover:text-main w-40"
           >
             <span className="w-12 inline-flex justify-end">
-              <Image className={`w-5 h-5 ${location.pathname === "/gallery" ? "text-main" : ""}`}/>
+              <Image
+                className={`w-5 h-5 ${
+                  location.pathname === "/gallery" ? "text-main" : ""
+                }`}
+              />
             </span>
-            <span className={`ml-4 ${location.pathname === "/gallery" ? "text-main" : ""} `}>Gallery</span>
+            <span
+              className={`ml-4 ${
+                location.pathname === "/gallery" ? "text-main" : ""
+              } `}
+            >
+              Gallery
+            </span>
           </Link>
           <Link
             to="/help"
             className="flex items-center text-sm font-medium hover:text-main w-40"
           >
             <span className="w-12 inline-flex justify-end">
-              <HelpCircle className={`w-5 h-5 ${location.pathname === "/help" ? "text-main" : ""}`}/>
+              <HelpCircle
+                className={`w-5 h-5 ${
+                  location.pathname === "/help" ? "text-main" : ""
+                }`}
+              />
             </span>
-            <span className={`ml-4 ${location.pathname === "/help" ? "text-main" : ""} `}>Help</span>
+            <span
+              className={`ml-4 ${
+                location.pathname === "/help" ? "text-main" : ""
+              } `}
+            >
+              Help
+            </span>
           </Link>
 
           {/* Profile Button */}
@@ -146,16 +196,25 @@ const Sidebar = () => {
             className="flex items-center text-sm font-medium hover:text-main w-40"
           >
             <span className="w-12 inline-flex justify-end">
-              <User className={`w-5 h-5 ${location.pathname === "/profile" ? "text-main" : ""}`}/>
+              <User
+                className={`w-5 h-5 ${
+                  location.pathname === "/profile" ? "text-main" : ""
+                }`}
+              />
             </span>
-            <span className={`ml-4 ${location.pathname === "/profile" ? "text-main" : ""} `}>Profile</span>
+            <span
+              className={`ml-4 ${
+                location.pathname === "/profile" ? "text-main" : ""
+              } `}
+            >
+              Profile
+            </span>
           </Link>
         </div>
 
         {/* Logout Button */}
         <div
-          
-          className="flex items-center text-sm font-medium hover:text-main w-40 mx-auto mt-12"
+          className="flex items-center text-sm font-medium cursor-pointer hover:text-main w-40 mx-auto mt-12"
           onClick={logout}
         >
           <span className="w-12 inline-flex justify-end">
@@ -182,7 +241,10 @@ const Sidebar = () => {
             </a>
           </p>
           <p className="text-center">
-            Designed and Developed by: <strong>ABS.AI</strong>
+            Designed and Developed by:{" "}
+            <a href="https://absai.dev/#/Home" className="hover:text-main">
+              <strong>ABS.AI</strong>
+            </a>
           </p>
           <p className="text-center pb-4">All Rights Reserved ©2024 Agya.com</p>
         </div>

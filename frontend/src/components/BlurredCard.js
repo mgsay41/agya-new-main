@@ -13,9 +13,15 @@ const TopArticleCard = () => {
           "http://localhost:4000/api/articles/top-article"
         );
         const data = await response.json();
-        setArticle(data);
+        // Validate the response before setting the state
+        if (data && data._id && data.title) {
+          setArticle(data);
+        } else {
+          setArticle(null); // No valid article found
+        }
       } catch (error) {
         console.error("Error fetching top article:", error);
+        setArticle(null);
       } finally {
         setLoading(false);
       }
@@ -27,10 +33,12 @@ const TopArticleCard = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Show a placeholder while loading
   if (loading) {
     return <div className="w-full h-64 bg-gray-200 animate-pulse rounded-lg" />;
   }
 
+  // If no article exists, render nothing
   if (!article) {
     return null;
   }
@@ -41,8 +49,6 @@ const TopArticleCard = () => {
 
   return (
     <Link to={`/article/${article._id}`}>
-      {" "}
-      {/* Link wrapping the card */}
       <div className="relative w-full max-w-xl h-64 overflow-hidden rounded-lg mx-auto cursor-pointer">
         <div
           className="absolute inset-0 bg-cover bg-center grayscale blur-sm"
@@ -52,7 +58,6 @@ const TopArticleCard = () => {
             })`,
           }}
         />
-
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-4 bg-black/40">
           <div className="bg-main text-xs px-2 py-1 rounded-full mb-2">
             Top Article

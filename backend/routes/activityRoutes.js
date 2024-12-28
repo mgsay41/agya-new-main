@@ -75,6 +75,30 @@ router.get("/", async (req, res) => {
   }
 });
 
+// In your activities route file
+router.post("/:id/apply", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.body;
+
+    // Find the activity and increment the appliedNumber
+    const activity = await Activity.findByIdAndUpdate(
+      id,
+      { $inc: { appliedNumber: 1 } },
+      { new: true }
+    );
+
+    if (!activity) {
+      return res.status(404).json({ message: "Activity not found" });
+    }
+
+    res.json(activity);
+  } catch (error) {
+    console.error("Error applying to activity:", error);
+    res.status(500).json({ message: "Error applying to activity" });
+  }
+});
+
 // Get a specific activity by ID
 router.get("/:id", async (req, res) => {
   try {

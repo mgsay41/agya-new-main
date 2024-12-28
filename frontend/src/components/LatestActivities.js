@@ -29,7 +29,9 @@ const LatestActivities = () => {
       if (Array.isArray(data)) {
         const sortedActivities = data
           .sort((a, b) => new Date(b.date) - new Date(a.date)) // Sort by date descending
+          .filter((activity) => activity.status === "Passed")
           .slice(0, 5); // Limit to the latest 5 activities
+
         setActivities(sortedActivities);
       } else {
         throw new Error("Unexpected response format");

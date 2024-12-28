@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Edit3 } from "lucide-react";
 import api from "../axios"; // Import your configured axios instance
+import { useNavigate } from "react-router-dom";
 
 const EditProfile = () => {
   const [userInfo, setUserInfo] = useState(null); // State to hold user info
@@ -37,8 +38,6 @@ const EditProfile = () => {
     }
   }, []);
 
-  
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -55,46 +54,54 @@ const EditProfile = () => {
       reader.readAsDataURL(file);
     }
   };
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const formDataToSend = { ...formData };
-  
+
     try {
       // Handle image upload if a new image is selected
       if (selectedImage) {
         const imageData = new FormData();
         imageData.append("file", selectedImage); // The key should match the multer configuration
-  
+
         // Upload the image to the backend
-        const imageUploadResponse = await api.post(`/uploads/profiles/${userInfo._id}`, imageData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-  
+        const imageUploadResponse = await api.post(
+          `/uploads/profiles/${userInfo._id}`,
+          imageData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+
         // Update the formData with the new image URL from the response
         formDataToSend.image = imageUploadResponse.data.user.image;
       }
-  
+
       // Update the user's other profile data
       const response = await api.put(`/users/${userInfo._id}`, formDataToSend);
-  
+
       alert("Profile updated successfully!");
       setUserInfo(response.data); // Update the local state with the updated user info
+      navigate("/profile");
     } catch (error) {
       console.error("Error updating profile:", error);
       alert("Failed to update profile.");
     }
   };
-  
-  
 
   if (isLoading) {
     return <div className="text-center py-8">Loading...</div>;
   }
 
   if (!userInfo) {
-    return <div className="text-center py-8">User not found. Please log in again.</div>;
+    return (
+      <div className="text-center py-8">
+        User not found. Please log in again.
+      </div>
+    );
   }
 
   return (
@@ -109,7 +116,10 @@ const EditProfile = () => {
           alt="Profile"
           className="w-36 h-36 rounded-full object-cover"
         />
-        <label htmlFor="profileImage" className="absolute bottom-0 right-0 bg-white border border-main p-2 rounded-full cursor-pointer hover:bg-gray-100">
+        <label
+          htmlFor="profileImage"
+          className="absolute bottom-0 right-0 bg-white border border-main p-2 rounded-full cursor-pointer hover:bg-gray-100"
+        >
           <Edit3 className="w-5 h-5 text-main" />
         </label>
         <input

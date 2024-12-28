@@ -12,6 +12,8 @@ const AddActivity = () => {
   const navigate = useNavigate();
   const { setIsAuthUser, isAuthUser } = useContext(GlobalContext);
   const [uploading, setUploading] = useState(false);
+  const [sponsorImages, setSponsorImages] = useState([]);
+  const [sponsorPreviews, setSponsorPreviews] = useState([]);
   const [formData, setFormData] = useState({
     activityName: "",
     type: "Workshop",
@@ -31,51 +33,58 @@ const AddActivity = () => {
   const [featuredImage, setFeaturedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
 
-  // Debug point 1: Monitor user authentication
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    console.log("Debug - User Authentication:", userInfo);
     setIsAuthUser(userInfo);
   }, [setIsAuthUser]);
 
-  // Debug point 2: Monitor form changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log("Debug - Form Field Change:", { field: name, value });
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Debug point 3: Monitor featured image handling
   const handleFeaturedImageChange = (e) => {
     const file = e.target.files[0];
-    console.log("Debug - Featured Image Selected:", {
-      fileName: file?.name,
-      fileSize: file?.size,
-      fileType: file?.type,
-    });
-
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        console.error("Debug - Image Size Error:", { size: file.size });
         toast.error("Image size should be less than 5MB");
         return;
       }
       setFeaturedImage(file);
       const reader = new FileReader();
       reader.onload = () => {
-        console.log("Debug - Image Preview Created");
         setImagePreview(reader.result);
-      };
-      reader.onerror = (error) => {
-        console.error("Debug - Image Preview Error:", error);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  // Debug point 4: Enhanced form validation
+  const handleSponsorImagesChange = (e) => {
+    const files = Array.from(e.target.files);
+    const oversizedFiles = files.filter((file) => file.size > 5 * 1024 * 1024);
+
+    if (oversizedFiles.length > 0) {
+      toast.error("Some images are larger than 5MB");
+      return;
+    }
+
+    setSponsorImages((prev) => [...prev, ...files]);
+
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setSponsorPreviews((prev) => [...prev, reader.result]);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeSponsorImage = (index) => {
+    setSponsorImages((prev) => prev.filter((_, i) => i !== index));
+    setSponsorPreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const validateForm = () => {
-    console.log("Debug - Form Validation Started", formData);
     const required = [
       "activityName",
       "type",
@@ -84,34 +93,19 @@ const AddActivity = () => {
       "description",
     ];
 
-    const validationResults = {
-      missingFields: required.filter((field) => !formData[field]),
-      locationValid:
-        formData.location === "offline" ? !!formData.locationDetails : true,
-      priceValid: formData.price === "Paid" ? !!formData.priceAmount : true,
-    };
+    const missingFields = required.filter((field) => !formData[field]);
 
-    console.log("Debug - Validation Results:", validationResults);
-
-    if (validationResults.missingFields.length) {
-      console.error(
-        "Debug - Missing Required Fields:",
-        validationResults.missingFields
-      );
-      toast.error(
-        `Required fields missing: ${validationResults.missingFields.join(", ")}`
-      );
+    if (missingFields.length) {
+      toast.error(`Required fields missing: ${missingFields.join(", ")}`);
       return false;
     }
 
-    if (!validationResults.locationValid) {
-      console.error("Debug - Location Details Missing");
+    if (formData.location === "offline" && !formData.locationDetails) {
       toast.error("Location details required for offline activities");
       return false;
     }
 
-    if (!validationResults.priceValid) {
-      console.error("Debug - Price Amount Missing");
+    if (formData.price === "Paid" && !formData.priceAmount) {
       toast.error("Price amount required for paid activities");
       return false;
     }
@@ -119,19 +113,46 @@ const AddActivity = () => {
     return true;
   };
 
-  // Debug point 5: Enhanced submission handling
+  const uploadSponsorImages = async (activityId) => {
+    const sponsorUrls = [];
+
+    for (const sponsorImage of sponsorImages) {
+      const formData = new FormData();
+      formData.append("file", sponsorImage);
+
+      try {
+        const response = await fetch(
+          `http://localhost:4000/api/uploads/activities/${activityId}/sponsors`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to upload sponsor image");
+        }
+
+        const data = await response.json();
+        sponsorUrls.push(data.imageUrl);
+      } catch (error) {
+        console.error("Sponsor image upload failed:", error);
+        toast.error(`Failed to upload sponsor image: ${sponsorImage.name}`);
+      }
+    }
+
+    return sponsorUrls;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Debug - Form Submission Started");
 
     if (!validateForm()) {
-      console.log("Debug - Form Validation Failed");
       return;
     }
 
     try {
       setUploading(true);
-      console.log("Debug - Preparing Activity Data");
 
       const formattedDate =
         formData.date instanceof Date
@@ -162,10 +183,6 @@ const AddActivity = () => {
         status: "pending",
       };
 
-      console.log("Debug - Activity Data:", activityData);
-
-      // Debug point 6: API request monitoring
-      console.log("Debug - Sending Activity Creation Request");
       const activityResponse = await fetch(
         "http://localhost:4000/api/activities",
         {
@@ -177,42 +194,49 @@ const AddActivity = () => {
 
       if (!activityResponse.ok) {
         const error = await activityResponse.json();
-        console.error("Debug - Activity Creation Failed:", error);
         throw new Error(error.message || "Failed to create activity");
       }
 
       const newActivity = await activityResponse.json();
-      console.log("Debug - Activity Created Successfully:", newActivity);
 
-      // Debug point 7: Image upload monitoring
       if (featuredImage) {
-        console.log("Debug - Starting Featured Image Upload");
-        const formData = new FormData();
-        formData.append("file", featuredImage);
+        const featuredFormData = new FormData();
+        featuredFormData.append("file", featuredImage);
 
-        const imageResponse = await fetch(
+        const featuredResponse = await fetch(
           `http://localhost:4000/api/uploads/activities/${newActivity._id}`,
           {
             method: "POST",
-            body: formData,
+            body: featuredFormData,
           }
         );
 
-        if (!imageResponse.ok) {
-          console.error("Debug - Image Upload Failed");
-          throw new Error("Failed to upload image");
+        if (!featuredResponse.ok) {
+          throw new Error("Failed to upload featured image");
         }
-        console.log("Debug - Image Upload Successful");
+      }
+
+      if (sponsorImages.length > 0) {
+        const sponsorUrls = await uploadSponsorImages(newActivity._id);
+
+        if (sponsorUrls.length > 0) {
+          await fetch(
+            `http://localhost:4000/api/activities/${newActivity._id}`,
+            {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ sponsors: sponsorUrls }),
+            }
+          );
+        }
       }
 
       toast.success("Activity created successfully!");
-      navigate("/activities");
+      navigate("/profile");
     } catch (error) {
-      console.error("Debug - Submission Error:", error);
       toast.error(error.message || "Failed to create activity");
     } finally {
       setUploading(false);
-      console.log("Debug - Form Submission Completed");
     }
   };
 
@@ -388,7 +412,7 @@ const AddActivity = () => {
               </div>
             </div>
 
-            {/* <div>
+            <div>
               <h3 className="font-semibold mb-4">Sponsor Images</h3>
               <div className="grid grid-cols-3 gap-4">
                 {sponsorPreviews.map((preview, index) => (
@@ -415,7 +439,7 @@ const AddActivity = () => {
                 onChange={handleSponsorImagesChange}
                 className="mt-4"
               />
-            </div> */}
+            </div>
           </div>
         </div>
 
@@ -459,7 +483,7 @@ const AddActivity = () => {
           </div>
 
           <div>
-            <label className="block mb-2">Call to Action</label>
+            <label className="block mb-2">Application Link</label>
             <input
               type="url"
               name="callToAction"

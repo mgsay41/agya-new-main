@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import api from "../axios"; // Assuming your axios instance is in src/axios.js
+import api from "../axios";
 import { MdOutlinePersonOutline } from "react-icons/md";
 import { GrLanguage } from "react-icons/gr";
 import { HiOutlineTicket } from "react-icons/hi2";
 import DOMPurify from "dompurify";
 
 function ActivityDetails() {
-  const { id } = useParams(); // Get the activity ID from the URL
-  const navigate = useNavigate(); // Initialize the navigate hook
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [activity, setActivity] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [hasApplied, setHasApplied] = useState(false);
 
   useEffect(() => {
     const fetchActivity = async () => {
       try {
-        const response = await api.get(`/activities/${id}`); // Fetch activity by ID
+        const response = await api.get(`/activities/${id}`);
         setActivity(response.data);
       } catch (err) {
         setError("Failed to fetch activity. Please try again later.");
@@ -33,6 +34,47 @@ function ActivityDetails() {
       setLoading(false);
     }
   }, [id]);
+
+  const handleApply = async () => {
+    // Check if user is logged in by looking for userInfo in localStorage
+    const userInfo = localStorage.getItem("userInfo");
+
+    if (!userInfo) {
+      alert("Please login to apply for this activity");
+      navigate("/login"); // Redirect to login page
+      return;
+    }
+
+    if (hasApplied) {
+      alert("You have already applied for this activity");
+      return;
+    }
+
+    try {
+      // Make API call to increment appliedNumber
+      await api.post(`/activities/${id}/apply`, {
+        userId: JSON.parse(userInfo).id,
+      });
+
+      // Update local state
+      setActivity((prev) => ({
+        ...prev,
+        appliedNumber: (prev.appliedNumber || 0) + 1,
+      }));
+
+      setHasApplied(true);
+
+      // If there's an external application link, redirect to it
+      if (activity.apply) {
+        window.location.href = activity.apply;
+      } else {
+        alert("Application submitted successfully!");
+      }
+    } catch (err) {
+      console.error("Error applying to activity:", err);
+      alert("Failed to submit application. Please try again later.");
+    }
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
@@ -80,6 +122,10 @@ function ActivityDetails() {
                 <HiOutlineTicket className="w-4 h-4 text-main" />
                 {activity.price || "Free"}
               </p>
+              <p className="flex gap-2 items-center text-[#010200]/70 mb-2">
+                <MdOutlinePersonOutline className="w-4 h-4 text-main" />
+                {activity.appliedNumber || 0} Applied
+              </p>
             </div>
           </div>
           <div>
@@ -98,28 +144,24 @@ function ActivityDetails() {
               }}
             ></p>
             <h3 className="my-4 font-bold">Sponsors and Exhibitors</h3>
-            <div className="flex gap-4 my-4">
-              {activity.sponsors?.map((sponsor, index) => (
-                <img
-                  key={index}
-                  src={sponsor.logo}
-                  alt={sponsor.name}
-                  className="w-16"
-                />
-              ))}
+            <div className="flex gap-4">
+              {activity.sponsors &&
+                activity.sponsors.length > 0 &&
+                activity.sponsors.map((sponsorUrl, index) => (
+                  <img
+                    key={index}
+                    src={sponsorUrl}
+                    alt={`Sponsor ${index + 1}`}
+                    className="w-12 h-12 rounded-full"
+                  />
+                ))}
             </div>
           </div>
         </div>
         <div className="flex justify-center items-center">
           <button
             className="bg-main py-3 px-36 text-white rounded-xl"
-            onClick={() => {
-              if (activity.apply) {
-                window.location.href = activity.apply; // Redirect to the URL
-              } else {
-                alert("No application link available."); // Fallback if apply link is missing
-              }
-            }}
+            onClick={handleApply}
           >
             Apply
           </button>

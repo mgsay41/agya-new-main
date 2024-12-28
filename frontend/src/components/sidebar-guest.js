@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext ,useEffect } from "react";
+import React, { useState, useRef, useContext, useEffect } from "react";
 import { X } from "lucide-react";
 import { Toast } from "primereact/toast";
 
@@ -32,8 +32,6 @@ const SidebarGuest = () => {
 
   const toast = useRef(null);
 
-
-  
   useEffect(() => {
     setIsAuthUser(JSON.parse(localStorage.getItem("userInfo")));
   }, [setIsAuthUser]);
@@ -75,8 +73,8 @@ const SidebarGuest = () => {
       },
       credentials: "include",
       body: JSON.stringify({
-       email : loginEmail,
-       password: loginPassword,
+        email: loginEmail,
+        password: loginPassword,
       }),
     });
     const finalData = await response.json();
@@ -93,301 +91,306 @@ const SidebarGuest = () => {
     <>
       {loginPopup === true ? (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-        <form onSubmit={login} className="relative w-[90%] md:w-[1100px] bg-background text-main-font rounded-lg shadow-lg overflow-hidden flex flex-col md:flex-row">
-          {/* Left Section: Login Form */}
-          <div className="w-[1900px] md:w-1/2 px-6 py-8 md:px-12 flex flex-col justify-center">
-            <div className="max-w-md w-[1900px] mx-auto">
-              {/* Mobile Close Button */}
-              <div className="flex justify-end md:hidden mb-4">
-                <button
-                  className="bg-main text-secondary-font w-8 h-8 flex items-center justify-center rounded-full hover:bg-opacity-90"
-                  aria-label="Close"
-                >
-                  <X size={18} onClick={() => setLoginPopup(false)} />
+          <form
+            onSubmit={login}
+            className="relative w-[90%] md:w-[1100px] bg-background text-main-font rounded-lg shadow-lg overflow-hidden flex flex-col md:flex-row"
+          >
+            {/* Left Section: Login Form */}
+            <div className="w-[1900px] md:w-1/2 px-6 py-8 md:px-12 flex flex-col justify-center">
+              <div className="max-w-md w-[1900px] mx-auto">
+                {/* Mobile Close Button */}
+                <div className="flex justify-end md:hidden mb-4">
+                  <button
+                    className="bg-main text-secondary-font w-8 h-8 flex items-center justify-center rounded-full hover:bg-opacity-90"
+                    aria-label="Close"
+                  >
+                    <X size={18} onClick={() => setLoginPopup(false)} />
+                  </button>
+                </div>
+
+                <h1 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-center">
+                  Login
+                </h1>
+
+                {/* Email Input */}
+                <div className="mb-4">
+                  <label
+                    className="block text-sm font-semibold mb-2"
+                    htmlFor="email"
+                  >
+                    Email
+                  </label>
+                  <input
+                    onChange={(ev) => setLoginEmail(ev.target.value)}
+                    value={loginEmail}
+                    id="email"
+                    type="email"
+                    placeholder="hannah.green@test.com"
+                    className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
+                  />
+                </div>
+
+                {/* Password Input */}
+                <div className="mb-6">
+                  <label
+                    className="block text-sm font-semibold mb-2"
+                    htmlFor="password"
+                  >
+                    Password
+                  </label>
+                  <input
+                    onChange={(ev) => setLoginPassword(ev.target.value)}
+                    id="password"
+                    type="password"
+                    placeholder="Enter your password"
+                    className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
+                  />
+                  <p className="text-sm text-main mt-2">
+                    <a href="#" className="hover:underline">
+                      Forgot your Password?
+                    </a>
+                  </p>
+                </div>
+
+                {/* Login Button */}
+                <button className="w-full bg-main text-secondary-font py-3 rounded-md font-semibold hover:bg-opacity-90 transition-opacity">
+                  Log in
                 </button>
-              </div>
 
-              <h1 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-center">
-                Login
-              </h1>
-
-              {/* Email Input */}
-              <div className="mb-4">
-                <label
-                  className="block text-sm font-semibold mb-2"
-                  htmlFor="email"
-                >
-                  Email
-                </label>
-                <input
-                onChange={(ev)=> setLoginEmail(ev.target.value)}
-                value={loginEmail}
-                  id="email"
-                  type="email"
-                  placeholder="hannah.green@test.com"
-                  className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
-                />
-              </div>
-
-              {/* Password Input */}
-              <div className="mb-6">
-                <label
-                  className="block text-sm font-semibold mb-2"
-                  htmlFor="password"
-                >
-                  Password
-                </label>
-                <input
-                onChange={(ev)=> setLoginPassword(ev.target.value) }
-                  id="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
-                />
-                <p className="text-sm text-main mt-2">
-                  <a href="#" className="hover:underline">
-                    Forgot your Password?
-                  </a>
+                {/* Sign-Up Link */}
+                <p className="text-center mt-4 text-sm">
+                  Don't have an account?{" "}
+                  <div
+                    href="#"
+                    className="text-main hover:underline font-bold"
+                    onClick={() => {
+                      setLoginPopup(false);
+                      setSignupPopup(true);
+                    }}
+                  >
+                    Sign Up
+                  </div>
                 </p>
               </div>
-
-              {/* Login Button */}
-              <button className="w-full bg-main text-secondary-font py-3 rounded-md font-semibold hover:bg-opacity-90 transition-opacity">
-                Log in
-              </button>
-
-              {/* Sign-Up Link */}
-              <p className="text-center mt-4 text-sm">
-                Don't have an account?{" "}
-                <div
-                  href="#"
-                  className="text-main hover:underline font-bold"
-                  onClick={() => {
-                    setLoginPopup(false);
-                    setSignupPopup(true);
-                  }}
-                >
-                  Sign Up
-                </div>
-              </p>
             </div>
-          </div>
 
-          {/* Right Section: Image */}
-          <div
-            className="hidden md:block w-full md:w-1/2 relative bg-cover bg-center"
-            style={{
-              backgroundImage: `url('/login.png')`,
-            }}
-          >
-            {/* Desktop Close Button */}
-            <button
-              className="absolute top-4 right-4 text-secondary-font bg-main w-8 h-8 flex items-center justify-center rounded-full hover:bg-opacity-90 transition-opacity"
-              aria-label="Close"
-              onClick={() => setLoginPopup(false)}
+            {/* Right Section: Image */}
+            <div
+              className="hidden md:block w-full md:w-1/2 relative bg-cover bg-center"
+              style={{
+                backgroundImage: `url('/login.png')`,
+              }}
             >
-              <X size={18} />
-            </button>
-          </div>
-        </form></div>
+              {/* Desktop Close Button */}
+              <button
+                className="absolute top-4 right-4 text-secondary-font bg-main w-8 h-8 flex items-center justify-center rounded-full hover:bg-opacity-90 transition-opacity"
+                aria-label="Close"
+                onClick={() => setLoginPopup(false)}
+              >
+                <X size={18} />
+              </button>
+            </div>
+          </form>
+        </div>
       ) : signupPopup === true ? (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-auto pb-20">
-  <form
-    onSubmit={register}
-    className="absolute z-[2000] top-10 w-[1100px] rounded-lg shadow-lg mb-20 bg-background text-main-font flex flex-col md:flex-row "
-  >
-          {/* Left Section: Sign-Up Form */}
-          <div className="w-full md:w-1/2 px-6 py-8 md:px-12 flex flex-col justify-center">
-            <div className="max-w-md w-full mx-auto">
-              {/* Mobile Close Button */}
-              <div className="flex justify-end md:hidden mb-4">
-                <button
-                  className="bg-main text-secondary-font w-8 h-8 flex items-center justify-center rounded-full hover:bg-opacity-90"
-                  aria-label="Close"
-                >
-                  <X size={18} />
-                </button>
-              </div>
-
-              <h1 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-center">
-                Sign Up
-              </h1>
-
-              {/* Email Input */}
-              <div className="mb-4">
-                <label
-                  className="block text-sm font-semibold mb-2"
-                  htmlFor="email"
-                >
-                  Email
-                </label>
-                <input
-                  onChange={(ev) => setEmail(ev.target.value)}
-                  value={email}
-                  id="email"
-                  type="email"
-                  placeholder="hannah.green@test.com"
-                  className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
-                />
-              </div>
-
-              {/* First Name Input */}
-              <div className="mb-4">
-                <label
-                  className="block text-sm font-semibold mb-2"
-                  htmlFor="firstName"
-                >
-                  First Name
-                </label>
-                <input
-                  onChange={(ev) => setFirstname(ev.target.value)}
-                  value={firstname}
-                  id="firstName"
-                  type="text"
-                  placeholder="Enter your first name"
-                  className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
-                />
-              </div>
-
-              {/* Last Name Input */}
-              <div className="mb-4">
-                <label
-                  className="block text-sm font-semibold mb-2"
-                  htmlFor="lastName"
-                >
-                  Last Name
-                </label>
-                <input
-                  onChange={(ev) => setLastname(ev.target.value)}
-                  value={lastname}
-                  id="lastName"
-                  type="text"
-                  placeholder="Enter your last name"
-                  className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
-                />
-              </div>
-
-              {/* Affiliation Input */}
-              <div className="mb-4">
-                <label
-                  className="block text-sm font-semibold mb-2"
-                  htmlFor="affiliation"
-                >
-                  Affiliation
-                </label>
-                <input
-                  onChange={(ev) => setAffiliation(ev.target.value)}
-                  value={affiliation}
-                  id="affiliation"
-                  type="text"
-                  placeholder="Work experience, publications, expertise"
-                  className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
-                />
-              </div>
-
-              {/* Academic Title Input */}
-              <div className="mb-4">
-                <label
-                  className="block text-sm font-semibold mb-2"
-                  htmlFor="academicTitle"
-                >
-                  Academic Title
-                </label>
-                <input
-                  onChange={(ev) => setAcademicTitle(ev.target.value)}
-                  value={academicTitle}
-                  id="academicTitle"
-                  type="text"
-                  placeholder="Write your Academic title"
-                  className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
-                />
-              </div>
-
-              {/* Password Input */}
-              <div className="mb-4">
-                <label
-                  className="block text-sm font-semibold mb-2"
-                  htmlFor="password"
-                >
-                  Password
-                </label>
-                <input
-                  onChange={(ev) => setPassword(ev.target.value)}
-                  value={password}
-                  id="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
-                />
-              </div>
-
-              {/* Confirm Password Input */}
-              <div className="mb-4">
-                <label
-                  className="block text-sm font-semibold mb-2"
-                  htmlFor="confirmPassword"
-                >
-                  Confirm Password
-                </label>
-                <input
-                  onChange={(ev) => setConfirmPassword(ev.target.value)}
-                  id="confirmPassword"
-                  type="password"
-                  placeholder="Re-enter your password"
-                  className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
-                />
-              </div>
-
-              {/* Checkbox */}
-              <div className="mb-6">
-                <label className="inline-flex items-center text-sm">
-                  <input
-                    type="checkbox"
-                    className="mr-2 text-main focus:ring-main"
-                  />
-                  Authors are responsible for the articles posted on this
-                  website
-                </label>
-              </div>
-
-              {/* Sign-Up Button */}
-              <button className="w-full bg-main text-secondary-font py-3 rounded-md font-semibold hover:bg-opacity-90 transition-opacity">
-                Sign Up
-              </button>
-
-              {/* Login Link */}
-              <p className="text-center mt-4 text-sm">
-                Already have an account?{" "}
-                <div
-                  href="#"
-                  className="text-main hover:underline font-bold"
-                  onClick={() => {
-                    setLoginPopup(true);
-                    setSignupPopup(false);
-                  }}
-                >
-                  Login
-                </div>
-              </p>
-            </div>
-          </div>
-
-          {/* Right Section: Image */}
-          <div
-            className="hidden md:block w-full md:w-1/2 relative bg-cover bg-center"
-            style={{
-              backgroundImage: `url('/login.png')`,
-            }}
+          <form
+            onSubmit={register}
+            className="absolute z-[2000] top-10 w-[1100px] rounded-lg shadow-lg mb-20 bg-background text-main-font flex flex-col md:flex-row "
           >
-            {/* Desktop Close Button */}
-            <button
-              className="absolute top-4 right-4 text-secondary-font bg-main w-8 h-8 flex items-center justify-center rounded-full hover:bg-opacity-90 transition-opacity"
-              aria-label="Close"
+            {/* Left Section: Sign-Up Form */}
+            <div className="w-full md:w-1/2 px-6 py-8 md:px-12 flex flex-col justify-center">
+              <div className="max-w-md w-full mx-auto">
+                {/* Mobile Close Button */}
+                <div className="flex justify-end md:hidden mb-4">
+                  <button
+                    className="bg-main text-secondary-font w-8 h-8 flex items-center justify-center rounded-full hover:bg-opacity-90"
+                    aria-label="Close"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+
+                <h1 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-center">
+                  Sign Up
+                </h1>
+
+                {/* Email Input */}
+                <div className="mb-4">
+                  <label
+                    className="block text-sm font-semibold mb-2"
+                    htmlFor="email"
+                  >
+                    Email
+                  </label>
+                  <input
+                    onChange={(ev) => setEmail(ev.target.value)}
+                    value={email}
+                    id="email"
+                    type="email"
+                    placeholder="hannah.green@test.com"
+                    className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
+                  />
+                </div>
+
+                {/* First Name Input */}
+                <div className="mb-4">
+                  <label
+                    className="block text-sm font-semibold mb-2"
+                    htmlFor="firstName"
+                  >
+                    First Name
+                  </label>
+                  <input
+                    onChange={(ev) => setFirstname(ev.target.value)}
+                    value={firstname}
+                    id="firstName"
+                    type="text"
+                    placeholder="Enter your first name"
+                    className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
+                  />
+                </div>
+
+                {/* Last Name Input */}
+                <div className="mb-4">
+                  <label
+                    className="block text-sm font-semibold mb-2"
+                    htmlFor="lastName"
+                  >
+                    Last Name
+                  </label>
+                  <input
+                    onChange={(ev) => setLastname(ev.target.value)}
+                    value={lastname}
+                    id="lastName"
+                    type="text"
+                    placeholder="Enter your last name"
+                    className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
+                  />
+                </div>
+
+                {/* Affiliation Input */}
+                <div className="mb-4">
+                  <label
+                    className="block text-sm font-semibold mb-2"
+                    htmlFor="affiliation"
+                  >
+                    Affiliation
+                  </label>
+                  <input
+                    onChange={(ev) => setAffiliation(ev.target.value)}
+                    value={affiliation}
+                    id="affiliation"
+                    type="text"
+                    placeholder="Work experience, publications, expertise"
+                    className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
+                  />
+                </div>
+
+                {/* Academic Title Input */}
+                <div className="mb-4">
+                  <label
+                    className="block text-sm font-semibold mb-2"
+                    htmlFor="academicTitle"
+                  >
+                    Academic Title
+                  </label>
+                  <input
+                    onChange={(ev) => setAcademicTitle(ev.target.value)}
+                    value={academicTitle}
+                    id="academicTitle"
+                    type="text"
+                    placeholder="Write your Academic title"
+                    className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
+                  />
+                </div>
+
+                {/* Password Input */}
+                <div className="mb-4">
+                  <label
+                    className="block text-sm font-semibold mb-2"
+                    htmlFor="password"
+                  >
+                    Password
+                  </label>
+                  <input
+                    onChange={(ev) => setPassword(ev.target.value)}
+                    value={password}
+                    id="password"
+                    type="password"
+                    placeholder="Enter your password"
+                    className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
+                  />
+                </div>
+
+                {/* Confirm Password Input */}
+                <div className="mb-4">
+                  <label
+                    className="block text-sm font-semibold mb-2"
+                    htmlFor="confirmPassword"
+                  >
+                    Confirm Password
+                  </label>
+                  <input
+                    onChange={(ev) => setConfirmPassword(ev.target.value)}
+                    id="confirmPassword"
+                    type="password"
+                    placeholder="Re-enter your password"
+                    className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
+                  />
+                </div>
+
+                {/* Checkbox */}
+                <div className="mb-6">
+                  <label className="inline-flex items-center text-sm">
+                    <input
+                      type="checkbox"
+                      className="mr-2 text-main focus:ring-main"
+                    />
+                    Authors are responsible for the articles posted on this
+                    website
+                  </label>
+                </div>
+
+                {/* Sign-Up Button */}
+                <button className="w-full bg-main text-secondary-font py-3 rounded-md font-semibold hover:bg-opacity-90 transition-opacity">
+                  Sign Up
+                </button>
+
+                {/* Login Link */}
+                <p className="text-center mt-4 text-sm">
+                  Already have an account?{" "}
+                  <div
+                    href="#"
+                    className="text-main hover:underline font-bold"
+                    onClick={() => {
+                      setLoginPopup(true);
+                      setSignupPopup(false);
+                    }}
+                  >
+                    Login
+                  </div>
+                </p>
+              </div>
+            </div>
+
+            {/* Right Section: Image */}
+            <div
+              className="hidden md:block w-full md:w-1/2 relative bg-cover bg-center"
+              style={{
+                backgroundImage: `url('/login.png')`,
+              }}
             >
-              <X size={18} />
-            </button>
-          </div>
-        </form></div>
+              {/* Desktop Close Button */}
+              <button
+                className="absolute top-4 right-4 text-secondary-font bg-main w-8 h-8 flex items-center justify-center rounded-full hover:bg-opacity-90 transition-opacity"
+                aria-label="Close"
+              >
+                <X size={18} />
+              </button>
+            </div>
+          </form>
+        </div>
       ) : null}
       <div className="flex flex-col h-screen w-64 text-main-font rounded-lg shadow-lg">
         {/* Profile Section */}
@@ -465,7 +468,7 @@ const SidebarGuest = () => {
 
           {/* Login button */}
           <div
-            className="flex items-center justify-center text-sm font-medium w-32 mx-auto mt-12 bg-main text-white py-2 rounded-lg hover:bg-opacity-90"
+            className="flex items-center justify-center cursor-pointer text-sm font-medium w-32 mx-auto mt-12 bg-main text-white py-2 rounded-lg hover:bg-opacity-90"
             onClick={() => setLoginPopup(true)}
           >
             Login
@@ -489,7 +492,10 @@ const SidebarGuest = () => {
               </a>
             </p>
             <p className="text-center">
-              Designed and Developed by: <strong>ABS.AI</strong>
+              Designed and Developed by:{" "}
+              <a href="https://absai.dev/#/Home" className="hover:text-main">
+                <strong>ABS.AI</strong>
+              </a>
             </p>
             <p className="text-center">All Rights Reserved ©2024 Agya.com</p>
           </div>
