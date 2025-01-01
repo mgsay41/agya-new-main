@@ -16,6 +16,9 @@ const ActivityCard = ({
   appliedNumber,
   featuredImage,
   _id,
+  time,
+  organization,
+  sponsors,
 }) => {
   const navigate = useNavigate();
 
@@ -34,7 +37,12 @@ const ActivityCard = ({
             {activityName}
           </h3>
           <div className="text-sm text-gray-500 my-2">
-            <span>{date}</span>
+            <span>
+              {date} - {time}
+            </span>
+          </div>
+          <div className="text-sm text-gray-500 my-2">
+            <span>{organization}</span>
           </div>
           <div className="flex items-center text-sm text-gray-500 space-x-2 mb-2">
             <GrLanguage className="w-4 h-4 text-main" />
@@ -49,12 +57,26 @@ const ActivityCard = ({
             <span>{appliedNumber || 0} Applied</span>
           </div>
         </div>
-        <button
-          className="bg-main text-white text-sm px-4 py-2 rounded-md hover:bg-main/90 transition mt-4 self-start"
-          onClick={() => navigate(`/activity/${_id}`)}
-        >
-          Details
-        </button>
+        <div className="flex justify-between items-center pt-4">
+          <div className="flex gap-2">
+            {sponsors &&
+              sponsors.length > 0 &&
+              sponsors.map((sponsorUrl, index) => (
+                <img
+                  key={index}
+                  src={sponsorUrl}
+                  alt={`Sponsor ${index + 1}`}
+                  className="w-12 h-12 rounded-full"
+                />
+              ))}
+          </div>
+          <button
+            className="bg-main text-white text-sm px-4 py-2 rounded-md hover:bg-main/90 transition"
+            onClick={() => navigate(`/activity/${_id}`)}
+          >
+            Details
+          </button>
+        </div>
       </div>
     </div>
   );

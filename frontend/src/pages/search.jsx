@@ -51,7 +51,7 @@ export default function Search() {
                 >
                   <div className="overflow-hidden ">
                     <img
-                      src={article.image}
+                      src={article.featuredImage}
                       alt={article.title}
                       className=" w-full transition-transform duration-300 group-hover:scale-105"
                     />

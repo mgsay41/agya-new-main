@@ -81,7 +81,7 @@ function ActivityDetails() {
   if (!activity) return <p>Activity not found.</p>;
 
   return (
-    <div>
+    <div className="ml-6">
       <div>
         <div>
           <span
