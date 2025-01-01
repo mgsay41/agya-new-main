@@ -65,4 +65,19 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+router.delete("/:id/all", async (req, res) => {
+  try {
+    const deletedNotification = await Notification.deleteMany(
+      req.params.id
+    );
+    if (!deletedNotification) {
+      return res.status(404).json({ message: "Notification not found" });
+    }
+    res.status(204).json({ message: " All Notification cleard" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 export default router;

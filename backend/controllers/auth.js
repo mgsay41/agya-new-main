@@ -223,11 +223,11 @@ export const ResetPassword = async (req, res) => {
   if (newPassword.length < 6) {
     return res.json({
       success: false,
-      message: " password is too short",
+      message: "password is too short",
     });
   }
   const hashPassword = await bcrypt.hash(newPassword, 10);
-  const user = await User.updateOne({ _id: id }, { password: hashPassword });
+  const user = await User.updateOne({ _id: id },{password: hashPassword});
   if (user) {
     res.json({
       success: true,
@@ -236,7 +236,7 @@ export const ResetPassword = async (req, res) => {
   } else {
     res.json({
       success: false,
-      message: " password is not updeted successfully",
+      message: " password is not updeted",
     });
   }
 };

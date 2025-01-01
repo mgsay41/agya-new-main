@@ -1,5 +1,4 @@
 import express from "express";
-import mongoose from "mongoose";
 import Article from "../models/Article.js";
 
 const router = express.Router();
@@ -7,6 +6,39 @@ const router = express.Router();
 // Create a new article
 router.post("/", async (req, res) => {
   const { title, content, authorId, tags, references, authorName } = req.body;
+
+
+  if (!title || title === ""){
+    return res.json({
+      success: false,
+      message: "please enter the title",
+    });
+  }
+
+  if (!content || content === ""){
+    return res.json({
+      success: false,
+      message: "please enter the content",
+    });
+  }
+  if (!tags){
+    return res.json({
+      success: false,
+      message: "please enter the tags",
+    });
+  }
+  if (!references){
+    return res.json({
+      success: false,
+      message: "please enter the references",
+    });
+  }
+  if (!authorId || !authorName){
+    return res.json({
+      success: false,
+      message: "something wrong",
+    });
+  }
 
   // Validate references format
   if (references && !Array.isArray(references)) {
