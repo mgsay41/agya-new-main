@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 body {
   @apply bg-background text-main-font font-sans;
 }
@@ -39,7 +38,9 @@ input::file-selector-button {
   scrollbar-width: thin; /* Firefox support */
   scrollbar-color: #6e2617 #fefdfc; /* Thumb and track color for Firefox */
 }
-input, optgroup, select {
+input,
+optgroup,
+select {
   background-color: #e6e6d7;
 }
 
@@ -49,5 +50,5 @@ input, optgroup, select {
 
 .add-activity .ql-toolbar.ql-snow {
   display: flex !important;
-    justify-content: center;
+  justify-content: center;
 }

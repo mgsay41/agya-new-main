@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState,useRef } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Calendar } from "primereact/calendar";
 import { IoTrashBinOutline } from "react-icons/io5";
@@ -7,12 +7,12 @@ import { toast } from "react-toastify";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { GlobalContext } from "../context/GlobelContext";
-import { Toast } from 'primereact/toast';
+import { Toast } from "primereact/toast";
 
 const AddActivity = () => {
   const navigate = useNavigate();
-    const toastBC = useRef(null);
-  
+  const toastBC = useRef(null);
+
   const { setIsAuthUser, isAuthUser } = useContext(GlobalContext);
   const [uploading, setUploading] = useState(false);
   const [sponsorImages, setSponsorImages] = useState([]);
@@ -150,13 +150,11 @@ const AddActivity = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isAuthUser) {
-      return (
-        toastBC.current.show({
-          severity: "error",
-          summary: "Please login first",
-          sticky: true,
-        })
-      )
+      return toastBC.current.show({
+        severity: "error",
+        summary: "Please login first",
+        sticky: true,
+      });
     }
 
     if (!validateForm()) {
@@ -517,7 +515,7 @@ const AddActivity = () => {
           </button>
         </div>
       </form>
-            <Toast ref={toastBC} position="top-right" />
+      <Toast ref={toastBC} position="top-right" />
     </div>
   );
 };

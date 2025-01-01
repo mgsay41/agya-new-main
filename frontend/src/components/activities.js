@@ -132,12 +132,12 @@ const LatestActivityCard = ({
 const Categories = ({ selectedCategory, setSelectedCategory }) => {
   const categories = [
     "All Activities",
-    "Workshops",
-    "Publications",
-    "Conferences & Talks",
-    "Events",
-    "Interviews",
-    "Competitions",
+    "Workshop",
+    "Publication",
+    "Conference",
+    "Event",
+    "Interview",
+    "Competition",
   ];
 
   return (
@@ -223,7 +223,7 @@ const Activity = () => {
 
   return (
     <div className="flex">
-      <div className="flex flex-col w-[80%] px-8">
+      <div className="flex flex-col w-[61%] px-8">
         <h3 className="text-3xl text-center font-bold mb-10">Activities</h3>
 
         {/* Latest Activities Section */}
@@ -259,7 +259,7 @@ const Activity = () => {
               WebkitOverflowScrolling: "touch",
             }}
           >
-            {filteredData.slice(0, 5).map((activity) => (
+            {activitiesData.slice(0, 5).map((activity) => (
               <LatestActivityCard key={activity._id} {...activity} />
             ))}
           </div>

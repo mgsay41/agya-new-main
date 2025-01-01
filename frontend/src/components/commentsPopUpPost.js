@@ -1,21 +1,52 @@
-import React, { useState,useEffect,useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { IoSend } from "react-icons/io5";
 import { GlobalContext } from "../context/GlobelContext.js";
-const CommentPopupPost = ({ isOpen, onClose ,postID }) => {
+const CommentPopupPost = ({ isOpen, onClose, postID }) => {
   const [comments, setComments] = useState([]);
 
   const [newComment, setNewComment] = useState("");
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState("");
   const { setIsAuthUser, isAuthUser } = useContext(GlobalContext);
-  
+
+  function formatDate(isoDateString) {
+    const date = new Date(isoDateString);
+    const now = new Date();
+
+    // Calculate time difference in days
+    const timeDiff = now - date;
+    const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+
+    // Format time
+    const formattedTime = date.toLocaleString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+
+    // Determine day indicator
+    let dayIndicator;
+    if (daysDiff === 0) {
+      dayIndicator = "Today";
+    } else if (daysDiff === 1) {
+      dayIndicator = "1d";
+    } else {
+      dayIndicator = `${daysDiff}d`;
+    }
+
+    // Combine day and time
+    return `${dayIndicator} • ${formattedTime}`;
+  }
+
   useEffect(() => {
     setIsAuthUser(JSON.parse(localStorage.getItem("userInfo")));
   }, [setIsAuthUser]);
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/api/comments/post/${postID}`);
+        const response = await fetch(
+          `http://localhost:4000/api/comments/post/${postID}`
+        );
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -34,17 +65,20 @@ const CommentPopupPost = ({ isOpen, onClose ,postID }) => {
   const handleCommentSubmit = async () => {
     if (newComment.trim() !== "") {
       try {
-        const response = await fetch(`http://localhost:4000/api/comments/post/${postID}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            content: newComment,
-            postId: postID,
-            userId: isAuthUser.id,
-          }),
-        });
+        const response = await fetch(
+          `http://localhost:4000/api/comments/post/${postID}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              content: newComment,
+              postId: postID,
+              userId: isAuthUser.id,
+            }),
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -78,19 +112,25 @@ const CommentPopupPost = ({ isOpen, onClose ,postID }) => {
                 <div className="flex items-start space-x-4">
                   <img
                     className="w-10 h-10 rounded-full"
-                    src="./avatar.jpeg"                //{comment.userId.image}
+                    src={comment.userId.image || "./avatar.jpeg"} //{comment.userId.image}
                     alt={comment.name}
                   />
                   <div className="flex-1">
-                    <p className="font-semibold">{comment.userId.firstname} {comment.userId.lastname} </p>
+                    <p className="font-semibold">
+                      {comment.userId.firstname} {comment.userId.lastname}{" "}
+                    </p>
                     <p>{comment.content}</p>
                   </div>
                   <div className="flex flex-col items-end ml-4">
-                    <p className="text-DateTime text-sm">{comment.createdAt}</p>
+                    <p className="text-DateTime text-sm">
+                      {formatDate(comment.createdAt)}
+                    </p>
                     <button
                       className="bg-main text-white text-sm px-4 py-2 rounded-lg mt-2"
                       onClick={() =>
-                        setReplyingTo(comment.id === replyingTo ? null : comment.id)
+                        setReplyingTo(
+                          comment.id === replyingTo ? null : comment.id
+                        )
                       }
                     >
                       Reply

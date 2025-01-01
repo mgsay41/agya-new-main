@@ -479,15 +479,15 @@ const SidebarGuest = () => {
         <div className="mt-auto px-4 py-6 text-xs text-gray-400 bg-background">
           <div className="w-3/4 mx-auto border-t border-gray-200">
             <p className="text-center mt-4 mb-2">
-              <a href="#" className="hover:text-main">
+              <a href="/privacy-policy" className="hover:text-main">
                 Privacy Policy
               </a>{" "}
               |{" "}
-              <a href="#" className="hover:text-main">
+              <a href="/content-policy" className="hover:text-main">
                 Content Policy
               </a>{" "}
               |{" "}
-              <a href="#" className="hover:text-main">
+              <a href="/terms-of-use" className="hover:text-main">
                 Terms of Use
               </a>
             </p>

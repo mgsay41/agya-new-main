@@ -1,184 +1,161 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-// The Filter Sidebar component
 const FilterSidebar = ({ setFilteredData, activitiesData }) => {
   const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
   const [selectedEventType, setSelectedEventType] = useState({
-    online: false,
-    offline: false,
-    all: false,
+    Event: false,
+    Workshop: false,
+    Course: false,
   });
   const [selectedLocation, setSelectedLocation] = useState([]);
   const [price, setPrice] = useState({
-    free: false,
-    paid: false,
-    all: false,
+    Free: false,
+    Paid: false,
   });
-  const [rangeValue, setRangeValue] = useState(0); // Range slider value
-  const [days, setDays] = useState(0); // State for number of days
-
-  const handleRangeChange = (e) => {
-    setRangeValue(e.target.value);
-    setDays(e.target.value); // Update days based on slider
-  };
+  const [days, setDays] = useState(0);
 
   const applyFilters = () => {
-    const filteredActivities = activitiesData.filter((activity) => {
-      // Filter by event type
-      if (selectedEventType.all) return true;
-      if (selectedEventType.online && activity.eventType === "Online")
-        return true;
-      if (selectedEventType.offline && activity.eventType === "Offline")
-        return true;
+    let filtered = [...activitiesData];
 
-      // Filter by location
-      if (
-        selectedLocation.length > 0 &&
-        !selectedLocation.includes(activity.location)
-      )
+    if (days > 0) {
+      const endDate = new Date(startDate);
+      endDate.setDate(endDate.getDate() + parseInt(days));
+
+      filtered = filtered.filter((activity) => {
+        const activityDate = new Date(activity.date);
+        return activityDate >= startDate && activityDate <= endDate;
+      });
+    } else {
+      filtered = filtered.filter((activity) => {
+        const activityDate = new Date(activity.date);
+        const selectedDateStr = startDate.toISOString().split("T")[0];
+        const activityDateStr = activityDate.toISOString().split("T")[0];
+        return activityDateStr === selectedDateStr;
+      });
+    }
+
+    const activeEventTypes = Object.entries(selectedEventType)
+      .filter(([_, isSelected]) => isSelected)
+      .map(([type]) => type);
+
+    if (activeEventTypes.length > 0) {
+      filtered = filtered.filter((activity) =>
+        activeEventTypes.includes(activity.activityType)
+      );
+    }
+
+    if (selectedLocation.length > 0) {
+      filtered = filtered.filter((activity) =>
+        selectedLocation.includes(activity.location)
+      );
+    }
+
+    if (price.Free || price.Paid) {
+      filtered = filtered.filter((activity) => {
+        if (price.Free && activity.price === "Free") return true;
+        if (price.Paid && activity.price !== "Free") return true;
         return false;
+      });
+    }
 
-      // Filter by price
-      if (price.free && activity.price !== "Free") return false;
-      if (price.paid && activity.price !== "Paid") return false;
-
-      // Filter by date range
-      const activityDate = new Date(activity.date);
-      if (activityDate < startDate || activityDate > endDate) return false;
-
-      return true;
-    });
-
-    setFilteredData(filteredActivities);
+    setFilteredData(filtered);
   };
+
+  useEffect(() => {
+    setFilteredData(activitiesData);
+  }, [activitiesData, setFilteredData]);
 
   const clearFilters = () => {
     setStartDate(new Date());
-    setEndDate(new Date());
-    setSelectedEventType({
-      online: false,
-      offline: false,
-      all: false,
-    });
+    setSelectedEventType({ Event: false, Workshop: false, Course: false });
     setSelectedLocation([]);
-    setPrice({
-      free: false,
-      paid: false,
-      all: false,
-    });
-
-    // Reset to all data when filters are cleared
+    setPrice({ Free: false, Paid: false });
+    setDays(0);
     setFilteredData(activitiesData);
   };
+
+  const locations = ["Egypt", "Germany", "USA", "UK", "UAE", "online"];
 
   return (
     <div className="w-full bg-white border rounded-lg p-6 shadow-md relative mt-4">
       <h2 className="text-lg font-semibold mb-6">Filter Activities</h2>
 
-      {/* Calendar Section */}
       <div className="mb-4">
-        <label className="block text-sm font-medium mb-2">Calendar</label>
-        <div className="mt-2">
-          <DatePicker
-            selected={startDate}
-            onChange={(date) => setStartDate(date)}
-            inline // This displays the calendar inline.
-          />
-        </div>
+        <label className="block text-sm font-medium mb-2">Select Date</label>
+        <DatePicker
+          selected={startDate}
+          onChange={setStartDate}
+          inline
+          minDate={new Date()}
+          dateFormat="yyyy-MM-dd"
+        />
       </div>
 
-      {/* Date Range Section */}
       <div className="mb-4">
         <label className="block text-sm font-medium mb-2">Date Range</label>
         <div className="flex items-center gap-2">
-          <span className=" text-xs">Coming in</span>
+          <span className="text-xs">Coming in</span>
           <input
             type="number"
             min="0"
+            max="365"
             value={days}
-            onChange={(e) => setDays(e.target.value)}
+            onChange={(e) =>
+              setDays(Math.min(365, Math.max(0, parseInt(e.target.value) || 0)))
+            }
             className="w-16 border rounded-lg p-2 text-center bg-[#E9ECE7]"
           />
-          <span className=" text-sm">Days</span>
+          <span className="text-sm">Days</span>
         </div>
         <input
           type="range"
           min="0"
-          max="100"
-          value={rangeValue}
-          onChange={handleRangeChange}
-          className="w-full mt-2 bg-main "
+          max="365"
+          value={days}
+          onChange={(e) => setDays(parseInt(e.target.value))}
+          className="w-full mt-2 bg-main"
         />
       </div>
 
-      {/* Event Type Section */}
       <div className="mb-4">
-        <label className="block text-sm font-medium mb-2">Virtual Event</label>
+        <label className="block text-sm font-medium mb-2">Activity Type</label>
         <div className="space-y-2">
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={selectedEventType.online}
-              onChange={() =>
-                setSelectedEventType({
-                  ...selectedEventType,
-                  online: !selectedEventType.online,
-                })
-              }
-              className="border rounded accent-main"
-            />
-            Online
-          </label>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={selectedEventType.offline}
-              onChange={() =>
-                setSelectedEventType({
-                  ...selectedEventType,
-                  offline: !selectedEventType.offline,
-                })
-              }
-              className="border rounded accent-main"
-            />
-            Offline
-          </label>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={selectedEventType.all}
-              onChange={() =>
-                setSelectedEventType({
-                  ...selectedEventType,
-                  all: !selectedEventType.all,
-                })
-              }
-              className="border rounded accent-main"
-            />
-            All Types
-          </label>
+          {Object.keys(selectedEventType).map((type) => (
+            <label key={type} className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={selectedEventType[type]}
+                onChange={() =>
+                  setSelectedEventType((prev) => ({
+                    ...prev,
+                    [type]: !prev[type],
+                  }))
+                }
+                className="border rounded accent-main"
+              />
+              {type}
+            </label>
+          ))}
         </div>
       </div>
 
-      {/* Location Section */}
       <div className="mb-4">
         <label className="block text-sm font-medium mb-2">Location</label>
         <div className="space-y-2">
-          {["Egypt", "Germany", "USA", "UK", "UAE"].map((location) => (
-            <label className="flex items-center gap-2" key={location}>
+          {locations.map((location) => (
+            <label key={location} className="flex items-center gap-2">
               <input
                 type="checkbox"
                 checked={selectedLocation.includes(location)}
-                onChange={() => {
+                onChange={() =>
                   setSelectedLocation((prev) =>
                     prev.includes(location)
                       ? prev.filter((item) => item !== location)
                       : [...prev, location]
-                  );
-                }}
+                  )
+                }
                 className="border rounded accent-main"
               />
               {location}
@@ -187,15 +164,16 @@ const FilterSidebar = ({ setFilteredData, activitiesData }) => {
         </div>
       </div>
 
-      {/* Price Section */}
       <div className="mb-4">
         <label className="block text-sm font-medium mb-2">Price</label>
         <div className="space-y-2">
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
-              checked={price.free}
-              onChange={() => setPrice({ ...price, free: !price.free })}
+              checked={price.Free}
+              onChange={() =>
+                setPrice((prev) => ({ ...prev, Free: !prev.Free }))
+              }
               className="border rounded accent-main"
             />
             Free
@@ -203,8 +181,10 @@ const FilterSidebar = ({ setFilteredData, activitiesData }) => {
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
-              checked={price.paid}
-              onChange={() => setPrice({ ...price, paid: !price.paid })}
+              checked={price.Paid}
+              onChange={() =>
+                setPrice((prev) => ({ ...prev, Paid: !prev.Paid }))
+              }
               className="border rounded accent-main"
             />
             Paid
@@ -212,7 +192,6 @@ const FilterSidebar = ({ setFilteredData, activitiesData }) => {
         </div>
       </div>
 
-      {/* Apply & Clear Buttons */}
       <div className="flex justify-between items-center mt-4">
         <button onClick={clearFilters} className="text-sm text-main underline">
           Clear Filters
