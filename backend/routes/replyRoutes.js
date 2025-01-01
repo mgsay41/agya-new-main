@@ -11,7 +11,13 @@ router.post("/:id/reply", async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);
     if (!comment) {
-      return res.status(404).json({ message: "Comment not found" });
+      return res.json({ success: false, message: "Comment not found" });
+    }
+    if(!content) {
+      return res.json({
+      success: false,
+      message: "please fill content",
+    });
     }
 
     // Create and save the reply

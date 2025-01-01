@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext,useRef } from "react";
 import { GlobalContext } from "../context/GlobelContext.js";
+import { Toast } from "primereact/toast";
 
 const Report = ({ onClose, item }) => {
   const [text, setText] = useState("");
@@ -8,6 +9,7 @@ const Report = ({ onClose, item }) => {
   const [commentID, setCommentID] = useState(null);
   const [replyID, setReplyID] = useState(null);
   const { setIsAuthUser, isAuthUser } = useContext(GlobalContext);
+  const toastBC = useRef(null);
 
   // Get user info from localStorage
   useEffect(() => {
@@ -30,10 +32,20 @@ const Report = ({ onClose, item }) => {
 
   // Handle report submission
   const handleReport = async () => {
+    if (!isAuthUser) {
+      toastBC.current.show({
+        severity: "error",
+        summary: "Please login first",
+        sticky: true,
+      });
+    }
+
     try {
       const payload = {
         userId: isAuthUser?.id, // Safely access user ID
         content: text,
+        username:isAuthUser?.firstname,
+         userImage:isAuthUser?.image,
         ...(articleID && { articleId: articleID }),
         ...(postID && { postId: postID }),
         ...(commentID && { commentId: commentID }),
@@ -59,7 +71,6 @@ const Report = ({ onClose, item }) => {
       onClose(); // Close the modal on success
     } catch (error) {
       console.error("Error submitting report:", error);
-      alert("Failed to submit the report. Please try again.");
     }
   };
 
@@ -96,6 +107,7 @@ const Report = ({ onClose, item }) => {
           </button>
         </div>
       </div>
+      <Toast ref={toastBC} position="top-right" />
     </div>
   );
 };

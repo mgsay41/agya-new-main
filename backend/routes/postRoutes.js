@@ -1,13 +1,26 @@
 import express from "express";
 import mongoose from "mongoose";
 import Post from "../models/Post.js";
+import isAuth from '../middleware/auth.js';
 
 const router = express.Router();
 
 // Create a new post
-router.post("/", async (req, res) => {
+router.post("/" , async (req, res) => {
   const { userId, content, authorName } = req.body;
   try {
+    if (!userId || !authorName){
+      return res.json({
+        success: false,
+        message: "something wrong",
+      });
+    }
+    if (!content || content === ""){
+      return res.json({
+        success: false,
+        message: "something wrong",
+      });
+    }
     const newPost = new Post({ userId, content, authorName });
     await newPost.save();
     res.status(201).json(newPost);

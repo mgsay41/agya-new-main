@@ -7,10 +7,15 @@ const router = express.Router();
 // Create a new report
 router.post("/", async (req, res) => {
   const { username, userImage, content, articleId, postId, commentId } = req.body;
-
   try {
     if (!username || !userImage || !content) {
       return res.status(400).json({ error: "username, userImage, and content are required" });
+    }
+    if (content === "") {
+        return res.json({
+          success: false,
+          message: "content is empty",
+        });
     }
 
     if (!articleId && !postId && !commentId) {

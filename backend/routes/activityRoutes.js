@@ -25,6 +25,48 @@ router.post("/", async (req, res) => {
   } = req.body;
 
   try {
+    if (!activityName || activityName === ""){
+      return res.json({
+        success: false,
+        message: "activity name is required",
+      });
+    }
+    if (!activityType || activityType === ""){
+      return res.json({
+        success: false,
+        message: "activity Type is required",
+      });
+    }
+    if (!date || date === ""){
+      return res.json({
+        success: false,
+        message: "date is required",
+      });
+    }
+    if (!time || time === ""){
+      return res.json({
+        success: false,
+        message: "time is required",
+      });
+    }
+    if (!userId){
+      return res.json({
+        success: false,
+        message: "something wrong",
+      });
+    }
+    if (!organization || organization === ""){
+      return res.json({
+        success: false,
+        message: "organization is required",
+      });
+    }
+    if (!userId){
+      return res.json({
+        success: false,
+        message: "something wrong",
+      });
+    }
     // Ensure userId is a valid ObjectId
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ error: "Invalid userId format" });
