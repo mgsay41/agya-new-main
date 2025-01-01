@@ -35,6 +35,7 @@ const PostCard = ({ onClick, item }) => {
     setShowReportButton((prev) => !prev);
   };
 
+
   useEffect(() => {
     setIsAuthUser(JSON.parse(localStorage.getItem("userInfo")));
   }, [setIsAuthUser]);

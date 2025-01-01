@@ -1,8 +1,9 @@
 import { MdOutlineReportGmailerrorred } from "react-icons/md";
 import { RiCalendarCheckLine } from "react-icons/ri";
 import { TbReportOff } from "react-icons/tb";
+import { Toast } from "primereact/toast";
 
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   Search,
   Plus,
@@ -29,6 +30,7 @@ const Navbar = () => {
   const [tags, setTags] = useState([]); // State for notifications
   const [notifications, setNotifications] = useState([]); // Initialize as an empty array
   const [showAllNotifications, setShowAllNotifications] = useState(false);
+  const toastBC = useRef(null);
 
   const navigate = useNavigate();
 
@@ -37,11 +39,35 @@ const Navbar = () => {
     setActivePopup(activePopup === popupName ? null : popupName);
   };
 
-  const clearAllNotifications = () => {
-    const unreadNotifications = notifications.filter(
-      (notification) => !notification.isRead
+  const clearAllNotifications = async () => {
+    const response = await fetch(
+      `http://localhost:4000/api/notifications/${isAuthUser._id}/all`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
     );
-    setNotifications(unreadNotifications);
+    const data = await response.json();
+
+    if (data) {
+      toastBC.current.show({
+        severity: "success",
+        summary: data.message,
+        sticky: true,
+      });
+    } else {
+      toastBC.current.show({
+        severity: "error",
+        summary: data.message,
+        sticky: true,
+      });
+    }
+    // const unreadNotifications = notifications.filter(
+    //   (notification) => !notification.isRead
+    // );
+    // setNotifications(unreadNotifications);
   };
 
   const markAsRead = async (id) => {
@@ -128,13 +154,19 @@ const Navbar = () => {
 
   const newPost = async () => {
     if (!postText.trim()) {
-      setError("Post cannot be empty");
-      return;
+      toastBC.current.show({
+        severity: "error",
+        summary: "Post cannot be empty",
+        sticky: true,
+      });
     } // Prevent empty posts
 
     if (!isAuthUser) {
-      setError("User not authenticated");
-      return;
+      toastBC.current.show({
+        severity: "error",
+        summary: "Please login",
+        sticky: true,
+      });
     }
 
     setLoading(true); // Set loading when starting request
@@ -160,6 +192,19 @@ const Navbar = () => {
       }
 
       const data = await response.json();
+      if (data) {
+        toastBC.current.show({
+          severity: "success",
+          summary: data.message,
+          sticky: true,
+        });
+      } else {
+        toastBC.current.show({
+          severity: "error",
+          summary: data.message,
+          sticky: true,
+        });
+      }
       setPostText(""); // Clear the input
       setPostOpen(false); // Close the modal
     } catch (err) {
@@ -374,7 +419,6 @@ const Navbar = () => {
                   {loading ? "Posting..." : "Post"}
                 </button>
               </div>
-              {err && <p className="text-red-500">{err}</p>}
             </div>
           </div>
         </div>
@@ -469,7 +513,9 @@ const Navbar = () => {
                 <div className="absolute -top-2 right-24 w-4 h-4 bg-main transform rotate-45"></div>
                 <div
                   className="flex items-center cursor-pointer gap-2 px-4 py-3 text-sm hover:bg-opacity-90"
-                  onClick={() => togglePopup("post")}
+                  onClick={() =>
+                      togglePopup("post")
+                  }
                 >
                   <FileText className="w-5 h-5" />
                   <span>New Post</span>
@@ -510,6 +556,7 @@ const Navbar = () => {
           </div>
         </div>
       </header>
+      <Toast ref={toastBC} position="top-right" />
     </>
   );
 };

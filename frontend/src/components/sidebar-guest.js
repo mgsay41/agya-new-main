@@ -146,7 +146,7 @@ const SidebarGuest = () => {
                     className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
                   />
                   <p className="text-sm text-main mt-2">
-                    <a href="#" className="hover:underline">
+                    <a href="/forget-password" className="hover:underline">
                       Forgot your Password?
                     </a>
                   </p>
@@ -455,15 +455,15 @@ const SidebarGuest = () => {
             </a>
 
             {/* New Profile Button */}
-            <a
-              href="#"
+            <div
               className="flex items-center text-sm font-medium hover:text-main w-40"
+              onClick={() => setLoginPopup(true)}
             >
               <span className="w-12 inline-flex justify-end">
                 <User className="w-5 h-5" />
               </span>
               <span className="ml-4">Profile</span>
-            </a>
+            </div>
           </div>
 
           {/* Login button */}

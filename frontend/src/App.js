@@ -17,18 +17,20 @@ import ArticleDetails from "./pages/ArticlesDetails";
 import PostDetails from "./pages/PostsDetails";
 import Search from "./pages/search";
 import Filter from "./pages/filter";
+import ForgetPassword from "./pages/forget-password";
+import EditPassword from "./pages/edit-password";
 
 const App = () => {
   return (
     <>
       <Routes>
+          <Route path="/about" element={<About />} />
+          <Route path="/help" element={<Help />}/>
         <Route path="/" element={<AboutLayout />}>
           <Route index element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/gallery" element={<Gallery />} />
-          <Route path="/help" element={<Help />} />
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/editprofile" element={<EditProfile />} />
+          <Route path="/gallery" element={<Gallery />} />
         </Route>
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/new-article" element={<NewArtical />} />
@@ -51,6 +53,9 @@ const App = () => {
           <Route path="/activity/edit-activity" element={<EditActivity />} />
           <Route path="/activity/:id" element={<ActivityDetails />} />
         </Route>
+        <Route path="/forget-password" element={<ForgetPassword/>} />
+        <Route path="/edit-password/:id" element={<EditPassword/>} />
+
         <Route path="*" element={<Navigate to={"/"} />} />
       </Routes>
     </>

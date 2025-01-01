@@ -1,21 +1,20 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/sidebar";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
 
 export default function Filter() {
-  const filter = useLocation();
-  const searchItem = new URLSearchParams(filter).get("filter");
+  const {filter} = useParams()
   const navigate = useNavigate();
-  const [articlesCount, setArticlesCount] = useState();
+  // const [articlesCount, setArticlesCount] = useState();
   const [articlesData, setArticlesData] = useState([]);
-  const [featuredArticlesData, setFeaturedArticlesData] = useState([]);
+  // const [featuredArticlesData, setFeaturedArticlesData] = useState([]);
 
   useEffect(() => {
     try {
       fetch(
-        `http://localhost:4000/api/articles/articles/filter?filter=${searchItem}`,
+        `http://localhost:4000/api/articles/articles/filter?filter=${filter}`,
         {}
       ).then((response) => {
         response.json().then((data) => {
@@ -25,7 +24,7 @@ export default function Filter() {
     } catch (e) {
       console.log(e);
     }
-  }, [searchItem]);
+  }, [filter]);
 
   return (
     <div className=" flex justify-between">
@@ -34,7 +33,7 @@ export default function Filter() {
       <div className="flex-1 mx-[100px] py-8">
         <Navbar />
         <div className=" w-full  px-3 py-8">
-          <h1 className="mb-7 text-left font-bold text-3xl text-black"></h1>
+          {/* <h1 className="mb-7 text-left font-bold text-3xl text-black"></h1> */}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {articlesData === undefined ? (
