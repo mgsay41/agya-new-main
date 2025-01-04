@@ -163,6 +163,8 @@ const Activity = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All Activities");
   const [scrollPosition, setScrollPosition] = useState(0);
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
+  const navigate = useNavigate();
 
   const scrollContainer = (direction) => {
     const container = document.getElementById("activities-container");
@@ -222,9 +224,18 @@ const Activity = () => {
   }, [selectedCategory, activitiesData]);
 
   return (
-    <div className="flex">
-      <div className="flex flex-col w-[61%] px-8">
-        <h3 className="text-3xl text-center font-bold mb-10">Activities</h3>
+    <div className="flex flex-col lg:flex-row relative">
+      <div className="flex flex-col w-full lg:w-[61%] px-8">
+        <div className="flex items-center justify-between mb-10">
+          <h3 className="text-3xl font-bold">Activities</h3>
+
+          <button
+            className="lg:hidden bg-main text-white px-4 py-2 rounded-md hover:bg-main/90 transition"
+            onClick={() => setIsFilterVisible(true)}
+          >
+            Filters
+          </button>
+        </div>
 
         {/* Latest Activities Section */}
         <div className="flex items-center justify-between mb-4">
@@ -278,12 +289,30 @@ const Activity = () => {
         </div>
       </div>
 
-      <div className="h-full">
+      <div className="hidden lg:block w-[27%]">
         <FilterSidebar
           setFilteredData={setFilteredData}
           activitiesData={activitiesData}
         />
       </div>
+      {/* Mobile Filters Sidebar */}
+
+      {isFilterVisible && (
+        <div
+          className="fixed inset-0 bg-black/50 z-50 flex justify-end"
+          onClick={() => setIsFilterVisible(false)}
+        >
+          <div
+            className="bg-white w-4/5 max-w-[320px] h-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <FilterSidebar
+              setFilteredData={setFilteredData}
+              activitiesData={activitiesData}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

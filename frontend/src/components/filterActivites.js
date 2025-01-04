@@ -16,26 +16,68 @@ const FilterSidebar = ({ setFilteredData, activitiesData }) => {
   });
   const [days, setDays] = useState(0);
 
+  // Helper function to normalize date string
+
+  const normalizeDate = (dateString) => {
+    try {
+      // Handle date string that might be missing zero-padding
+
+      const [year, month, day] = dateString.split("-");
+
+      const normalizedMonth = month.padStart(2, "0");
+
+      const normalizedDay = day.padStart(2, "0");
+
+      return `${year}-${normalizedMonth}-${normalizedDay}`;
+    } catch (error) {
+      console.error("Error normalizing date:", error);
+
+      return dateString;
+    }
+  };
+
   const applyFilters = () => {
     let filtered = [...activitiesData];
 
-    if (days > 0) {
-      const endDate = new Date(startDate);
-      endDate.setDate(endDate.getDate() + parseInt(days));
+    // Date filtering
 
-      filtered = filtered.filter((activity) => {
-        const activityDate = new Date(activity.date);
-        return activityDate >= startDate && activityDate <= endDate;
-      });
-    } else {
-      filtered = filtered.filter((activity) => {
-        const activityDate = new Date(activity.date);
-        const selectedDateStr = startDate.toISOString().split("T")[0];
-        const activityDateStr = activityDate.toISOString().split("T")[0];
-        return activityDateStr === selectedDateStr;
-      });
-    }
+    filtered = filtered.filter((activity) => {
+      try {
+        // Normalize the activity date
 
+        const normalizedActivityDate = normalizeDate(activity.date);
+
+        const activityDate = new Date(normalizedActivityDate);
+
+        if (days > 0) {
+          const endDate = new Date(startDate);
+
+          endDate.setDate(endDate.getDate() + days);
+
+          // Set hours to ensure full day comparison
+
+          const startOfDay = new Date(startDate.setHours(0, 0, 0, 0));
+
+          const endOfDay = new Date(endDate.setHours(23, 59, 59, 999));
+
+          return activityDate >= startOfDay && activityDate <= endOfDay;
+        } else {
+          // For single day selection
+
+          const selectedDateStr = startDate.toISOString().split("T")[0];
+
+          const activityDateStr = activityDate.toISOString().split("T")[0];
+
+          return activityDateStr === selectedDateStr;
+        }
+      } catch (error) {
+        console.error("Error comparing dates:", error);
+
+        return false;
+      }
+    });
+
+    // Activity Type filtering
     const activeEventTypes = Object.entries(selectedEventType)
       .filter(([_, isSelected]) => isSelected)
       .map(([type]) => type);
@@ -46,16 +88,21 @@ const FilterSidebar = ({ setFilteredData, activitiesData }) => {
       );
     }
 
+    // Location filtering
     if (selectedLocation.length > 0) {
       filtered = filtered.filter((activity) =>
-        selectedLocation.includes(activity.location)
+        selectedLocation.includes(activity.location?.toLowerCase())
       );
     }
 
+    // Price filtering
     if (price.Free || price.Paid) {
       filtered = filtered.filter((activity) => {
-        if (price.Free && activity.price === "Free") return true;
-        if (price.Paid && activity.price !== "Free") return true;
+        const activityPrice = activity.price?.toLowerCase();
+        if (price.Free && (activityPrice === "free" || activityPrice === "0"))
+          return true;
+        if (price.Paid && activityPrice !== "free" && activityPrice !== "0")
+          return true;
         return false;
       });
     }
@@ -63,20 +110,20 @@ const FilterSidebar = ({ setFilteredData, activitiesData }) => {
     setFilteredData(filtered);
   };
 
+  // Apply filters whenever any filter value changes
   useEffect(() => {
-    setFilteredData(activitiesData);
-  }, [activitiesData, setFilteredData]);
+    applyFilters();
+  }, [startDate, selectedEventType, selectedLocation, price, days]);
 
   const clearFilters = () => {
     setStartDate(new Date());
-    setSelectedEventType({ Event: false, Workshop: false, Course: false });
     setSelectedLocation([]);
     setPrice({ Free: false, Paid: false });
     setDays(0);
     setFilteredData(activitiesData);
   };
 
-  const locations = ["Egypt", "Germany", "USA", "UK", "UAE", "online"];
+  const locations = ["egypt", "germany", "usa", "uk", "uae", "online"];
 
   return (
     <div className="w-full bg-white border rounded-lg p-6 shadow-md relative mt-4">
@@ -86,7 +133,10 @@ const FilterSidebar = ({ setFilteredData, activitiesData }) => {
         <label className="block text-sm font-medium mb-2">Select Date</label>
         <DatePicker
           selected={startDate}
-          onChange={setStartDate}
+          onChange={(date) => {
+            setStartDate(date);
+            setDays(0); // Reset days when selecting a specific date
+          }}
           inline
           minDate={new Date()}
           dateFormat="yyyy-MM-dd"
@@ -100,11 +150,15 @@ const FilterSidebar = ({ setFilteredData, activitiesData }) => {
           <input
             type="number"
             min="0"
-            max="365"
+            max="20"
             value={days}
-            onChange={(e) =>
-              setDays(Math.min(365, Math.max(0, parseInt(e.target.value) || 0)))
-            }
+            onChange={(e) => {
+              const value = Math.min(
+                20,
+                Math.max(0, parseInt(e.target.value) || 0)
+              );
+              setDays(value);
+            }}
             className="w-16 border rounded-lg p-2 text-center bg-[#E9ECE7]"
           />
           <span className="text-sm">Days</span>
@@ -112,33 +166,11 @@ const FilterSidebar = ({ setFilteredData, activitiesData }) => {
         <input
           type="range"
           min="0"
-          max="365"
+          max="20"
           value={days}
           onChange={(e) => setDays(parseInt(e.target.value))}
           className="w-full mt-2 bg-main"
         />
-      </div>
-
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-2">Activity Type</label>
-        <div className="space-y-2">
-          {Object.keys(selectedEventType).map((type) => (
-            <label key={type} className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={selectedEventType[type]}
-                onChange={() =>
-                  setSelectedEventType((prev) => ({
-                    ...prev,
-                    [type]: !prev[type],
-                  }))
-                }
-                className="border rounded accent-main"
-              />
-              {type}
-            </label>
-          ))}
-        </div>
       </div>
 
       <div className="mb-4">
@@ -195,12 +227,6 @@ const FilterSidebar = ({ setFilteredData, activitiesData }) => {
       <div className="flex justify-between items-center mt-4">
         <button onClick={clearFilters} className="text-sm text-main underline">
           Clear Filters
-        </button>
-        <button
-          onClick={applyFilters}
-          className="bg-main text-white px-4 py-2 rounded-lg"
-        >
-          Apply Filters
         </button>
       </div>
     </div>
