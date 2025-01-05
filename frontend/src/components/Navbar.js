@@ -2,7 +2,8 @@ import { MdOutlineReportGmailerrorred } from "react-icons/md";
 import { RiCalendarCheckLine } from "react-icons/ri";
 import { TbReportOff } from "react-icons/tb";
 import { Toast } from "primereact/toast";
-
+import Sidebar1 from "../components/sidebar";
+import SidebarGuest from "../components/sidebar-guest.js";
 import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   Search,
@@ -12,10 +13,11 @@ import {
   FileText,
   Calendar,
   FilePlus,
+  Menu,
 } from "lucide-react";
 import { GlobalContext } from "../context/GlobelContext"; // Adjust import based on your structure
 import { useNavigate } from "react-router-dom";
-
+import { Sidebar } from 'primereact/sidebar';
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [activePopup, setActivePopup] = useState(null); // 'notifications', 'post', 'dropdown', 'filter'
@@ -30,6 +32,7 @@ const Navbar = () => {
   const [tags, setTags] = useState([]); // State for notifications
   const [notifications, setNotifications] = useState([]); // Initialize as an empty array
   const [showAllNotifications, setShowAllNotifications] = useState(false);
+  const [visible, setVisible] = useState(false);
   const toastBC = useRef(null);
 
   const navigate = useNavigate();
@@ -435,7 +438,7 @@ const Navbar = () => {
           </a>
 
           {/* Centered Search Bar */}
-          <div className="flex-1 max-w-xl mx-auto flex items-center gap-2">
+          <div className="flex-1 max-w-xl mx-auto hidden md:flex items-center gap-2">
             <form
               onSubmit={() => navigate(`/article/search?search=${search}`)}
               className="relative flex-1"
@@ -500,7 +503,7 @@ const Navbar = () => {
           <div className="flex items-center gap-2 relative">
             {/* New Button */}
             <button
-              className="hidden sm:flex items-center px-9 py-[10px] bg-main text-white rounded-xl hover:bg-opacity-90 relative"
+              className="hidden md:flex items-center px-9 py-[10px] bg-main text-white rounded-xl hover:bg-opacity-90 relative"
               onClick={() => togglePopup("dropdown")}
             >
               <Plus className="w-5 h-5" />
@@ -538,7 +541,6 @@ const Navbar = () => {
                 </a>
               </div>
             )}
-
             {/* Notification Button */}
             <button
               className="p-3 rounded-xl bg-main text-white hover:bg-opacity-90 relative"
@@ -553,8 +555,79 @@ const Navbar = () => {
                   <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full"></span>
                 )}
             </button>
+            <div className="card flex justify-content-center">
+            <Sidebar visible={visible} onHide={() => setVisible(false)}>
+            {
+                isAuthUser?.email ?   <Sidebar1 className=" bg-gray-800 text-white"/> : <SidebarGuest />
+            }
+            </Sidebar>
+            <div className="bg-main cursor-pointer text-white py-2 px-4 rounded-xl md:hidden" onClick={() => setVisible(true)}>
+              <Menu/>
+            </div>
+        </div>
           </div>
         </div>
+                {/* moblie Search Bar */}
+                <div className="flex-1 max-w-xl mx-auto items-center gap-2 md:hidden">
+            <form
+              onSubmit={() => navigate(`/article/search?search=${search}`)}
+              className="relative flex-1"
+            >
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+
+              <input
+                type="text"
+                placeholder="Search"
+                name="search"
+                className="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-xl border-none focus:outline-none focus:ring-2 focus:ring-main placeholder-gray-500"
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </form>
+
+            {/* Menu Button */}
+
+            <button
+              onClick={() => {
+                filterOpen === true
+                  ? setFilterOpen(false)
+                  : setFilterOpen(true);
+              }}
+              className="p-3 rounded-xl text-white hover:bg-opacity-90"
+            >
+              <ListFilter className="w-8 h-5" />
+            </button>
+            <div className=" relative">
+              {filterOpen === true ? (
+                <div
+                  className={` absolute gap-2 bg-white mt-6 z-[2000] p-4  rounded-xl left-[-180px]  border w-72 `}
+                >
+                  <h3 className="mb-2">Tags</h3>
+
+                  <div className={` flex gap-2 flex-wrap`}>
+                    {tags.length > 0 ? (
+                      tags.map((tag) => {
+                        return (
+                          <div
+                            key={tag._id}
+                            className=""
+                            onClick={() =>
+                              navigate(`/article/filter?filter=${tag._id}`)
+                            }
+                          >
+                            <div className=" bg-main rounded-xl cursor-pointer text-white py-2 px-3">
+                              {tag.name}{" "}
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div> no tages</div>
+                    )}
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          </div>
       </header>
       <Toast ref={toastBC} position="top-right" />
     </>
