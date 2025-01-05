@@ -51,7 +51,7 @@ router.post("/:articleId", upload.single("file"), async (req, res) => {
     }
 
     const imageUrl = `${
-      process.env.BASE_URL || "http://localhost:4000"
+      process.env.BASE_URL || "https://agya-new-main.vercel.app"
     }/uploads/articles/${req.file.filename}`;
 
     const updatedArticle = await Article.findByIdAndUpdate(

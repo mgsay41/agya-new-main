@@ -13,11 +13,11 @@ router.post("/:id/reply", async (req, res) => {
     if (!comment) {
       return res.json({ success: false, message: "Comment not found" });
     }
-    if (!content) {
+    if(!content) {
       return res.json({
-        success: false,
-        message: "please fill content",
-      });
+      success: false,
+      message: "please fill content",
+    });
     }
 
     // Create and save the reply
@@ -39,7 +39,7 @@ router.get("/:id/replies", async (req, res) => {
   try {
     const replies = await Reply.find({ commentId: req.params.id }).populate(
       "userId",
-      "firstname lastname image"
+      "firstname lastname"
     );
     res.status(200).json(replies);
   } catch (err) {

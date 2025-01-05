@@ -15,11 +15,13 @@ router.post("/:userId", uploadProfileImage, async (req, res) => {
 
     // Check if a file was uploaded
     if (!req.file) {
-      return res.status(400).json({ success: false, message: "No file uploaded." });
+      return res
+        .status(400)
+        .json({ success: false, message: "No file uploaded." });
     }
 
     // File path to save in the database
-    const filePath = `http://localhost:4000/uploads/profiles/${req.file.filename}`;
+    const filePath = `https://agya-new-main.vercel.app/uploads/profiles/${req.file.filename}`;
 
     // Update the user's image in the database
     const updatedUser = await User.findByIdAndUpdate(
@@ -29,7 +31,9 @@ router.post("/:userId", uploadProfileImage, async (req, res) => {
     );
 
     if (!updatedUser) {
-      return res.status(404).json({ success: false, message: "User not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found." });
     }
 
     res.status(200).json({
