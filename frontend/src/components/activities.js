@@ -16,9 +16,6 @@ const ActivityCard = ({
   appliedNumber,
   featuredImage,
   _id,
-  time,
-  organization,
-  sponsors,
 }) => {
   const navigate = useNavigate();
 
@@ -37,12 +34,7 @@ const ActivityCard = ({
             {activityName}
           </h3>
           <div className="text-sm text-gray-500 my-2">
-            <span>
-              {date} - {time}
-            </span>
-          </div>
-          <div className="text-sm text-gray-500 my-2">
-            <span>{organization}</span>
+            <span>{date}</span>
           </div>
           <div className="flex items-center text-sm text-gray-500 space-x-2 mb-2">
             <GrLanguage className="w-4 h-4 text-main" />
@@ -57,26 +49,12 @@ const ActivityCard = ({
             <span>{appliedNumber || 0} Applied</span>
           </div>
         </div>
-        <div className="flex justify-between items-center pt-4">
-          <div className="flex gap-2">
-            {sponsors &&
-              sponsors.length > 0 &&
-              sponsors.map((sponsorUrl, index) => (
-                <img
-                  key={index}
-                  src={sponsorUrl}
-                  alt={`Sponsor ${index + 1}`}
-                  className="w-12 h-12 rounded-full"
-                />
-              ))}
-          </div>
-          <button
-            className="bg-main text-white text-sm px-4 py-2 rounded-md hover:bg-main/90 transition"
-            onClick={() => navigate(`/activity/${_id}`)}
-          >
-            Details
-          </button>
-        </div>
+        <button
+          className="bg-main text-white text-sm px-4 py-2 rounded-md hover:bg-main/90 transition mt-4 self-start"
+          onClick={() => navigate(`/activity/${_id}`)}
+        >
+          Details
+        </button>
       </div>
     </div>
   );
@@ -132,12 +110,12 @@ const LatestActivityCard = ({
 const Categories = ({ selectedCategory, setSelectedCategory }) => {
   const categories = [
     "All Activities",
-    "Workshop",
-    "Publication",
-    "Conference",
-    "Event",
-    "Interview",
-    "Competition",
+    "Workshops",
+    "Publications",
+    "Conferences & Talks",
+    "Events",
+    "Interviews",
+    "Competitions",
   ];
 
   return (
@@ -163,8 +141,6 @@ const Activity = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All Activities");
   const [scrollPosition, setScrollPosition] = useState(0);
-  const [isFilterVisible, setIsFilterVisible] = useState(false);
-  const navigate = useNavigate();
 
   const scrollContainer = (direction) => {
     const container = document.getElementById("activities-container");
@@ -190,7 +166,7 @@ const Activity = () => {
     const fetchActivities = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:4000/api/activities"
+          "https://agya-new-main.vercel.app/api/activities"
         );
         const passedActivities = response.data.filter(
           (activity) => activity.status === "Passed"
@@ -224,18 +200,9 @@ const Activity = () => {
   }, [selectedCategory, activitiesData]);
 
   return (
-    <div className="flex flex-col lg:flex-row relative">
-      <div className="flex flex-col w-full lg:w-[61%] px-8">
-        <div className="flex items-center justify-between mb-10">
-          <h3 className="text-3xl font-bold">Activities</h3>
-
-          <button
-            className="lg:hidden bg-main text-white px-4 py-2 rounded-md hover:bg-main/90 transition"
-            onClick={() => setIsFilterVisible(true)}
-          >
-            Filters
-          </button>
-        </div>
+    <div className="flex">
+      <div className="flex flex-col w-[80%] px-8">
+        <h3 className="text-3xl text-center font-bold mb-10">Activities</h3>
 
         {/* Latest Activities Section */}
         <div className="flex items-center justify-between mb-4">
@@ -270,7 +237,7 @@ const Activity = () => {
               WebkitOverflowScrolling: "touch",
             }}
           >
-            {activitiesData.slice(0, 5).map((activity) => (
+            {filteredData.slice(0, 5).map((activity) => (
               <LatestActivityCard key={activity._id} {...activity} />
             ))}
           </div>
@@ -289,30 +256,12 @@ const Activity = () => {
         </div>
       </div>
 
-      <div className="hidden lg:block w-[27%]">
+      <div className="h-full">
         <FilterSidebar
           setFilteredData={setFilteredData}
           activitiesData={activitiesData}
         />
       </div>
-      {/* Mobile Filters Sidebar */}
-
-      {isFilterVisible && (
-        <div
-          className="fixed inset-0 bg-black/50 z-50 flex justify-end"
-          onClick={() => setIsFilterVisible(false)}
-        >
-          <div
-            className="bg-white w-4/5 max-w-[320px] h-full"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <FilterSidebar
-              setFilteredData={setFilteredData}
-              activitiesData={activitiesData}
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 };

@@ -16,7 +16,7 @@ export default function Search() {
   useEffect(() => {
     try {
       fetch(
-        `http://localhost:4000/api/articles/articles/search?search=${searchItem}`,
+        `https://agya-new-main.vercel.app/api/articles/articles/search?search=${searchItem}`,
         {}
       ).then((response) => {
         response.json().then((data) => {
@@ -51,7 +51,7 @@ export default function Search() {
                 >
                   <div className="overflow-hidden ">
                     <img
-                      src={article.featuredImage}
+                      src={article.image}
                       alt={article.title}
                       className=" w-full transition-transform duration-300 group-hover:scale-105"
                     />

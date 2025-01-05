@@ -6,8 +6,9 @@ import {
   Users,
   Tickets,
   FileX2,
-  Clock,
+  Clock2,
   Globe,
+  Clock,
   FileCheck2,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -25,11 +26,13 @@ const UserProfile = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
 
   useEffect(() => {
+    // Step 1: Get user info from localStorage
     const user = JSON.parse(localStorage.getItem("userInfo"));
     if (user) {
       setUserInfo(user);
     }
 
+    // Step 2: Fetch full user data from the database using userId
     const fetchUserData = async () => {
       try {
         const [
@@ -40,8 +43,16 @@ const UserProfile = () => {
         ] = await Promise.all([
           api.get(`/users/${user.id}`),
           api.get(`/activities?userId=${user.id}`),
-          api.get(`/posts/user/${user.id}`),
-          api.get(`/articles/user/${user.id}`),
+          api.get(`/posts/user/${user.id}`, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }),
+          api.get(`/articles/user/${user.id}`, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }),
         ]);
 
         setUserInfo(userResponse.data);
@@ -58,6 +69,7 @@ const UserProfile = () => {
     fetchUserData();
   }, []);
 
+  // Sort activities by date
   const sortedActivities = [...activities].sort(
     (a, b) => new Date(b.date) - new Date(a.date)
   );
@@ -95,9 +107,10 @@ const UserProfile = () => {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto p-4 sm:p-6 md:p-8">
+    <div className="w-full mx-auto p-6">
       {/* Profile Header */}
-      <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
+      <div className="flex items-center gap-4 mb-6">
+        {/* Profile Picture */}
         <div className="relative">
           <div className="w-28 h-28 rounded-full bg-gray-200 flex items-center justify-center">
             <img
@@ -113,7 +126,8 @@ const UserProfile = () => {
           </button>
         </div>
 
-        <div className="text-center sm:text-left">
+        {/* User Info */}
+        <div>
           <h2 className="text-lg font-semibold">
             {userInfo.firstname} {userInfo.lastname}
           </h2>
@@ -160,7 +174,7 @@ const UserProfile = () => {
           {sortedActivities.map((activity, index) => (
             <div
               key={index}
-              className="min-w-[250px] sm:min-w-[300px] flex-shrink-0 bg-white border rounded-xl overflow-hidden shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-200"
+              className="min-w-[300px] flex-shrink-0 bg-white border rounded-xl overflow-hidden shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-200"
               onClick={() => navigate(`/activity/${activity._id}`)}
             >
               <div className="relative">
@@ -171,7 +185,7 @@ const UserProfile = () => {
                 />
 
                 {activity.status && (
-                  <div className="absolute top-12 left-1/2 transform -translate-x-1/2 p-2 text-sm flex justify-center items-center gap-2 font-medium text-white rounded-lg bg-white">
+                  <div className="absolute top-12 left-24 p-4 text-sm flex justify-center items-center gap-2 font-medium text-white rounded-lg bg-white">
                     {activity.status === "Rejected" ? (
                       <FileX2 className="w-5 h-5 text-red-600" />
                     ) : activity.status === "Pending" ? (

@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 // import { useLocation } from "react-router-dom";
 
 export default function Filter() {
-  const {filter} = useParams()
+  const { filter } = useParams();
   const navigate = useNavigate();
   // const [articlesCount, setArticlesCount] = useState();
   const [articlesData, setArticlesData] = useState([]);
@@ -14,7 +14,7 @@ export default function Filter() {
   useEffect(() => {
     try {
       fetch(
-        `http://localhost:4000/api/articles/articles/filter?filter=${filter}`,
+        `https://agya-new-main.vercel.app/api/articles/articles/filter?filter=${filter}`,
         {}
       ).then((response) => {
         response.json().then((data) => {

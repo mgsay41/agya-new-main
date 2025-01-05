@@ -9,35 +9,6 @@ const CommentPopupPost = ({ isOpen, onClose, postID }) => {
   const [replyText, setReplyText] = useState("");
   const { setIsAuthUser, isAuthUser } = useContext(GlobalContext);
 
-  function formatDate(isoDateString) {
-    const date = new Date(isoDateString);
-    const now = new Date();
-
-    // Calculate time difference in days
-    const timeDiff = now - date;
-    const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-
-    // Format time
-    const formattedTime = date.toLocaleString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
-
-    // Determine day indicator
-    let dayIndicator;
-    if (daysDiff === 0) {
-      dayIndicator = "Today";
-    } else if (daysDiff === 1) {
-      dayIndicator = "1d";
-    } else {
-      dayIndicator = `${daysDiff}d`;
-    }
-
-    // Combine day and time
-    return `${dayIndicator} • ${formattedTime}`;
-  }
-
   useEffect(() => {
     setIsAuthUser(JSON.parse(localStorage.getItem("userInfo")));
   }, [setIsAuthUser]);
@@ -45,7 +16,7 @@ const CommentPopupPost = ({ isOpen, onClose, postID }) => {
     const fetchComments = async () => {
       try {
         const response = await fetch(
-          `http://localhost:4000/api/comments/post/${postID}`
+          `https://agya-new-main.vercel.app/api/comments/post/${postID}`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -66,7 +37,7 @@ const CommentPopupPost = ({ isOpen, onClose, postID }) => {
     if (newComment.trim() !== "") {
       try {
         const response = await fetch(
-          `http://localhost:4000/api/comments/post/${postID}`,
+          `https://agya-new-main.vercel.app/api/comments/post/${postID}`,
           {
             method: "POST",
             headers: {
@@ -112,7 +83,7 @@ const CommentPopupPost = ({ isOpen, onClose, postID }) => {
                 <div className="flex items-start space-x-4">
                   <img
                     className="w-10 h-10 rounded-full"
-                    src={comment.userId.image || "./avatar.jpeg"} //{comment.userId.image}
+                    src="./avatar.jpeg" //{comment.userId.image}
                     alt={comment.name}
                   />
                   <div className="flex-1">
@@ -122,9 +93,7 @@ const CommentPopupPost = ({ isOpen, onClose, postID }) => {
                     <p>{comment.content}</p>
                   </div>
                   <div className="flex flex-col items-end ml-4">
-                    <p className="text-DateTime text-sm">
-                      {formatDate(comment.createdAt)}
-                    </p>
+                    <p className="text-DateTime text-sm">{comment.createdAt}</p>
                     <button
                       className="bg-main text-white text-sm px-4 py-2 rounded-lg mt-2"
                       onClick={() =>

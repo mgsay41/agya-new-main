@@ -5,7 +5,7 @@ import { useEffect, useState, useContext } from "react";
 // import FormHelperText from "@mui/material/FormHelperText";
 // import FormControl from "@mui/material/FormControl";
 // import Select, { SelectChangeEvent } from "@mui/material/Select";
-import RichTextWithTranslate from "../components/richText"
+import RichTextWithTranslate from "../components/richText";
 import { GlobalContext } from "../context/GlobelContext";
 
 import { FaFile } from "react-icons/fa";
@@ -19,9 +19,9 @@ export default function NewArtical() {
   const [content, setContent] = useState("");
   const [tags, setTage] = useState([]);
   const [references, setReferences] = useState([]);
-  const [image, setImages] = useState("");               //feature image not exist in the article model
-  const [editorValue,setEditorValue]=useState("");
-  const [existTags, setExistTage] = useState(null);      // no tags model exist in schema
+  const [image, setImages] = useState(""); //feature image not exist in the article model
+  const [editorValue, setEditorValue] = useState("");
+  const [existTags, setExistTage] = useState(null); // no tags model exist in schema
 
   useEffect(() => {
     setIsAuthUser(JSON.parse(localStorage.getItem("userInfo")));
@@ -33,7 +33,6 @@ export default function NewArtical() {
     setTitle(doc.querySelector("h1, p")?.innerText || "No Title");
     setContent(doc.body.innerText);
     setImages(doc.querySelector("img")?.src || "No Image");
-
   };
 
   async function createArticle() {
@@ -43,16 +42,19 @@ export default function NewArtical() {
         content: content,
         authorId: isAuthUser.id, // Example MongoDB ObjectId
         tags: tags,
-        references: references
+        references: references,
       };
 
-      const response = await fetch("http://localhost:4000/articles", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(articleData),
-      });
+      const response = await fetch(
+        "https://agya-new-main.vercel.app/articles",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(articleData),
+        }
+      );
 
       if (!response.ok) {
         const error = await response.json();
@@ -65,7 +67,6 @@ export default function NewArtical() {
       console.error("Error creating article:", error.message);
     }
   }
-
 
   return (
     <div className="px-[150px] ">
@@ -97,7 +98,9 @@ export default function NewArtical() {
             </div>
           </div> */}
           <div>
-          <RichTextWithTranslate onEditorChange={(value) => setEditorValue(value)} />
+            <RichTextWithTranslate
+              onEditorChange={(value) => setEditorValue(value)}
+            />
           </div>
           <h3 className=" font-semibold my-5">Featured Image</h3>
           <div className=" flex flex-col ">
@@ -231,7 +234,8 @@ export default function NewArtical() {
           </div>
         </div>
         <div className="flex justify-center items-center">
-          <button className=" bg-main text-white py-[12px] px-[100px] rounded-[5px] my-8"
+          <button
+            className=" bg-main text-white py-[12px] px-[100px] rounded-[5px] my-8"
             onClick={() => {
               handleExtractData(); // Extract data
               createArticle(); // Create article

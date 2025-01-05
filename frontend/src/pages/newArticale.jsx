@@ -109,7 +109,7 @@ export default function NewArticle() {
       };
 
       const articleResponse = await fetch(
-        "http://localhost:4000/api/articles",
+        "https://agya-new-main.vercel.app/api/articles",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -128,7 +128,7 @@ export default function NewArticle() {
         formData.append("file", featuredImage);
 
         const imageResponse = await fetch(
-          `http://localhost:4000/api/uploads/articles/${newArticle._id}`,
+          `https://agya-new-main.vercel.app/api/uploads/articles/${newArticle._id}`,
           {
             method: "POST",
             body: formData,
@@ -152,12 +152,15 @@ export default function NewArticle() {
 
   async function fetchTags() {
     try {
-      const response = await fetch("http://localhost:4000/api/tags/all", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        "https://agya-new-main.vercel.app/api/tags/all",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!response.ok) {
         const error = await response.json();
@@ -192,7 +195,6 @@ export default function NewArticle() {
       <Navbar />
       <form className="article" onSubmit={(e) => e.preventDefault()}>
         <div className="mt-8">
-          <h3 className="font-semibold my-5">Title</h3>
           <input
             type="text"
             value={title}
@@ -200,7 +202,6 @@ export default function NewArticle() {
             placeholder="Article Title"
             className="w-full mb-4 p-2 border border-gray-300 rounded-md"
           />
-          <h3 className="font-semibold my-5">Description</h3>
 
           <ReactQuill
             theme="snow"

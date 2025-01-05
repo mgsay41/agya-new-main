@@ -55,7 +55,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
 
   const logout = async (e) => {
-    fetch("http://localhost:4000/api/auth/logout", {
+    fetch("https://agya-new-main.vercel.app/api/auth/logout", {
       method: "POST",
       credentials: "include",
     }).then(() => {
@@ -228,15 +228,15 @@ const Sidebar = () => {
       <div className="mt-auto px-4 py-6 text-xs text-gray-400">
         <div className="w-3/4 mx-auto border-t border-gray-200">
           <p className="text-center mt-4 mb-2">
-            <a href="/privacy-policy" className="hover:text-main">
+            <a href="#" className="hover:text-main">
               Privacy Policy
             </a>{" "}
             |{" "}
-            <a href="/content-policy" className="hover:text-main">
+            <a href="#" className="hover:text-main">
               Content Policy
             </a>{" "}
             |{" "}
-            <a href="/terms-of-use" className="hover:text-main">
+            <a href="#" className="hover:text-main">
               Terms of Use
             </a>
           </p>

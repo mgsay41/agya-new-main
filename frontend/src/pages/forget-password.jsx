@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Toast } from 'primereact/toast';
+import { Toast } from "primereact/toast";
 
 import CountdownTimer from "../components/countDown/index";
 export default function ForgetPassword() {
@@ -33,103 +33,109 @@ export default function ForgetPassword() {
     setOtp(newOTP);
   };
 
-  const handleOnKeyDown = (
-    e,
-    index
-  ) => {
+  const handleOnKeyDown = (e, index) => {
     currentOTPIndex = index;
     if (e.key === "Backspace") setActiveOTPIndex(currentOTPIndex - 1);
   };
   useEffect(() => {
     inputRef.current?.focus();
-  }, [activeOTPIndex,inputRef]);
+  }, [activeOTPIndex, inputRef]);
   const SendOTB = async (e) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:4000/api/otp/sendOTP", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        message,
-      }),
-    });
+    const response = await fetch(
+      "https://agya-new-main.vercel.app/api/otp/sendOTP",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          message,
+        }),
+      }
+    );
     const finalData = await response.json();
     if (finalData.success) {
-        toastBC.current.show({
-            severity: 'success',
-            summary: finalData.message,
-            sticky: true,
-        });
+      toastBC.current.show({
+        severity: "success",
+        summary: finalData.message,
+        sticky: true,
+      });
       setPopup(true);
     } else {
-        toastBC.current.show({
-            severity: 'error',
-            summary: finalData.message,
-            sticky: true,
-        });
+      toastBC.current.show({
+        severity: "error",
+        summary: finalData.message,
+        sticky: true,
+      });
       setPopup(false);
     }
   };
   const notReceived = async (e) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:4000/api/otp/sendOTP", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        message,
-      }),
-    });
+    const response = await fetch(
+      "https://agya-new-main.vercel.app/api/otp/sendOTP",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          message,
+        }),
+      }
+    );
     const finalData = await response.json();
     if (finalData.success) {
       setTimer(true);
       toastBC.current.show({
-        severity: 'success',
+        severity: "success",
         summary: finalData.message,
         sticky: true,
-    });
+      });
       disabledButton();
     } else {
-        toastBC.current.show({
-            severity: 'error',
-            summary: finalData.message,
-            sticky: true,
-        });
+      toastBC.current.show({
+        severity: "error",
+        summary: finalData.message,
+        sticky: true,
+      });
       disabledButton();
     }
   };
   const VerifyOTP = async (e) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:4000/api/otp/verifyOTP", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        otp: otp.join(""),
-      }),
-    });
+    const response = await fetch(
+      "https://agya-new-main.vercel.app/api/otp/verifyOTP",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          otp: otp.join(""),
+        }),
+      }
+    );
     const finalData = await response.json();
     if (finalData.success) {
-        toastBC.current.show({
-            severity: 'success',
-            summary: finalData.message,
-            sticky: true,
-        });
-        setTimeout(() => {
+      toastBC.current.show({
+        severity: "success",
+        summary: finalData.message,
+        sticky: true,
+      });
+      setTimeout(() => {
         window.location.href = `/edit-password/${finalData.user._id}`;
       }, 500);
-    }else {
-        toastBC.current.show({
-            severity: 'error',
-            summary: finalData.message,
-            sticky: true,
-        });
+    } else {
+      toastBC.current.show({
+        severity: "error",
+        summary: finalData.message,
+        sticky: true,
+      });
     }
   };
   return (
@@ -159,17 +165,17 @@ export default function ForgetPassword() {
             </div>
             <span className=" block text-red-600"></span>
             <button className=" text-white py-2 w-[280px] rounded-xl mt-4 hover:bg-main/80 duration-500 bg-main">
-               Send
+              Send
             </button>
           </form>
-          <a className=" mt-4 block text-sky-700 cursor-pointer" >
-             Return to Home Page →
+          <a className=" mt-4 block text-sky-700 cursor-pointer">
+            Return to Home Page →
           </a>
         </div>
       </div>
       {popup === true ? (
         <div
-        className={
+          className={
             "absolute top-0  w-full bg-gray-200/80 h-screen flex justify-center items-center flex-col"
           }
         >
@@ -179,7 +185,7 @@ export default function ForgetPassword() {
             </div>
             <h3> Enter OTP </h3>
             <p className=" text-gray-500 my-3 text-md w-64 ml-10">
-                the otp has sended to your email
+              the otp has sended to your email
             </p>
             <form onSubmit={VerifyOTP}>
               <div className="flex space-x-2 justify-center items-center">
@@ -212,16 +218,16 @@ export default function ForgetPassword() {
                 </>
               ) : null}
               <button className=" text-white py-2 w-[250px] mt-4 hover:bg-main/80 duration-300 bg-main rounded-lg">
-                   Confirm 
+                Confirm
               </button>
             </form>
             <button
-                className="text-center block mx-auto my-2 text-main hover:opacity-60 duration-300 cursor-pointer disabled:opacity-60 disabled:pointer-events-none"
-                onClick={notReceived}
-                disabled={disabled}
-              >
-                Resend the OTP
-              </button>
+              className="text-center block mx-auto my-2 text-main hover:opacity-60 duration-300 cursor-pointer disabled:opacity-60 disabled:pointer-events-none"
+              onClick={notReceived}
+              disabled={disabled}
+            >
+              Resend the OTP
+            </button>
           </div>
         </div>
       ) : null}

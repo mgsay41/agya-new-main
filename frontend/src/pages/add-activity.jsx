@@ -125,7 +125,7 @@ const AddActivity = () => {
 
       try {
         const response = await fetch(
-          `http://localhost:4000/api/uploads/activities/${activityId}/sponsors`,
+          `https://agya-new-main.vercel.app/api/uploads/activities/${activityId}/sponsors`,
           {
             method: "POST",
             body: formData,
@@ -194,7 +194,7 @@ const AddActivity = () => {
       };
 
       const activityResponse = await fetch(
-        "http://localhost:4000/api/activities",
+        "https://agya-new-main.vercel.app/api/activities",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -214,7 +214,7 @@ const AddActivity = () => {
         featuredFormData.append("file", featuredImage);
 
         const featuredResponse = await fetch(
-          `http://localhost:4000/api/uploads/activities/${newActivity._id}`,
+          `https://agya-new-main.vercel.app/api/uploads/activities/${newActivity._id}`,
           {
             method: "POST",
             body: featuredFormData,
@@ -231,7 +231,7 @@ const AddActivity = () => {
 
         if (sponsorUrls.length > 0) {
           await fetch(
-            `http://localhost:4000/api/activities/${newActivity._id}`,
+            `https://agya-new-main.vercel.app/api/activities/${newActivity._id}`,
             {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
@@ -260,7 +260,7 @@ const AddActivity = () => {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="mb-8">
         <nav className="text-gray-500 text-sm">
           <span>Activities</span> / <span>New Activity</span> /{" "}
@@ -270,10 +270,8 @@ const AddActivity = () => {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-          {/* Left Column */}
-
-          <div className="space-y-4 sm:space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-6">
             <div>
               <label className="block mb-2">
                 <span className="text-red-500 mr-1">*</span>Activity Name
@@ -307,7 +305,7 @@ const AddActivity = () => {
               </select>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block mb-2">Date</label>
                 <Calendar
@@ -346,7 +344,7 @@ const AddActivity = () => {
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block mb-2">Location Type</label>
                 <select
@@ -374,7 +372,7 @@ const AddActivity = () => {
               )}
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block mb-2">Price Type</label>
                 <select
@@ -403,7 +401,7 @@ const AddActivity = () => {
             </div>
           </div>
 
-          <div className="space-y-4 sm:space-y-6">
+          <div className="space-y-6">
             <div>
               <h3 className="font-semibold mb-4">Featured Image</h3>
               <div className="relative">
@@ -426,7 +424,7 @@ const AddActivity = () => {
 
             <div>
               <h3 className="font-semibold mb-4">Sponsor Images</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-3 gap-4">
                 {sponsorPreviews.map((preview, index) => (
                   <div key={index} className="relative">
                     <img
@@ -449,13 +447,13 @@ const AddActivity = () => {
                 multiple
                 accept="image/*"
                 onChange={handleSponsorImagesChange}
-                className="mt-4 w-full"
+                className="mt-4"
               />
             </div>
           </div>
         </div>
 
-        <div className="space-y-20 sm:space-y-28 mb-4">
+        <div className="space-y-14">
           <div>
             <label className="block mb-2">
               <span className="text-red-500 mr-1">*</span>Description
@@ -489,7 +487,7 @@ const AddActivity = () => {
               name="externalLink"
               value={formData.externalLink}
               onChange={handleInputChange}
-              className="w-full p-2 border rounded-lg "
+              className="w-full p-2 border rounded-lg"
               placeholder="Enter external link"
             />
           </div>
@@ -507,11 +505,11 @@ const AddActivity = () => {
           </div>
         </div>
 
-        <div className="flex justify-center pt-6">
+        <div className="flex justify-center">
           <button
             type="submit"
             disabled={uploading}
-            className="bg-main text-white px-6 sm:px-8 py-2 rounded-lg disabled:opacity-50 w-full sm:w-auto"
+            className="bg-main text-white px-8 py-2 rounded-lg disabled:opacity-50"
           >
             {uploading ? "Creating Activity..." : "Submit Activity"}
           </button>

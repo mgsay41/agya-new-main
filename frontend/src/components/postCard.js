@@ -35,7 +35,6 @@ const PostCard = ({ onClick, item }) => {
     setShowReportButton((prev) => !prev);
   };
 
-
   useEffect(() => {
     setIsAuthUser(JSON.parse(localStorage.getItem("userInfo")));
   }, [setIsAuthUser]);
@@ -76,7 +75,7 @@ const PostCard = ({ onClick, item }) => {
   const handleLike = async () => {
     try {
       const response = await fetch(
-        `http://localhost:4000/api/posts/like/${item._id}`,
+        `https://agya-new-main.vercel.app/api/posts/like/${item._id}`,
         {
           method: "POST",
           headers: {
@@ -109,7 +108,7 @@ const PostCard = ({ onClick, item }) => {
   const handleDislike = async () => {
     try {
       const response = await fetch(
-        `http://localhost:4000/api/posts/dislike/${item._id}`,
+        `https://agya-new-main.vercel.app/api/posts/dislike/${item._id}`,
         {
           method: "POST",
           headers: {

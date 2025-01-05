@@ -39,7 +39,7 @@ const SidebarGuest = () => {
   const register = async (e) => {
     // setPageLevelLoader(true);
     e.preventDefault();
-    const data = await fetch("http://localhost:4000/api/auth/register", {
+    const data = await fetch("https://agya-new-main.vercel.app/api/auth/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -66,7 +66,7 @@ const SidebarGuest = () => {
   const login = async (e) => {
     // setPageLevelLoader(true);
     e.preventDefault();
-    const response = await fetch("http://localhost:4000/api/auth/login", {
+    const response = await fetch("https://agya-new-main.vercel.app/api/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -397,7 +397,7 @@ const SidebarGuest = () => {
         <div className="flex flex-col items-center py-8 bg-background">
           {/* Profile Image */}
           <img
-            src="http://localhost:4000/uploads/default.png" // Replace with the actual image URL
+            src="https://agya-new-main.vercel.app/uploads/default.png" // Replace with the actual image URL
             alt="Profile"
             className="w-20 h-20 rounded-full mb-4"
           />
@@ -479,15 +479,15 @@ const SidebarGuest = () => {
         <div className="mt-auto px-4 py-6 text-xs text-gray-400 bg-background">
           <div className="w-3/4 mx-auto border-t border-gray-200">
             <p className="text-center mt-4 mb-2">
-              <a href="/privacy-policy" className="hover:text-main">
+              <a href="#" className="hover:text-main">
                 Privacy Policy
               </a>{" "}
               |{" "}
-              <a href="/content-policy" className="hover:text-main">
+              <a href="#" className="hover:text-main">
                 Content Policy
               </a>{" "}
               |{" "}
-              <a href="/terms-of-use" className="hover:text-main">
+              <a href="#" className="hover:text-main">
                 Terms of Use
               </a>
             </p>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext,useRef } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { GlobalContext } from "../context/GlobelContext.js";
 import { Toast } from "primereact/toast";
 
@@ -44,21 +44,24 @@ const Report = ({ onClose, item }) => {
       const payload = {
         userId: isAuthUser?.id, // Safely access user ID
         content: text,
-        username:isAuthUser?.firstname,
-         userImage:isAuthUser?.image,
+        username: isAuthUser?.firstname,
+        userImage: isAuthUser?.image,
         ...(articleID && { articleId: articleID }),
         ...(postID && { postId: postID }),
         ...(commentID && { commentId: commentID }),
         ...(replyID && { replyId: replyID }),
       };
 
-      const response = await fetch("http://localhost:4000/api/reports", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        "https://agya-new-main.vercel.app/api/reports",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to submit the report");
