@@ -20,7 +20,7 @@ const CommentPopup = ({ isOpen, onClose, articleID }) => {
     const fetchComments = async () => {
       try {
         const response = await fetch(
-          `https://agya-new-main.vercel.app/api/comments/article/${articleID}`
+          `https://agya-new-main-umye.vercel.app/api/comments/article/${articleID}`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -34,7 +34,7 @@ const CommentPopup = ({ isOpen, onClose, articleID }) => {
     const fetchReply = async () => {
       try {
         const response = await fetch(
-          `https://agya-new-main.vercel.app/api/replies/${articleID}/replies`
+          `https://agya-new-main-umye.vercel.app/api/replies/${articleID}/replies`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -61,7 +61,7 @@ const CommentPopup = ({ isOpen, onClose, articleID }) => {
     if (newComment.trim() !== "") {
       try {
         const response = await fetch(
-          `https://agya-new-main.vercel.app/api/comments/article/${articleID}`,
+          `https://agya-new-main-umye.vercel.app/api/comments/article/${articleID}`,
           {
             method: "POST",
             headers: {
@@ -105,7 +105,7 @@ const CommentPopup = ({ isOpen, onClose, articleID }) => {
     }
 
     const response = await fetch(
-      `https://agya-new-main.vercel.app/api/replies/${id}/reply`,
+      `https://agya-new-main-umye.vercel.app/api/replies/${id}/reply`,
       {
         method: "POST",
         headers: {

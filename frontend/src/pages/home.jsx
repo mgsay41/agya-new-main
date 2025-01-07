@@ -19,7 +19,7 @@ function Home() {
   const fetchPosts = async () => {
     try {
       const response = await fetch(
-        "https://agya-new-main.vercel.app/api/posts",
+        "https://agya-new-main-umye.vercel.app/api/posts",
         {
           method: "GET",
           headers: {
@@ -41,7 +41,7 @@ function Home() {
   const fetchArticles = async () => {
     try {
       const response = await fetch(
-        "https://agya-new-main.vercel.app/api/articles",
+        "https://agya-new-main-umye.vercel.app/api/articles",
         {
           method: "GET",
           headers: {

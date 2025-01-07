@@ -14,7 +14,7 @@ const LatestActivities = () => {
   const fetchActivities = async () => {
     try {
       const response = await fetch(
-        "https://agya-new-main.vercel.app/api/activities/",
+        "https://agya-new-main-umye.vercel.app/api/activities/",
         {
           method: "GET",
           headers: {

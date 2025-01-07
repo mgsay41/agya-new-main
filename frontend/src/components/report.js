@@ -53,7 +53,7 @@ const Report = ({ onClose, item }) => {
       };
 
       const response = await fetch(
-        "https://agya-new-main.vercel.app/api/reports",
+        "https://agya-new-main-umye.vercel.app/api/reports",
         {
           method: "POST",
           headers: {

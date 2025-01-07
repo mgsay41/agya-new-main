@@ -166,7 +166,7 @@ const Activity = () => {
     const fetchActivities = async () => {
       try {
         const response = await axios.get(
-          "https://agya-new-main.vercel.app/api/activities"
+          "https://agya-new-main-umye.vercel.app/api/activities"
         );
         const passedActivities = response.data.filter(
           (activity) => activity.status === "Passed"

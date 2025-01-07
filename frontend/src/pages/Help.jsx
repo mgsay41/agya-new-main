@@ -58,7 +58,7 @@ const Help = () => {
     try {
       // Send a POST request to the backend to save the message
       const response = await axios.post(
-        "https://agya-new-main.vercel.app/api/messages",
+        "https://agya-new-main-umye.vercel.app/api/messages",
         messageData
       );
       alert("Your message has been sent successfully.");

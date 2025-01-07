@@ -16,7 +16,7 @@ const CommentPopupPost = ({ isOpen, onClose, postID }) => {
     const fetchComments = async () => {
       try {
         const response = await fetch(
-          `https://agya-new-main.vercel.app/api/comments/post/${postID}`
+          `https://agya-new-main-umye.vercel.app/api/comments/post/${postID}`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -37,7 +37,7 @@ const CommentPopupPost = ({ isOpen, onClose, postID }) => {
     if (newComment.trim() !== "") {
       try {
         const response = await fetch(
-          `https://agya-new-main.vercel.app/api/comments/post/${postID}`,
+          `https://agya-new-main-umye.vercel.app/api/comments/post/${postID}`,
           {
             method: "POST",
             headers: {

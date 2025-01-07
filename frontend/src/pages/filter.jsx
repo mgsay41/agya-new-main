@@ -14,7 +14,7 @@ export default function Filter() {
   useEffect(() => {
     try {
       fetch(
-        `https://agya-new-main.vercel.app/api/articles/articles/filter?filter=${filter}`,
+        `https://agya-new-main-umye.vercel.app/api/articles/articles/filter?filter=${filter}`,
         {}
       ).then((response) => {
         response.json().then((data) => {

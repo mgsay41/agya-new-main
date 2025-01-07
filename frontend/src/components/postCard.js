@@ -75,7 +75,7 @@ const PostCard = ({ onClick, item }) => {
   const handleLike = async () => {
     try {
       const response = await fetch(
-        `https://agya-new-main.vercel.app/api/posts/like/${item._id}`,
+        `https://agya-new-main-umye.vercel.app/api/posts/like/${item._id}`,
         {
           method: "POST",
           headers: {
@@ -108,7 +108,7 @@ const PostCard = ({ onClick, item }) => {
   const handleDislike = async () => {
     try {
       const response = await fetch(
-        `https://agya-new-main.vercel.app/api/posts/dislike/${item._id}`,
+        `https://agya-new-main-umye.vercel.app/api/posts/dislike/${item._id}`,
         {
           method: "POST",
           headers: {

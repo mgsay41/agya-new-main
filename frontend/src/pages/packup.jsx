@@ -46,7 +46,7 @@ export default function NewArtical() {
       };
 
       const response = await fetch(
-        "https://agya-new-main.vercel.app/articles",
+        "https://agya-new-main-umye.vercel.app/articles",
         {
           method: "POST",
           headers: {
