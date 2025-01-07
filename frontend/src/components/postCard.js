@@ -73,6 +73,12 @@ const PostCard = ({ onClick, item }) => {
   };
 
   const handleLike = async () => {
+    if (!isAuthUser) {
+      // Trigger the login popup
+      alert("You must be logged in to like a post.");
+      return;
+    }
+
     try {
       const response = await fetch(
         `https://agya-new-main-umye.vercel.app/api/posts/like/${item._id}`,
@@ -106,6 +112,12 @@ const PostCard = ({ onClick, item }) => {
   };
 
   const handleDislike = async () => {
+    if (!isAuthUser) {
+      // Trigger the login popup
+      alert("You must be logged in to dislike a post.");
+      return;
+    }
+
     try {
       const response = await fetch(
         `https://agya-new-main-umye.vercel.app/api/posts/dislike/${item._id}`,
