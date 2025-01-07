@@ -76,6 +76,11 @@ const SocialCard = ({ onClick, item }) => {
   };
 
   const handleLike = async () => {
+    if (!isAuthUser) {
+      alert("Please log in to like the article."); // Replace this with your login popup logic
+      return;
+    }
+
     try {
       const response = await fetch(
         `https://agya-new-main-umye.vercel.app/api/articles/like/${item._id}`,
@@ -111,6 +116,11 @@ const SocialCard = ({ onClick, item }) => {
   };
 
   const handleDislike = async () => {
+    if (!isAuthUser) {
+      alert("Please log in to dislike the article."); // Replace this with your login popup logic
+      return;
+    }
+
     try {
       const response = await fetch(
         `https://agya-new-main-umye.vercel.app/api/articles/dislike/${item._id}`,
