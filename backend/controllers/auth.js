@@ -98,6 +98,14 @@ export const login = async (req, res) => {
   }
 
   const user = await User.findOne({ email });
+  const ban = await User.findOne({status : "ban"})
+
+  if(ban) {
+    return res.json({
+      success: false,
+      message: "this user is banned try with other email",
+    });
+  }
 
   if (!user) {
     return res.json({
@@ -130,6 +138,9 @@ export const login = async (req, res) => {
           email: user.email,
           id: user._id,
           firstname: user.firstname,
+          lastname: user.lastname,
+          affiliation: user.affiliation,
+          academic_title: user.academic_title,
           image: user.image,
           createdAt: user.createdAt,
         });
@@ -149,7 +160,7 @@ export const login = async (req, res) => {
 export const Logout = async (req, res) => {
   res.cookie("token", "", { maxAge: 0 }).json({
     success: true,
-    massage: " تم تسجيل الخروج ",
+    massage: " logout successful ",
   });
 };
 
