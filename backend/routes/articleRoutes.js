@@ -186,7 +186,7 @@ router.get("/articles/filter", async (req, res) => {
   const filter = req.query.filter || "";
 
   const articles = await Article.find({
-    tags: filter,
+    tags: [filter],
   })
 
     .skip(page * limit)
