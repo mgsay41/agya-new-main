@@ -81,7 +81,7 @@ router.post(
       }
 
       const logoUrl = `${
-        process.env.BASE_URL || "https://agya-new-main.vercel.app"
+        process.env.BASE_URL || "https://agya-new-main-umye.vercel.app"
       }/uploads/sponsors/${req.file.filename}`;
 
       const newSponsor = { name, logo: logoUrl };

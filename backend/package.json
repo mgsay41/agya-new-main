@@ -32,5 +32,5 @@
     "otp-generator": "^4.0.1",
     "python-shell": "^5.0.0"
   },
-  "proxy": "https://agya-new-main.vercel.app"
+  "proxy": "https://agya-new-main-umye.vercel.app"
 }

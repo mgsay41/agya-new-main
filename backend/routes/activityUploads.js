@@ -57,7 +57,7 @@ router.post("/:activityId", upload.single("file"), async (req, res) => {
     }
 
     const imageUrl = `${
-      process.env.BASE_URL || "https://agya-new-main.vercel.app"
+      process.env.BASE_URL || "https://agya-new-main-umye.vercel.app"
     }/uploads/activities/${req.file.filename}`;
 
     const updatedActivity = await Activity.findByIdAndUpdate(
@@ -109,7 +109,7 @@ router.post(
       await fs.rename(req.file.path, sponsorFilePath);
 
       const imageUrl = `${
-        process.env.BASE_URL || "https://agya-new-main.vercel.app"
+        process.env.BASE_URL || "https://agya-new-main-umye.vercel.app"
       }/uploads/activities/sponsors/${sponsorFileName}`;
 
       res.status(200).json({ success: true, imageUrl });
