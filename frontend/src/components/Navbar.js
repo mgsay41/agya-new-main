@@ -5,6 +5,7 @@ import { Toast } from "primereact/toast";
 import Sidebar1 from "../components/sidebar";
 import SidebarGuest from "../components/sidebar-guest.js";
 import React, { useState, useEffect, useContext, useRef } from "react";
+import Cookies from "js-cookie";
 import {
   Search,
   Plus,
