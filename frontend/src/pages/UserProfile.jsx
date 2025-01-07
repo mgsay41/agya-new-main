@@ -6,16 +6,14 @@ import {
   Users,
   Tickets,
   FileX2,
-  Clock2,
-  Globe,
   Clock,
+  Globe,
   FileCheck2,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import SocialCard from "../components/SocialCard";
 import PostCard from "../components/postCard";
 import api from "../axios";
-
 const UserProfile = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(null);
@@ -24,15 +22,11 @@ const UserProfile = () => {
   const [posts, setPosts] = useState([]);
   const [articles, setArticles] = useState([]);
   const [scrollPosition, setScrollPosition] = useState(0);
-
   useEffect(() => {
-    // Step 1: Get user info from localStorage
     const user = JSON.parse(localStorage.getItem("userInfo"));
     if (user) {
       setUserInfo(user);
     }
-
-    // Step 2: Fetch full user data from the database using userId
     const fetchUserData = async () => {
       try {
         const [
@@ -43,18 +37,9 @@ const UserProfile = () => {
         ] = await Promise.all([
           api.get(`/users/${user.id}`),
           api.get(`/activities?userId=${user.id}`),
-          api.get(`/posts/user/${user.id}`, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }),
-          api.get(`/articles/user/${user.id}`, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }),
+          api.get(`/posts/user/${user.id}`),
+          api.get(`/articles/user/${user.id}`),
         ]);
-
         setUserInfo(userResponse.data);
         setActivities(activitiesResponse.data || []);
         setPosts(postsResponse.data || []);
@@ -65,52 +50,40 @@ const UserProfile = () => {
         setIsLoading(false);
       }
     };
-
     fetchUserData();
   }, []);
-
-  // Sort activities by date
   const sortedActivities = [...activities].sort(
     (a, b) => new Date(b.date) - new Date(a.date)
   );
-
   const scrollContainer = (direction) => {
     const container = document.getElementById("activities-container");
     const scrollAmount = 300;
-
     if (container) {
       const newPosition =
         direction === "right"
           ? scrollPosition + scrollAmount
           : scrollPosition - scrollAmount;
-
       container.scrollTo({
         left: newPosition,
         behavior: "smooth",
       });
-
       setScrollPosition(newPosition);
     }
   };
-
   const combinedItems = [...posts, ...articles];
   const sortedItems = combinedItems.sort(
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
   );
-
   if (isLoading) {
     return <div>Loading user profile...</div>;
   }
-
   if (!userInfo) {
     return <div>Please log in</div>;
   }
-
   return (
-    <div className="w-full mx-auto p-6">
+    <div className="w-full max-w-7xl mx-auto p-4 sm:p-6 md:p-8">
       {/* Profile Header */}
-      <div className="flex items-center gap-4 mb-6">
-        {/* Profile Picture */}
+      <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
         <div className="relative">
           <div className="w-28 h-28 rounded-full bg-gray-200 flex items-center justify-center">
             <img
@@ -125,9 +98,7 @@ const UserProfile = () => {
             </Link>
           </button>
         </div>
-
-        {/* User Info */}
-        <div>
+        <div className="text-center sm:text-left">
           <h2 className="text-lg font-semibold">
             {userInfo.firstname} {userInfo.lastname}
           </h2>
@@ -136,7 +107,6 @@ const UserProfile = () => {
           </p>
         </div>
       </div>
-
       {/* Section Title with Navigation Buttons */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-xl font-bold">Shared Activities</h3>
@@ -159,7 +129,6 @@ const UserProfile = () => {
           </div>
         )}
       </div>
-
       {/* Activities Container */}
       <div className="relative overflow-hidden">
         <div
@@ -174,7 +143,7 @@ const UserProfile = () => {
           {sortedActivities.map((activity, index) => (
             <div
               key={index}
-              className="min-w-[300px] flex-shrink-0 bg-white border rounded-xl overflow-hidden shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-200"
+              className="min-w-[250px] sm:min-w-[300px] flex-shrink-0 bg-white border rounded-xl overflow-hidden shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-200"
               onClick={() => navigate(`/activity/${activity._id}`)}
             >
               <div className="relative">
@@ -183,9 +152,8 @@ const UserProfile = () => {
                   alt={activity.activityName}
                   className="w-full h-40 object-cover"
                 />
-
                 {activity.status && (
-                  <div className="absolute top-12 left-24 p-4 text-sm flex justify-center items-center gap-2 font-medium text-white rounded-lg bg-white">
+                  <div className="absolute top-12 left-1/2 transform -translate-x-1/2 p-2 text-sm flex justify-center items-center gap-2 font-medium text-white rounded-lg bg-white">
                     {activity.status === "Rejected" ? (
                       <FileX2 className="w-5 h-5 text-red-600" />
                     ) : activity.status === "Pending" ? (
@@ -207,7 +175,6 @@ const UserProfile = () => {
                   </div>
                 )}
               </div>
-
               <div className="p-4">
                 <h4 className="text-base font-bold mb-1">
                   {activity.activityName}
@@ -218,13 +185,11 @@ const UserProfile = () => {
                 <p className="text-sm text-gray-600 mb-2">
                   {activity.organization}
                 </p>
-
                 <div className="mt-3 text-sm text-gray-600 flex flex-col gap-2">
                   <div className="flex gap-2 items-center">
                     <Globe className="w-4 h-4 text-main" />
                     <span>{activity.location}</span>
                   </div>
-
                   <div className="flex gap-2 items-center">
                     <Tickets className="w-4 h-4 text-main" />
                     <span>{activity.price}</span>
@@ -239,7 +204,6 @@ const UserProfile = () => {
           ))}
         </div>
       </div>
-
       {/* Posts and Articles Section */}
       <h3 className="text-xl font-bold my-6">Your Activities</h3>
       <div className="flex flex-col gap-3 justify-center items-center">
@@ -258,5 +222,4 @@ const UserProfile = () => {
     </div>
   );
 };
-
 export default UserProfile;

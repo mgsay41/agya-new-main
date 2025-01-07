@@ -3,12 +3,34 @@ import { IoSend } from "react-icons/io5";
 import { GlobalContext } from "../context/GlobelContext.js";
 const CommentPopupPost = ({ isOpen, onClose, postID }) => {
   const [comments, setComments] = useState([]);
-
   const [newComment, setNewComment] = useState("");
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState("");
   const { setIsAuthUser, isAuthUser } = useContext(GlobalContext);
-
+  function formatDate(isoDateString) {
+    const date = new Date(isoDateString);
+    const now = new Date();
+    // Calculate time difference in days
+    const timeDiff = now - date;
+    const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+    // Format time
+    const formattedTime = date.toLocaleString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+    // Determine day indicator
+    let dayIndicator;
+    if (daysDiff === 0) {
+      dayIndicator = "Today";
+    } else if (daysDiff === 1) {
+      dayIndicator = "1d";
+    } else {
+      dayIndicator = `${daysDiff}d`;
+    }
+    // Combine day and time
+    return `${dayIndicator} • ${formattedTime}`;
+  }
   useEffect(() => {
     setIsAuthUser(JSON.parse(localStorage.getItem("userInfo")));
   }, [setIsAuthUser]);
@@ -16,7 +38,7 @@ const CommentPopupPost = ({ isOpen, onClose, postID }) => {
     const fetchComments = async () => {
       try {
         const response = await fetch(
-          `https://agya-new-main-umye.vercel.app/api/comments/post/${postID}`
+          `http://localhost:4000/api/comments/post/${postID}`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -28,10 +50,8 @@ const CommentPopupPost = ({ isOpen, onClose, postID }) => {
         console.error("Error fetching comments:", error);
       }
     };
-
     fetchComments();
   }, [postID]);
-
   // Add a new comment
   const handleCommentSubmit = async () => {
     if (newComment.trim() !== "") {
@@ -50,11 +70,9 @@ const CommentPopupPost = ({ isOpen, onClose, postID }) => {
             }),
           }
         );
-
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-
         const newCommentData = await response.json();
         setComments((prevComments) => [...prevComments, newCommentData]);
         setNewComment("");
@@ -63,9 +81,7 @@ const CommentPopupPost = ({ isOpen, onClose, postID }) => {
       }
     }
   };
-
   if (!isOpen) return null;
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white w-11/12 md:w-1/2 p-6 rounded-lg shadow-lg relative">
@@ -83,7 +99,7 @@ const CommentPopupPost = ({ isOpen, onClose, postID }) => {
                 <div className="flex items-start space-x-4">
                   <img
                     className="w-10 h-10 rounded-full"
-                    src="./avatar.jpeg" //{comment.userId.image}
+                    src={comment.userId.image || "./avatar.jpeg"} //{comment.userId.image}
                     alt={comment.name}
                   />
                   <div className="flex-1">
@@ -93,7 +109,9 @@ const CommentPopupPost = ({ isOpen, onClose, postID }) => {
                     <p>{comment.content}</p>
                   </div>
                   <div className="flex flex-col items-end ml-4">
-                    <p className="text-DateTime text-sm">{comment.createdAt}</p>
+                    <p className="text-DateTime text-sm">
+                      {formatDate(comment.createdAt)}
+                    </p>
                     <button
                       className="bg-main text-white text-sm px-4 py-2 rounded-lg mt-2"
                       onClick={() =>
@@ -107,7 +125,6 @@ const CommentPopupPost = ({ isOpen, onClose, postID }) => {
                   </div>
                 </div>
               </div>
-
               {replyingTo === comment.id && (
                 <div className="relative flex items-center gap-2">
                   <textarea
@@ -147,5 +164,4 @@ const CommentPopupPost = ({ isOpen, onClose, postID }) => {
     </div>
   );
 };
-
 export default CommentPopupPost;

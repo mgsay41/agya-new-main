@@ -5,7 +5,6 @@ import { MdOutlinePersonOutline } from "react-icons/md";
 import { GrLanguage } from "react-icons/gr";
 import { HiOutlineTicket } from "react-icons/hi2";
 import DOMPurify from "dompurify";
-
 function ActivityDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -13,7 +12,6 @@ function ActivityDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [hasApplied, setHasApplied] = useState(false);
-
   useEffect(() => {
     const fetchActivity = async () => {
       try {
@@ -26,7 +24,6 @@ function ActivityDetails() {
         setLoading(false);
       }
     };
-
     if (id) {
       fetchActivity();
     } else {
@@ -34,37 +31,26 @@ function ActivityDetails() {
       setLoading(false);
     }
   }, [id]);
-
   const handleApply = async () => {
-    // Check if user is logged in by looking for userInfo in localStorage
     const userInfo = localStorage.getItem("userInfo");
-
     if (!userInfo) {
       alert("Please login to apply for this activity");
-      navigate("/login"); // Redirect to login page
+      navigate("/login");
       return;
     }
-
     if (hasApplied) {
       alert("You have already applied for this activity");
       return;
     }
-
     try {
-      // Make API call to increment appliedNumber
       await api.post(`/activities/${id}/apply`, {
         userId: JSON.parse(userInfo).id,
       });
-
-      // Update local state
       setActivity((prev) => ({
         ...prev,
         appliedNumber: (prev.appliedNumber || 0) + 1,
       }));
-
       setHasApplied(true);
-
-      // If there's an external application link, redirect to it
       if (activity.apply) {
         window.location.href = activity.apply;
       } else {
@@ -75,41 +61,38 @@ function ActivityDetails() {
       alert("Failed to submit application. Please try again later.");
     }
   };
-
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
   if (!activity) return <p>Activity not found.</p>;
-
   return (
-    <div>
+    <div className="px-4 sm:px-6 lg:ml-6">
       <div>
-        <div>
+        <div className="overflow-x-auto">
           <span
-            className="pb-1 text-[#777] border-b border-[#777] cursor-pointer"
+            className="pb-1 text-[#777] border-b border-[#777] cursor-pointer whitespace-nowrap"
             onClick={() => navigate("/activities")}
           >
             Activities
           </span>{" "}
           <span className="text-[#777]"> /</span>{" "}
-          <span className="pb-1 text-[#777] border-b border-[#777]">
+          <span className="pb-1 text-[#777] border-b border-[#777] whitespace-nowrap">
             {activity.activityName}
           </span>
         </div>
-        <h3 className="text-3xl font-bold text-center my-8">
+        <h3 className="text-2xl sm:text-3xl font-bold text-center my-6 sm:my-8">
           {activity.activityName}
         </h3>
-        <div className="flex justify-between gap-16">
-          <div>
+        <div className="flex flex-col lg:flex-row lg:justify-between gap-8 lg:gap-16">
+          <div className="w-full lg:w-1/2">
             {activity.featuredImage && (
               <img
                 src={activity.featuredImage || ""}
-                className="max-w-[500px]"
+                className="w-full max-w-[500px] mx-auto"
                 alt={activity.activityName}
               />
             )}
-
-            <div>
-              <h3 className="font-bold mb-6 mt-4">Activity Details</h3>
+            <div className="mt-6">
+              <h3 className="font-bold mb-4 sm:mb-6 mt-4">Activity Details</h3>
               <p className="text-[#010200]/70 mb-2">
                 {activity.date}, {activity.time}
               </p>
@@ -128,23 +111,23 @@ function ActivityDetails() {
               </p>
             </div>
           </div>
-          <div>
+          <div className="w-full lg:w-1/2">
             <h3 className="font-bold">About</h3>
-            <p
+            <div
               className="text-sm"
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(activity.description),
               }}
-            ></p>
+            ></div>
             <h3 className="font-bold my-4">Timeline and Activities</h3>
-            <p
+            <div
               className="text-sm"
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(activity.timeline),
               }}
-            ></p>
+            ></div>
             <h3 className="my-4 font-bold">Sponsors and Exhibitors</h3>
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-4">
               {activity.sponsors &&
                 activity.sponsors.length > 0 &&
                 activity.sponsors.map((sponsorUrl, index) => (
@@ -158,9 +141,9 @@ function ActivityDetails() {
             </div>
           </div>
         </div>
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center mt-8">
           <button
-            className="bg-main py-3 px-36 text-white rounded-xl"
+            className="bg-main py-3 w-full sm:w-auto sm:px-36 text-white rounded-xl"
             onClick={handleApply}
           >
             Apply
@@ -170,5 +153,4 @@ function ActivityDetails() {
     </div>
   );
 }
-
 export default ActivityDetails;

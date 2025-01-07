@@ -195,6 +195,7 @@ export default function NewArticle() {
       <Navbar />
       <form className="article" onSubmit={(e) => e.preventDefault()}>
         <div className="mt-8">
+          <h3 className="font-semibold my-5">Title</h3>
           <input
             type="text"
             value={title}
@@ -202,7 +203,7 @@ export default function NewArticle() {
             placeholder="Article Title"
             className="w-full mb-4 p-2 border border-gray-300 rounded-md"
           />
-
+          <h3 className="font-semibold my-5">Description</h3>
           <ReactQuill
             theme="snow"
             value={editorValue}

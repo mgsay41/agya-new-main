@@ -19,13 +19,15 @@ import Search from "./pages/search";
 import Filter from "./pages/filter";
 import ForgetPassword from "./pages/forget-password";
 import EditPassword from "./pages/edit-password";
-
 const App = () => {
   return (
     <>
       <Routes>
-          <Route path="/about" element={<About />} />
-          <Route path="/help" element={<Help />}/>
+        <Route path="/about" element={<About />} />
+        <Route path="/help" element={<Help />} />
+        <Route path="/privacy-policy" element={<Help />} />
+        <Route path="/content-policy" element={<Help />} />
+        <Route path="/terms-of-use" element={<Help />} />
         <Route path="/" element={<AboutLayout />}>
           <Route index element={<Home />} />
           <Route path="/profile" element={<UserProfile />} />
@@ -43,23 +45,19 @@ const App = () => {
         <Route path="/posts" element={<ActivityDetailsLayout />}>
           <Route path="/posts/:id" element={<PostDetails />} />
         </Route>
-
         <Route path="/activities" element={<ActivityDetailsLayout />}>
           <Route path="/activities" element={<Activities />} />
         </Route>
-
         <Route path="/activity" element={<ActivityDetailsLayout />}>
           <Route path="/activity/new-activity" element={<AddActivity />} />
           <Route path="/activity/edit-activity" element={<EditActivity />} />
           <Route path="/activity/:id" element={<ActivityDetails />} />
         </Route>
-        <Route path="/forget-password" element={<ForgetPassword/>} />
-        <Route path="/edit-password/:id" element={<EditPassword/>} />
-
+        <Route path="/forget-password" element={<ForgetPassword />} />
+        <Route path="/edit-password/:id" element={<EditPassword />} />
         <Route path="*" element={<Navigate to={"/"} />} />
       </Routes>
     </>
   );
 };
-
 export default App;
