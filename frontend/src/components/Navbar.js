@@ -18,6 +18,7 @@ import {
 import { GlobalContext } from "../context/GlobelContext"; // Adjust import based on your structure
 import { useNavigate } from "react-router-dom";
 import { Sidebar } from "primereact/sidebar";
+import CookieConsent from "./CookieConsent.js";
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [activePopup, setActivePopup] = useState(null); // 'notifications', 'post', 'dropdown', 'filter'
@@ -223,6 +224,9 @@ const Navbar = () => {
 
   return (
     <>
+    {
+      Cookies.get('cookie') === "true" ? null :<CookieConsent/>
+    }
       {/* Notification Popup */}
       {activePopup === "notifications" && (
         <div

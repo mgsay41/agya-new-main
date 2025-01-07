@@ -1,26 +1,13 @@
 import React, { useState, useEffect } from 'react';
-
+import Cookies from "js-cookie"
 const CookieConsent = () => {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const hasConsented = localStorage.getItem('cookieConsent');
-    if (!hasConsented) {
-      setIsVisible(true);
-    }
-  }, []);
-
   const handleAccept = () => {
-    localStorage.setItem('cookieConsent', 'true');
-    setIsVisible(false);
+    Cookies.set('cookie', 'true')
   };
 
   const handleDecline = () => {
-    localStorage.setItem('cookieConsent', 'false');
-    setIsVisible(false);
+    Cookies.set('cookie', 'false')
   };
-
-  if (!isVisible) return null;
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-90">
