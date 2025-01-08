@@ -99,11 +99,11 @@ const SidebarGuest = () => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <form
             onSubmit={login}
-            className="relative w-[90%] md:w-[1100px] bg-background text-main-font rounded-lg shadow-lg overflow-hidden flex flex-col md:flex-row"
+            className="relative w-[90%] max-w-3xl bg-background text-main-font rounded-lg shadow-lg overflow-hidden flex flex-col md:flex-row"
           >
             {/* Left Section: Login Form */}
-            <div className="w-[1900px] md:w-1/2 px-6 py-8 md:px-12 flex flex-col justify-center">
-              <div className="max-w-md w-[1900px] mx-auto">
+            <div className="w-full md:w-1/2 px-6 py-8 md:px-12 flex flex-col justify-center">
+              <div className="max-w-md w-full mx-auto">
                 {/* Mobile Close Button */}
                 <div className="flex justify-end md:hidden mb-4">
                   <button
@@ -114,7 +114,7 @@ const SidebarGuest = () => {
                   </button>
                 </div>
 
-                <h1 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-center">
+                <h1 className="text-xl md:text-3xl font-bold mb-6 md:mb-8 text-center">
                   Login
                 </h1>
 
@@ -167,8 +167,7 @@ const SidebarGuest = () => {
                 <p className="text-center mt-4 text-sm">
                   Don't have an account?{" "}
                   <div
-                    href="#"
-                    className="text-main hover:underline font-bold"
+                    className="text-main hover:underline font-bold cursor-pointer"
                     onClick={() => {
                       setLoginPopup(false);
                       setSignupPopup(true);
@@ -202,7 +201,7 @@ const SidebarGuest = () => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-auto pb-20">
           <form
             onSubmit={register}
-            className="absolute z-[2000] top-10 w-[1100px] rounded-lg shadow-lg mb-20 bg-background text-main-font flex flex-col md:flex-row "
+            className="relative w-[90%] max-w-[1100px] mx-auto rounded-lg shadow-lg bg-background text-main-font flex flex-col md:flex-row overflow-hidden"
           >
             {/* Left Section: Sign-Up Form */}
             <div className="w-full md:w-1/2 px-6 py-8 md:px-12 flex flex-col justify-center">
@@ -212,6 +211,7 @@ const SidebarGuest = () => {
                   <button
                     className="bg-main text-secondary-font w-8 h-8 flex items-center justify-center rounded-full hover:bg-opacity-90"
                     aria-label="Close"
+                    onClick={() => setSignupPopup(false)}
                   >
                     <X size={18} />
                   </button>
@@ -221,130 +221,82 @@ const SidebarGuest = () => {
                   Sign Up
                 </h1>
 
-                {/* Email Input */}
-                <div className="mb-4">
-                  <label
-                    className="block text-sm font-semibold mb-2"
-                    htmlFor="email"
-                  >
-                    Email
-                  </label>
-                  <input
-                    onChange={(ev) => setEmail(ev.target.value)}
-                    value={email}
-                    id="email"
-                    type="email"
-                    placeholder="hannah.green@test.com"
-                    className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
-                  />
-                </div>
-
-                {/* First Name Input */}
-                <div className="mb-4">
-                  <label
-                    className="block text-sm font-semibold mb-2"
-                    htmlFor="firstName"
-                  >
-                    First Name
-                  </label>
-                  <input
-                    onChange={(ev) => setFirstname(ev.target.value)}
-                    value={firstname}
-                    id="firstName"
-                    type="text"
-                    placeholder="Enter your first name"
-                    className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
-                  />
-                </div>
-
-                {/* Last Name Input */}
-                <div className="mb-4">
-                  <label
-                    className="block text-sm font-semibold mb-2"
-                    htmlFor="lastName"
-                  >
-                    Last Name
-                  </label>
-                  <input
-                    onChange={(ev) => setLastname(ev.target.value)}
-                    value={lastname}
-                    id="lastName"
-                    type="text"
-                    placeholder="Enter your last name"
-                    className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
-                  />
-                </div>
-
-                {/* Affiliation Input */}
-                <div className="mb-4">
-                  <label
-                    className="block text-sm font-semibold mb-2"
-                    htmlFor="affiliation"
-                  >
-                    Affiliation
-                  </label>
-                  <input
-                    onChange={(ev) => setAffiliation(ev.target.value)}
-                    value={affiliation}
-                    id="affiliation"
-                    type="text"
-                    placeholder="Work experience, publications, expertise"
-                    className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
-                  />
-                </div>
-
-                {/* Academic Title Input */}
-                <div className="mb-4">
-                  <label
-                    className="block text-sm font-semibold mb-2"
-                    htmlFor="academicTitle"
-                  >
-                    Academic Title
-                  </label>
-                  <input
-                    onChange={(ev) => setAcademicTitle(ev.target.value)}
-                    value={academicTitle}
-                    id="academicTitle"
-                    type="text"
-                    placeholder="Write your Academic title"
-                    className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
-                  />
-                </div>
-
-                {/* Password Input */}
-                <div className="mb-4">
-                  <label
-                    className="block text-sm font-semibold mb-2"
-                    htmlFor="password"
-                  >
-                    Password
-                  </label>
-                  <input
-                    onChange={(ev) => setPassword(ev.target.value)}
-                    value={password}
-                    id="password"
-                    type="password"
-                    placeholder="Enter your password"
-                    className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
-                  />
-                </div>
-
-                {/* Confirm Password Input */}
-                <div className="mb-4">
-                  <label
-                    className="block text-sm font-semibold mb-2"
-                    htmlFor="confirmPassword"
-                  >
-                    Confirm Password
-                  </label>
-                  <input
-                    onChange={(ev) => setConfirmPassword(ev.target.value)}
-                    id="confirmPassword"
-                    type="password"
-                    placeholder="Re-enter your password"
-                    className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
-                  />
-                </div>
+                {/* Inputs */}
+                {[
+                  {
+                    id: "email",
+                    type: "email",
+                    placeholder: "hannah.green@test.com",
+                    label: "Email",
+                    value: email,
+                    setValue: setEmail,
+                  },
+                  {
+                    id: "firstName",
+                    type: "text",
+                    placeholder: "Enter your first name",
+                    label: "First Name",
+                    value: firstname,
+                    setValue: setFirstname,
+                  },
+                  {
+                    id: "lastName",
+                    type: "text",
+                    placeholder: "Enter your last name",
+                    label: "Last Name",
+                    value: lastname,
+                    setValue: setLastname,
+                  },
+                  {
+                    id: "affiliation",
+                    type: "text",
+                    placeholder: "Work experience, publications, expertise",
+                    label: "Affiliation",
+                    value: affiliation,
+                    setValue: setAffiliation,
+                  },
+                  {
+                    id: "academicTitle",
+                    type: "text",
+                    placeholder: "Write your Academic title",
+                    label: "Academic Title",
+                    value: academicTitle,
+                    setValue: setAcademicTitle,
+                  },
+                  {
+                    id: "password",
+                    type: "password",
+                    placeholder: "Enter your password",
+                    label: "Password",
+                    value: password,
+                    setValue: setPassword,
+                  },
+                  {
+                    id: "confirmPassword",
+                    type: "password",
+                    placeholder: "Re-enter your password",
+                    label: "Confirm Password",
+                    value: confirmPassword,
+                    setValue: setConfirmPassword,
+                  },
+                ].map(({ id, type, placeholder, label, value, setValue }) => (
+                  <div className="mb-4" key={id}>
+                    <label
+                      className="block text-sm font-semibold mb-2"
+                      htmlFor={id}
+                    >
+                      {label}
+                    </label>
+                    <input
+                      onChange={(e) => setValue(e.target.value)}
+                      value={value}
+                      id={id}
+                      type={type}
+                      placeholder={placeholder}
+                      className="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-main"
+                    />
+                  </div>
+                ))}
 
                 {/* Checkbox */}
                 <div className="mb-6">
@@ -366,16 +318,15 @@ const SidebarGuest = () => {
                 {/* Login Link */}
                 <p className="text-center mt-4 text-sm">
                   Already have an account?{" "}
-                  <div
-                    href="#"
-                    className="text-main hover:underline font-bold"
+                  <span
+                    className="text-main hover:underline font-bold cursor-pointer"
                     onClick={() => {
                       setLoginPopup(true);
                       setSignupPopup(false);
                     }}
                   >
                     Login
-                  </div>
+                  </span>
                 </p>
               </div>
             </div>
@@ -383,14 +334,12 @@ const SidebarGuest = () => {
             {/* Right Section: Image */}
             <div
               className="hidden md:block w-full md:w-1/2 relative bg-cover bg-center"
-              style={{
-                backgroundImage: `url('/login.png')`,
-              }}
+              style={{ backgroundImage: `url('/login.png')` }}
             >
-              {/* Desktop Close Button */}
               <button
                 className="absolute top-4 right-4 text-secondary-font bg-main w-8 h-8 flex items-center justify-center rounded-full hover:bg-opacity-90 transition-opacity"
                 aria-label="Close"
+                onClick={() => setSignupPopup(false)}
               >
                 <X size={18} />
               </button>
