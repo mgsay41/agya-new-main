@@ -198,7 +198,7 @@ const SidebarGuest = () => {
           </form>
         </div>
       ) : signupPopup === true ? (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-auto pb-20">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-auto pb-20 mt-10">
           <form
             onSubmit={register}
             className="relative w-[90%] max-w-[1100px] mx-auto rounded-lg shadow-lg bg-background text-main-font flex flex-col md:flex-row overflow-hidden"
