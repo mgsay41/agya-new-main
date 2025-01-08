@@ -188,7 +188,7 @@ export default function NewArticle() {
   );
 
   return (
-    <div className="px-[150px]">
+    <div className="p-4 sm:px-12 lg:px-24">
       <Navbar />
       <form className="article" onSubmit={(e) => e.preventDefault()}>
         <div className="mt-8">

@@ -5,6 +5,7 @@ import Sidebar from "../components/sidebar";
 import SidebarGuest from "../components/sidebar-guest.js";
 import { useState, useContext } from "react";
 import { GlobalContext } from "../context/GlobelContext.js";
+
 const Help = () => {
   const faqs = [
     {
@@ -40,15 +41,17 @@ const Help = () => {
         "You can publish articles on heritage conservation, restoration techniques, case studies, and the history of ancient civilizations. Content should focus on preserving cultural landmarks.",
     },
   ];
+
   const { isAuthUser } = useContext(GlobalContext);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [subject, setSubject] = useState("");
   const [description, setDescription] = useState("");
   const [active, setActive] = useState();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const userId = localStorage.getItem("id"); // Assuming the user ID is saved in localStorage
+    const userId = localStorage.getItem("id");
     const messageData = {
       userId,
       subject,
@@ -56,6 +59,7 @@ const Help = () => {
       message: description,
       senderName: name,
     };
+
     try {
       const response = await axios.post(
         "http://localhost:4000/api/messages",
@@ -70,140 +74,159 @@ const Help = () => {
       alert("An error occurred while sending your message.");
     }
   };
+
   const auth = isAuthUser?.email;
+
   return (
-    <div className="px-4 md:px-8 lg:px-16">
-      <Navbar />
-      <div className="flex flex-col lg:flex-row my-10 gap-6">
-        {auth ? (
-          <Sidebar className="bg-gray-800 text-white" />
-        ) : (
-          <SidebarGuest />
-        )}
-        <div className="flex-1 p-4 space-y-8">
-          <h1 className="text-2xl font-bold text-center text-gray-800">Help</h1>
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-center text-gray-800">
-              FAQs
-            </h2>
-            {faqs.map((faq, index) => (
-              <div
-                key={index}
-                className={`border-y duration-500 ${
-                  active === index ? "border-main" : "border-gray-300"
-                } overflow-hidden`}
-                onClick={() =>
-                  active === index ? setActive(null) : setActive(index)
-                }
-              >
-                <div
-                  className={`p-4 cursor-pointer flex justify-between items-center text-gray-800 hover:bg-gray-100 ${
-                    active === index ? "text-main" : ""
-                  }`}
-                >
-                  <p>{faq.title}</p>
-                  <button
-                    className={`rounded-lg bg-main text-secondary-font w-6 h-6 flex items-center justify-center ${
-                      active === index ? "rotate-90" : ""
-                    }`}
-                  >
-                    <ChevronDown />
-                  </button>
-                </div>
-                <div
-                  className={`px-4 pb-4 text-sm text-gray-600 ${
-                    active === index ? "block" : "hidden"
-                  }`}
-                >
-                  <p>{faq.content}</p>
-                </div>
-              </div>
-            ))}
+    <div className="min-h-screen bg-gray-50">
+      <div className="px-4 sm:px-6 md:px-8 lg:px-16 max-w-7xl mx-auto">
+        <Navbar />
+        <div className="flex flex-col lg:flex-row my-6 lg:my-10 gap-6">
+          {/* Sidebar - hidden on mobile */}
+          <div className="hidden lg:block lg:w-64">
+            {auth ? <Sidebar /> : <SidebarGuest />}
           </div>
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-center text-gray-800">
-              Have a Question
-            </h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-gray-700 text-sm font-semibold"
-                >
-                  Your Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md"
-                  placeholder="Enter an accessible e-mail"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
+
+          {/* Main Content */}
+          <div className="flex-1 w-full">
+            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 space-y-8">
+              <h1 className="text-2xl sm:text-3xl font-bold text-center text-gray-800">
+                Help
+              </h1>
+
+              {/* FAQs Section */}
+              <div className="space-y-6">
+                <h2 className="text-xl sm:text-2xl font-semibold text-center text-gray-800">
+                  FAQs
+                </h2>
+                <div className="space-y-3">
+                  {faqs.map((faq, index) => (
+                    <div
+                      key={index}
+                      className={`border rounded-lg duration-500 ${
+                        active === index ? "border-main" : "border-gray-200"
+                      } overflow-hidden`}
+                      onClick={() =>
+                        active === index ? setActive(null) : setActive(index)
+                      }
+                    >
+                      <div
+                        className={`p-4 cursor-pointer flex justify-between items-center text-gray-800 hover:bg-gray-50 ${
+                          active === index ? "text-main" : ""
+                        }`}
+                      >
+                        <p className="text-sm sm:text-base pr-4">{faq.title}</p>
+                        <button
+                          className={`rounded-lg bg-main text-white w-6 h-6 flex-shrink-0 flex items-center justify-center transition-transform duration-200 ${
+                            active === index ? "rotate-180" : ""
+                          }`}
+                        >
+                          <ChevronDown className="w-4 h-4" />
+                        </button>
+                      </div>
+                      <div
+                        className={`px-4 pb-4 text-sm text-gray-600 ${
+                          active === index ? "block" : "hidden"
+                        }`}
+                      >
+                        <p>{faq.content}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-gray-700 text-sm font-semibold"
+
+              {/* Contact Form Section */}
+              <div className="space-y-6">
+                <h2 className="text-xl sm:text-2xl font-semibold text-center text-gray-800">
+                  Have a Question
+                </h2>
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-4 max-w-2xl mx-auto"
                 >
-                  Your Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md"
-                  placeholder="Enter your full name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                />
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="block text-gray-700 text-sm font-semibold mb-1"
+                    >
+                      Your Email
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-main/20 focus:border-main transition"
+                      placeholder="Enter an accessible e-mail"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="name"
+                      className="block text-gray-700 text-sm font-semibold mb-1"
+                    >
+                      Your Name
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-main/20 focus:border-main transition"
+                      placeholder="Enter your full name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="subject"
+                      className="block text-gray-700 text-sm font-semibold mb-1"
+                    >
+                      Subject
+                    </label>
+                    <input
+                      type="text"
+                      id="subject"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-main/20 focus:border-main transition"
+                      placeholder="Enter the subject"
+                      value={subject}
+                      onChange={(e) => setSubject(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="description"
+                      className="block text-gray-700 text-sm font-semibold mb-1"
+                    >
+                      Description
+                    </label>
+                    <textarea
+                      id="description"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-main/20 focus:border-main transition"
+                      placeholder="Write your message here"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      required
+                      rows="4"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full py-2.5 px-4 bg-main text-white rounded-md hover:bg-main/90 transition duration-200 font-medium"
+                  >
+                    Submit
+                  </button>
+                </form>
               </div>
-              <div>
-                <label
-                  htmlFor="subject"
-                  className="block text-gray-700 text-sm font-semibold"
-                >
-                  Subject
-                </label>
-                <input
-                  type="text"
-                  id="subject"
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md"
-                  placeholder="Enter the subject"
-                  value={subject}
-                  onChange={(e) => setSubject(e.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="description"
-                  className="block text-gray-700 text-sm font-semibold"
-                >
-                  Description
-                </label>
-                <textarea
-                  id="description"
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md"
-                  placeholder="Write your message here"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  required
-                  rows="4"
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full py-2 px-4 bg-main text-white rounded-md hover:bg-main/80 transition duration-200"
-              >
-                Submit
-              </button>
-            </form>
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 };
+
 export default Help;

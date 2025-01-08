@@ -228,7 +228,7 @@ const Navbar = () => {
         >
           {/* Popup Container */}
           <div
-            className="absolute right-0 mt-24 mr-5 w-[500px] bg-white shadow-lg rounded-md"
+            className={`absolute right-0 mt-24 mr-5 w-[90vw] sm:w-[500px] bg-white shadow-lg rounded-md`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center px-4 py-4 border-b">
@@ -391,31 +391,36 @@ const Navbar = () => {
       {/* New Post Popup */}
       {activePopup === "post" && (
         <div
-          className="z-[1000] absolute bg-black/40 w-[100%] h-[110vh] left-0 top-0"
+          className="z-[1000] fixed inset-0 bg-black/40 flex items-center justify-center"
           onClick={() => setActivePopup(null)}
         >
           <div
-            className="bg-white flex flex-col py-4 px-4 justify-center top-[25%] absolute left-[30%]"
+            className="bg-white flex flex-col py-4 px-4 justify-center w-[90%] max-w-[500px] rounded-lg"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative">
+              {/* Close Button */}
               <div
                 onClick={() => setActivePopup(null)}
-                className="my-2 w-fit cursor-pointer text-right float-right bg-main rounded-full py-[4px] px-3 text-white"
+                className="absolute top-2 right-2 w-8 h-8 cursor-pointer flex items-center justify-center text-white bg-main rounded-full"
               >
                 X
               </div>
-              <h3 className="text-xl font-medium mt-10 text-center">
-                New Post
-              </h3>
+
+              {/* Title */}
+              <h3 className="text-xl font-medium mt-6 text-center">New Post</h3>
+
+              {/* Textarea */}
               <textarea
-                className="border border-main mt-4 resize-none w-[500px] h-32"
+                className="border border-main mt-4 resize-none w-full h-32 rounded-md p-2 focus:outline-main"
                 value={postText}
                 onChange={(e) => setPostText(e.target.value)}
               ></textarea>
+
+              {/* Post Button */}
               <div className="flex justify-center items-center">
                 <button
-                  className="block bg-main text-white py-2 px-10 my-4 rounded-xl"
+                  className="block bg-main text-white py-2 px-10 my-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
                   onClick={newPost}
                   disabled={loading}
                 >
@@ -501,13 +506,21 @@ const Navbar = () => {
 
           {/* Right Section */}
           <div className="flex items-center gap-2 relative">
-            {/* New Button */}
+            {/* New Button for Desktop */}
             <button
-              className="hidden md:flex items-center px-9 py-[10px] bg-main text-white rounded-xl hover:bg-opacity-90 relative"
+              className="hidden md:flex items-center px-9 py-[10px] bg-main text-white rounded-xl hover:bg-opacity-90"
               onClick={() => togglePopup("dropdown")}
             >
               <Plus className="w-5 h-5" />
               <span>New</span>
+            </button>
+
+            {/* New Button for Mobile */}
+            <button
+              className="md:hidden p-3 rounded-xl bg-main text-white hover:bg-opacity-90"
+              onClick={() => togglePopup("dropdown")}
+            >
+              <Plus className="w-5 h-5" />
             </button>
 
             {/* Dropdown Menu */}

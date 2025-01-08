@@ -39,13 +39,24 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
-const corsOrigin = process.env.CORS_ORIGIN || "http://localhost:3000";
+const corsOrigin = "http://localhost:3000,http://192.168.1.67:3000";
+
+// Split the allowed origins into an array
+const allowedOrigins = corsOrigin.split(",");
+
 app.use(
   cors({
     credentials: true,
-    origin: corsOrigin.split(","),
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
   })
 );
+
 app.use(morgan("dev")); // Log HTTP requests
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

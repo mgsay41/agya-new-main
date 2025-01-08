@@ -20,16 +20,18 @@ const ActivityCard = ({
   sponsors,
 }) => {
   const navigate = useNavigate();
+
   return (
-    <div className="border rounded-lg shadow-md overflow-hidden w-full flex">
-      <div className="w-1/3">
+    <div className="border rounded-lg shadow-md overflow-hidden w-full flex flex-col lg:flex-row">
+      <div className="lg:w-1/3 w-full">
         <img
           src={featuredImage}
           alt={activityName}
-          className="w-full h-full object-cover"
+          className="w-full h-48 lg:h-full object-cover"
         />
       </div>
-      <div className="w-2/3 p-4 flex flex-col justify-between">
+
+      <div className="lg:w-2/3 w-full p-4 flex flex-col justify-between">
         <div>
           <h3 className="text-lg font-semibold text-gray-800">
             {activityName}
@@ -208,7 +210,9 @@ const Activity = () => {
   }, [selectedCategory, activitiesData]);
   return (
     <div className="flex flex-col lg:flex-row relative">
-      <div className="flex flex-col w-full lg:w-[61%] px-8">
+      {/* Main Content */}
+
+      <div className="flex flex-col w-full lg:w-[70%] px-4 lg:px-8">
         <div className="flex items-center justify-between mb-10">
           <h3 className="text-3xl font-bold">Activities</h3>
           <button
@@ -267,7 +271,7 @@ const Activity = () => {
           ))}
         </div>
       </div>
-      <div className="hidden lg:block w-[27%]">
+      <div className="hidden lg:block w-[30%]">
         <FilterSidebar
           setFilteredData={setFilteredData}
           activitiesData={activitiesData}
