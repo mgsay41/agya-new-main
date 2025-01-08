@@ -42,16 +42,19 @@ export default function ForgetPassword() {
   }, [activeOTPIndex, inputRef]);
   const SendOTB = async (e) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:4000/api/otp/sendOTP", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        message,
-      }),
-    });
+    const response = await fetch(
+      "https://agya-new-main-umye.vercel.app/api/otp/sendOTP",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          message,
+        }),
+      }
+    );
     const finalData = await response.json();
     if (finalData.success) {
       toastBC.current.show({
@@ -71,16 +74,19 @@ export default function ForgetPassword() {
   };
   const notReceived = async (e) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:4000/api/otp/sendOTP", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        message,
-      }),
-    });
+    const response = await fetch(
+      "https://agya-new-main-umye.vercel.app/api/otp/sendOTP",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          message,
+        }),
+      }
+    );
     const finalData = await response.json();
     if (finalData.success) {
       setTimer(true);
@@ -101,16 +107,19 @@ export default function ForgetPassword() {
   };
   const VerifyOTP = async (e) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:4000/api/otp/verifyOTP", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        otp: otp.join(""),
-      }),
-    });
+    const response = await fetch(
+      "https://agya-new-main-umye.vercel.app/api/otp/verifyOTP",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          otp: otp.join(""),
+        }),
+      }
+    );
     const finalData = await response.json();
     if (finalData.success) {
       toastBC.current.show({

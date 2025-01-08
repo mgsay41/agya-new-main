@@ -6,11 +6,11 @@ import { BsTwitterX } from "react-icons/bs";
 const SharePostModal = ({ onClose, item, type }) => {
   const handleCopyLink = () => {
     if (type === "post") {
-      const link = `http://localhost:4000/posts/${item._id}`;
+      const link = `https://agya-new-main-umye.vercel.app/posts/${item._id}`;
       navigator.clipboard.writeText(link);
       alert("Link copied to clipboard!");
     } else {
-      const link = `http://localhost:4000/article/${item._id}`;
+      const link = `https://agya-new-main-umye.vercel.app/article/${item._id}`;
       navigator.clipboard.writeText(link);
       alert("Link copied to clipboard!");
     }
@@ -70,8 +70,8 @@ const SharePostModal = ({ onClose, item, type }) => {
             type="text"
             value={
               type === "post"
-                ? `http://localhost:4000/posts/${item._id}`
-                : `http://localhost:4000/article/${item._id}`
+                ? `https://agya-new-main-umye.vercel.app/posts/${item._id}`
+                : `https://agya-new-main-umye.vercel.app/article/${item._id}`
             }
             readOnly
             className="flex-1 px-2 py-1 bg-transparent text-sm text-center text-gray-700 focus:outline-none"

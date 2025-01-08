@@ -39,21 +39,24 @@ const SidebarGuest = () => {
   const register = async (e) => {
     // setPageLevelLoader(true);
     e.preventDefault();
-    const data = await fetch("http://localhost:4000/api/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        firstname: firstname,
-        lastname: lastname,
-        AcademicTitle: academicTitle,
-        Affiliation: affiliation,
-        email: email,
-        password: password,
-        confirmPassword: confirmPassword,
-      }),
-    });
+    const data = await fetch(
+      "https://agya-new-main-umye.vercel.app/api/auth/register",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstname: firstname,
+          lastname: lastname,
+          AcademicTitle: academicTitle,
+          Affiliation: affiliation,
+          email: email,
+          password: password,
+          confirmPassword: confirmPassword,
+        }),
+      }
+    );
     const finalData = await data.json();
     if (finalData.success) {
       alert(finalData.message);
@@ -66,17 +69,20 @@ const SidebarGuest = () => {
   const login = async (e) => {
     // setPageLevelLoader(true);
     e.preventDefault();
-    const response = await fetch("http://localhost:4000/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        email: loginEmail,
-        password: loginPassword,
-      }),
-    });
+    const response = await fetch(
+      "https://agya-new-main-umye.vercel.app/api/auth/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          email: loginEmail,
+          password: loginPassword,
+        }),
+      }
+    );
     const finalData = await response.json();
     if (finalData.success) {
       alert(finalData.message);
@@ -397,7 +403,7 @@ const SidebarGuest = () => {
         <div className="flex flex-col items-center py-8 bg-background">
           {/* Profile Image */}
           <img
-            src="http://localhost:4000/uploads/default.png" // Replace with the actual image URL
+            src="https://agya-new-main-umye.vercel.app/uploads/default.png" // Replace with the actual image URL
             alt="Profile"
             className="w-20 h-20 rounded-full mb-4"
           />

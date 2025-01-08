@@ -12,11 +12,13 @@ const Gallery = () => {
   const [articleData, setArticlesData] = useState([]);
   useEffect(() => {
     try {
-      fetch(`http://localhost:4000/api/articles/`, {}).then((response) => {
-        response.json().then((data) => {
-          setArticlesData(data);
-        });
-      });
+      fetch(`https://agya-new-main-umye.vercel.app/api/articles/`, {}).then(
+        (response) => {
+          response.json().then((data) => {
+            setArticlesData(data);
+          });
+        }
+      );
     } catch (e) {
       console.log(e);
     }

@@ -39,13 +39,13 @@ const CommentPopup = ({ isOpen, onClose, articleID }) => {
         try {
           // Fetch comments
           const commentsRes = await fetch(
-            `http://localhost:4000/api/comments/article/${articleID}`
+            `https://agya-new-main-umye.vercel.app/api/comments/article/${articleID}`
           );
           const commentsData = await commentsRes.json();
           setComments(commentsData);
           // Fetch replies
           const repliesRes = await fetch(
-            `http://localhost:4000/api/replies/${articleID}/replies`
+            `https://agya-new-main-umye.vercel.app/api/replies/${articleID}/replies`
           );
           const repliesData = await repliesRes.json();
           setReplys(repliesData);
@@ -78,7 +78,7 @@ const CommentPopup = ({ isOpen, onClose, articleID }) => {
     }
     try {
       const response = await fetch(
-        `http://localhost:4000/api/comments/article/${articleID}`,
+        `https://agya-new-main-umye.vercel.app/api/comments/article/${articleID}`,
         {
           method: "POST",
           headers: {
@@ -125,7 +125,7 @@ const CommentPopup = ({ isOpen, onClose, articleID }) => {
     }
     try {
       const response = await fetch(
-        `http://localhost:4000/api/replies/${commentId}/reply`,
+        `https://agya-new-main-umye.vercel.app/api/replies/${commentId}/reply`,
         {
           method: "POST",
           headers: {

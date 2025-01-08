@@ -39,7 +39,8 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
-const corsOrigin = "http://localhost:3000,http://192.168.1.67:3000";
+const corsOrigin =
+  "http://localhost:3000,http://192.168.1.67:3000,agya-new-main-front.vercel.app";
 
 // Split the allowed origins into an array
 const allowedOrigins = corsOrigin.split(",");

@@ -45,13 +45,16 @@ export default function NewArtical() {
         references: references,
       };
 
-      const response = await fetch("http://localhost:4000/articles", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(articleData),
-      });
+      const response = await fetch(
+        "https://agya-new-main-umye.vercel.app/articles",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(articleData),
+        }
+      );
 
       if (!response.ok) {
         const error = await response.json();
