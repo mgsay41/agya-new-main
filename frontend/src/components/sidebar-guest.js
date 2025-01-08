@@ -201,7 +201,7 @@ const SidebarGuest = () => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-auto pb-20">
           <form
             onSubmit={register}
-            className="relative mt-10 w-[90%] max-w-[1100px] mx-auto rounded-lg shadow-lg bg-background text-main-font flex flex-col md:flex-row overflow-hidden"
+            className="relative mt-20 w-[90%] max-w-[1100px] mx-auto rounded-lg shadow-lg bg-background text-main-font flex flex-col md:flex-row overflow-hidden"
           >
             {/* Left Section: Sign-Up Form */}
             <div className="w-full md:w-1/2 px-6 py-8 md:px-12 flex flex-col justify-center">
