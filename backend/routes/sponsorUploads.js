@@ -81,7 +81,7 @@ router.post(
       }
 
       const logoUrl = `${
-        process.env.BASE_URL || "https://agya-new-main-umye.vercel.app"
+        process.env.BASE_URL || "http://localhost:4000"
       }/uploads/sponsors/${req.file.filename}`;
 
       const newSponsor = { name, logo: logoUrl };

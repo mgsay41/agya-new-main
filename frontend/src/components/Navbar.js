@@ -44,7 +44,7 @@ const Navbar = () => {
 
   const clearAllNotifications = async () => {
     const response = await fetch(
-      `https://agya-new-main-umye.vercel.app/api/notifications/${isAuthUser._id}/all`,
+      `http://localhost:4000/api/notifications/${isAuthUser._id}/all`,
       {
         method: "DELETE",
         headers: {
@@ -76,7 +76,7 @@ const Navbar = () => {
   const markAsRead = async (id) => {
     try {
       const response = await fetch(
-        `https://agya-new-main-umye.vercel.app/api/notifications/${id}/read`,
+        `http://localhost:4000/api/notifications/${id}/read`,
         {
           method: "PATCH",
           headers: {
@@ -110,7 +110,7 @@ const Navbar = () => {
       const fetchNotifications = async () => {
         try {
           const response = await fetch(
-            `https://agya-new-main-umye.vercel.app/api/notifications/${isAuthUser.id}`,
+            `http://localhost:4000/api/notifications/${isAuthUser.id}`,
             { signal: controller.signal }
           );
           if (!response.ok) {
@@ -134,7 +134,7 @@ const Navbar = () => {
 
   //       try {
 
-  //         const response = fetch(`https://agya-new-main-umye.vercel.app/api/tags/all`);
+  //         const response = fetch(`http://localhost:4000/api/tags/all`);
 
   //         const data =  response.json();
 
@@ -149,7 +149,7 @@ const Navbar = () => {
   // }, []);
 
   useEffect(() => {
-    fetch("https://agya-new-main-umye.vercel.app/api/tags/all")
+    fetch("http://localhost:4000/api/tags/all")
       .then((response) => response.json())
       .then((data) => setTags(data))
       .catch((error) => console.error("Error fetching tags:", error));
@@ -182,16 +182,13 @@ const Navbar = () => {
         authorName: isAuthUser.firstname,
       };
 
-      const response = await fetch(
-        `https://agya-new-main-umye.vercel.app/api/posts`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(postBody),
-        }
-      );
+      const response = await fetch(`http://localhost:4000/api/posts`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(postBody),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to create a new post");

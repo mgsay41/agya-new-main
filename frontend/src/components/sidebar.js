@@ -55,7 +55,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
 
   const logout = async (e) => {
-    fetch("https://agya-new-main-umye.vercel.app/api/auth/logout", {
+    fetch("http://localhost:4000/api/auth/logout", {
       method: "POST",
       credentials: "include",
     }).then(() => {

@@ -52,16 +52,13 @@ const Report = ({ onClose, item }) => {
         ...(replyID && { replyId: replyID }),
       };
 
-      const response = await fetch(
-        "https://agya-new-main-umye.vercel.app/api/reports",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
+      const response = await fetch("http://localhost:4000/api/reports", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to submit the report");

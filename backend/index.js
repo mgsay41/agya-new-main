@@ -39,12 +39,11 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
+const corsOrigin = process.env.CORS_ORIGIN || "http://localhost:3000";
 app.use(
   cors({
     credentials: true,
-    origin: [
-      "https://agya-new-main-front.vercel.app", // Add more origins as needed
-    ],
+    origin: corsOrigin.split(","),
   })
 );
 app.use(morgan("dev")); // Log HTTP requests

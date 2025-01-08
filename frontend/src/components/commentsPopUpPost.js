@@ -57,7 +57,7 @@ const CommentPopupPost = ({ isOpen, onClose, postID }) => {
     if (newComment.trim() !== "") {
       try {
         const response = await fetch(
-          `https://agya-new-main-umye.vercel.app/api/comments/post/${postID}`,
+          `http://localhost:4000/api/comments/post/${postID}`,
           {
             method: "POST",
             headers: {

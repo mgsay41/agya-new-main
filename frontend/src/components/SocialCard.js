@@ -83,7 +83,7 @@ const SocialCard = ({ onClick, item }) => {
 
     try {
       const response = await fetch(
-        `https://agya-new-main-umye.vercel.app/api/articles/like/${item._id}`,
+        `http://localhost:4000/api/articles/like/${item._id}`,
         {
           method: "POST",
           headers: {
@@ -123,7 +123,7 @@ const SocialCard = ({ onClick, item }) => {
 
     try {
       const response = await fetch(
-        `https://agya-new-main-umye.vercel.app/api/articles/dislike/${item._id}`,
+        `http://localhost:4000/api/articles/dislike/${item._id}`,
         {
           method: "POST",
           headers: {

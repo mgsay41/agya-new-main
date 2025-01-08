@@ -8,7 +8,7 @@ const FeaturedArticles = () => {
     try {
       // Fetch the list of featured articles
       const response = await fetch(
-        "https://agya-new-main-umye.vercel.app/api/FeaturedArticles/all",
+        "http://localhost:4000/api/FeaturedArticles/all",
         {
           method: "GET",
           headers: {
