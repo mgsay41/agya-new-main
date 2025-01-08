@@ -39,25 +39,14 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
-const corsOrigin =
-  "http://localhost:3000,http://192.168.1.67:3000,agya-new-main-front.vercel.app";
-
-// Split the allowed origins into an array
-const allowedOrigins = corsOrigin.split(",");
-
 app.use(
   cors({
     credentials: true,
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: [
+      "https://agya-new-main-front.vercel.app", // Add more origins as needed
+    ],
   })
 );
-
 app.use(morgan("dev")); // Log HTTP requests
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
