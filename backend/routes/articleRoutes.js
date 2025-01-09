@@ -5,7 +5,7 @@ const router = express.Router();
 
 // Create a new article
 router.post("/", async (req, res) => {
-  const { title, content, authorId, tags, references, authorName } = req.body;
+  const { title, content, authorId, tags, references, authorName , articleType } = req.body;
 
 
   if (!title || title === ""){
@@ -66,6 +66,7 @@ router.post("/", async (req, res) => {
       authorName,
       tags,
       references,
+      articleType,
     });
     await newArticle.save();
     res.status(201).json(newArticle);
