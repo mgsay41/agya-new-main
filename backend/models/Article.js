@@ -17,7 +17,7 @@ const ArticleSchema = new mongoose.Schema({
   dislikedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   createdAt: { type: Date, default: Date.now },
   featuredImage:{ type: String},
-  articleType:{type: String , default:"user"}
+  articleType:{type: String , default:"user"},
   type: { type: String, default: "article" }
 
 });
