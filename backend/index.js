@@ -43,7 +43,8 @@ app.use(
   cors({
     credentials: true,
     origin: [
-      "https://agya-new-main-front.vercel.app", // Add more origins as needed
+      "https://agya-new-main-front.vercel.app",
+      "http://localhost:5173"  // Add more origins as needed
     ],
   })
 );
