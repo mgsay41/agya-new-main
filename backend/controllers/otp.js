@@ -1,6 +1,7 @@
 import OTP from "../models/otp.js";
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
+import Admin from "../models/Admin.js";
 import { sendMail } from "./mailer.js";
 export const SendOTP = async (req, res) => {
   try {
@@ -12,7 +13,8 @@ export const SendOTP = async (req, res) => {
       });
     }
     const userFound = await User.findOne({ email });
-    if (userFound) {
+    const adminFound = await Admin.findOne({ email });
+    if (userFound || adminFound) {
       // clear any old record
       await OTP.deleteOne({ email });
       // generate OTP
