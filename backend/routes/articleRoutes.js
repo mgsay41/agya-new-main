@@ -97,7 +97,12 @@ router.get("/articles", async (req, res) => {
 
       "firstname lastname"
     );
-
+  const numberOfAdmin = await Article.countDocuments({
+    articleType : "admin"
+  })
+    const numberOfUser = await Article.countDocuments({
+    articleType : "user"
+  })
   const numberOfArticles = await Article.countDocuments({
     title: { $regex: search, $options: "i" },
   })
@@ -114,7 +119,8 @@ router.get("/articles", async (req, res) => {
       success: true,
 
       numberOfArticles,
-
+      numberOfAdmin,
+      numberOfUser,
       page: page + 1,
 
       pageCount: pageCount + 1,
