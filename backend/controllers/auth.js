@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import Admin from "../models/Admin.js";
 // import otpGenerator from "otp-generator";
 // import { sendMail } from "./mailer.js";
 
@@ -143,7 +144,62 @@ export const login = async (req, res) => {
   }
 };
 // =================== Ending Login ==================
+export const Adminlogin = async (req, res) => {
+  const { email, password } = req.body;
 
+  if (!email || !password) {
+    return res.json({
+      success: false,
+      message: "please fill all the fields",
+    });
+  }
+
+  const admin = await Admin.findOne({ email });
+
+  if (!admin) {
+    return res.json({
+      success: false,
+      message: "this user is not exist",
+    });
+  }
+
+  const passwordIsCorrect = await bcrypt.compare(password, admin.password);
+  if (admin && passwordIsCorrect) {
+    jwt.sign(
+      {
+        email,
+        id: admin._id,
+        firstname: admin.firstname,
+        image: admin.image,
+        createdAt: admin.createdAt,
+      },
+      secret,
+      {},
+      (err, token) => {
+        if (err) throw err;
+        res.cookie("token", token, {
+          httpOnly: true,
+          maxAge: 24 * 60 * 60 * 1000,
+        });
+        res.json({
+          success: true,
+          message: "Login successful",
+          email: admin.email,
+          id: admin._id,
+          firstname: admin.firstname,
+          image: admin.image,
+          createdAt: admin.createdAt,
+        });
+      }
+    );
+  } else {
+    res.json({
+      success: false,
+      message: "Invalid password or email",
+    });
+  }
+};
+// =================== Ending Login ==================
 // =================== Starting Logout =========================
 
 export const Logout = async (req, res) => {
@@ -240,3 +296,30 @@ export const ResetPassword = async (req, res) => {
     });
   }
 };
+
+export const ResetPasswordAdmin = async (req, res) => {
+  const { id } = req.params;
+  const { newPassword } = req.body;
+
+  if (newPassword.length < 6) {
+    return res.json({
+      success: false,
+      message: "password is too short",
+    });
+  }
+  const hashPassword = await bcrypt.hash(newPassword, 10);
+
+  const user = await Admin.updateOne({ _id: id }, {password: hashPassword });
+  if (user) {
+    res.json({
+      success: true,
+      message: " password is updeted successfully",
+    });
+  } else {
+    res.json({
+      success: false,
+      message: " password is not updeted",
+    });
+  }
+};
+
