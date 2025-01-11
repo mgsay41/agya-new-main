@@ -212,7 +212,7 @@ const Activity = () => {
     <div className="flex flex-col lg:flex-row relative">
       {/* Main Content */}
 
-      <div className="flex flex-col w-full lg:w-[70%] px-4 lg:px-8">
+      <div className="flex flex-col w-full lg:w-[60%] px-4 lg:px-8">
         <div className="flex items-center justify-between mb-10">
           <h3 className="text-3xl font-bold">Activities</h3>
           <button

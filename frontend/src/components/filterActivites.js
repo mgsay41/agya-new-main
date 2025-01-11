@@ -94,7 +94,7 @@ const FilterSidebar = ({ setFilteredData, activitiesData }) => {
   };
   const locations = ["egypt", "germany", "usa", "uk", "uae", "online"];
   return (
-    <div className="w-full bg-white border rounded-lg p-6 shadow-md relative mt-4">
+    <div className="w-[75%] bg-white border rounded-lg p-6 shadow-md relative mt-4">
       <h2 className="text-lg font-semibold mb-6">Filter Activities</h2>
       <div className="mb-4">
         <label className="block text-sm font-medium mb-2">Select Date</label>

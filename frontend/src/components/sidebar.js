@@ -75,7 +75,7 @@ const Sidebar = () => {
       <div className="flex flex-col items-center py-8">
         {/* Profile Image */}
         <img
-          src={userInfo.image || "/default.png"} // Replace with the actual image URL
+          src={userInfo.image || "User-60.png"} // Replace with the actual image URL
           alt={`${userInfo.firstname}'s profile`}
           className="w-20 h-20 rounded-full object-cover mb-4"
         />
