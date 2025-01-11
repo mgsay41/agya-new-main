@@ -32,7 +32,27 @@ const TopArticleCard = () => {
   }, []);
 
   if (loading) {
-    return <div className="w-full h-64 bg-gray-200 animate-pulse rounded-lg" />;
+    return (
+      <div className="relative w-screen max-w-xl h-64 overflow-hidden rounded-lg mx-auto cursor-pointer">
+        {/* Skeleton for Background Image */}
+        <div className="absolute inset-0 bg-gray-300 animate-pulse"></div>
+
+        {/* Skeleton for Text Overlay */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 bg-black/40">
+          {/* Title Skeleton */}
+          <div className="w-3/4 h-8 bg-gray-300 animate-pulse mb-2"></div>
+
+          {/* Content Skeleton */}
+          <div className="w-5/6 h-6 bg-gray-300 animate-pulse mb-2"></div>
+
+          {/* Date and Author Skeleton */}
+          <div className="w-1/2 h-4 bg-gray-300 animate-pulse mt-2"></div>
+        </div>
+
+        {/* Skeleton for "Top Article" Badge */}
+        <div className="absolute top-2 left-1/2 transform -translate-x-1/2 bg-gray-300 w-24 h-6 rounded-full animate-pulse"></div>
+      </div>
+    );
   }
 
   if (!article) {

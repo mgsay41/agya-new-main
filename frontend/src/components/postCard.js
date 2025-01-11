@@ -14,6 +14,27 @@ import Report from "./report.js";
 import ReactDOM from "react-dom";
 import { GlobalContext } from "../context/GlobelContext.js";
 
+// Skeleton loader component
+const SkeletonLoader = () => (
+  <div className="max-w-xl w-screen rounded-3xl overflow-hidden shadow-md bg-SoftMain border border-main/50">
+    <div className="flex flex-row items-center p-4 pb-2">
+      <div className="h-12 w-12 bg-gray-300 rounded-full"></div>
+      <div className="flex flex-1 ml-3">
+        <div className="w-32 h-4 bg-gray-300 rounded-md"></div>
+      </div>
+      <div className="w-16 h-4 bg-gray-300 rounded-md"></div>
+    </div>
+    <div className="cursor-pointer px-4 pt-0">
+      <div className="w-full h-4 bg-gray-300 rounded-md mb-2"></div>
+      <div className="w-3/4 h-4 bg-gray-300 rounded-md"></div>
+    </div>
+    <div className="px-4 py-2 flex items-center border-t border-main/50">
+      <div className="w-20 h-8 bg-gray-300 rounded-md"></div>
+      <div className="ml-auto w-16 h-8 bg-gray-300 rounded-md"></div>
+    </div>
+  </div>
+);
+
 const PostCard = ({ onClick, item }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCommentPopupOpen, setCommentPopupOpen] = useState(false);
@@ -25,6 +46,7 @@ const PostCard = ({ onClick, item }) => {
   const [likes, setLikes] = useState(0);
   const [dislikes, setDislikes] = useState(0);
   const [voted, setVoted] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const handleReportClick = (event) => {
     const buttonRect = event.currentTarget.getBoundingClientRect();
@@ -37,6 +59,7 @@ const PostCard = ({ onClick, item }) => {
 
   useEffect(() => {
     setIsAuthUser(JSON.parse(localStorage.getItem("userInfo")));
+    setLoading(false); // Set loading to false after data is loaded
   }, [setIsAuthUser]);
 
   function formatDate(isoDateString) {
@@ -152,8 +175,12 @@ const PostCard = ({ onClick, item }) => {
 
   const sanitizedContent = DOMPurify.sanitize(item.content);
 
+  if (loading) {
+    return <SkeletonLoader />; // Show skeleton loader while loading
+  }
+
   return (
-    <div className="max-w-xl w-full rounded-3xl overflow-hidden shadow-md bg-SoftMain border border-main/50">
+    <div className="max-w-xl w-screen rounded-3xl overflow-hidden shadow-md bg-SoftMain border border-main/50">
       {/* Header */}
       <div
         onClick={onClick}

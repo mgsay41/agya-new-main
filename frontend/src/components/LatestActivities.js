@@ -6,6 +6,7 @@ const LatestActivities = () => {
   const navigate = useNavigate(); // Initialize the navigate hook
   const [activities, setActivities] = useState([]);
   const [error, setError] = useState(null); // State for error handling
+  const [loading, setLoading] = useState(true); // State to track loading
 
   useEffect(() => {
     fetchActivities();
@@ -42,6 +43,8 @@ const LatestActivities = () => {
     } catch (error) {
       console.error("Failed to fetch activities:", error.message);
       setError(error.message); // Set the error message
+    } finally {
+      setLoading(false); // Stop loading after fetching is complete
     }
   };
 
@@ -57,7 +60,23 @@ const LatestActivities = () => {
         </h2>
 
         <div className="space-y-3">
-          {error ? (
+          {loading ? (
+            // Skeleton Loader for loading state
+            <>
+              <div className="flex items-center gap-2 animate-pulse">
+                <div className="h-4 w-4 bg-gray-300 rounded-full"></div>
+                <div className="w-3/4 h-4 bg-gray-300 rounded"></div>
+              </div>
+              <div className="flex items-center gap-2 animate-pulse">
+                <div className="h-4 w-4 bg-gray-300 rounded-full"></div>
+                <div className="w-3/4 h-4 bg-gray-300 rounded"></div>
+              </div>
+              <div className="flex items-center gap-2 animate-pulse">
+                <div className="h-4 w-4 bg-gray-300 rounded-full"></div>
+                <div className="w-3/4 h-4 bg-gray-300 rounded"></div>
+              </div>
+            </>
+          ) : error ? (
             <p className="text-sm text-red-500">{error}</p>
           ) : activities.length === 0 ? (
             <p className="text-sm text-gray-500">No activities available.</p>

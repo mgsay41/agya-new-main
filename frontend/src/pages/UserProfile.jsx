@@ -75,7 +75,84 @@ const UserProfile = () => {
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
   );
   if (isLoading) {
-    return <div>Loading user profile...</div>;
+    return (
+      <div className="w-full max-w-7xl mx-auto p-4 sm:p-6 md:p-8 animate-pulse">
+        {/* Profile Header Shimmer */}
+        <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
+          <div className="relative">
+            <div className="w-28 h-28 rounded-full bg-gray-200" />
+          </div>
+          <div className="text-center sm:text-left">
+            <div className="h-6 w-48 bg-gray-200 rounded mb-2" />
+            <div className="h-4 w-64 bg-gray-200 rounded" />
+          </div>
+        </div>
+
+        {/* Activities Section Title Shimmer */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="h-8 w-48 bg-gray-200 rounded" />
+          <div className="flex gap-4">
+            <div className="w-10 h-10 rounded-full bg-gray-200" />
+            <div className="w-10 h-10 rounded-full bg-gray-200" />
+          </div>
+        </div>
+
+        {/* Activities Container Shimmer */}
+        <div className="relative overflow-hidden">
+          <div className="flex gap-4 pr-5 py-5">
+            {[1, 2, 3].map((index) => (
+              <div
+                key={index}
+                className="min-w-[250px] sm:min-w-[300px] flex-shrink-0 bg-white border rounded-xl overflow-hidden"
+              >
+                <div className="h-40 bg-gray-200" />
+                <div className="p-4">
+                  <div className="h-6 w-3/4 bg-gray-200 rounded mb-2" />
+                  <div className="h-4 w-1/2 bg-gray-200 rounded mb-2" />
+                  <div className="h-4 w-2/3 bg-gray-200 rounded mb-4" />
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full bg-gray-200" />
+                      <div className="h-4 w-24 bg-gray-200 rounded" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full bg-gray-200" />
+                      <div className="h-4 w-20 bg-gray-200 rounded" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full bg-gray-200" />
+                      <div className="h-4 w-28 bg-gray-200 rounded" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Posts and Articles Section Shimmer */}
+        <div className="mt-8">
+          <div className="h-8 w-48 bg-gray-200 rounded mb-6" />
+          <div className="flex flex-col gap-3">
+            {[1, 2, 3].map((index) => (
+              <div
+                key={index}
+                className="w-full p-4 border rounded-xl bg-white"
+              >
+                <div className="flex gap-4">
+                  <div className="w-16 h-16 rounded-lg bg-gray-200" />
+                  <div className="flex-1">
+                    <div className="h-6 w-3/4 bg-gray-200 rounded mb-2" />
+                    <div className="h-4 w-1/2 bg-gray-200 rounded mb-2" />
+                    <div className="h-4 w-2/3 bg-gray-200 rounded" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
   }
   if (!userInfo) {
     return <div>Please log in</div>;

@@ -64,7 +64,52 @@ const Sidebar = () => {
   };
 
   if (isLoading || !userInfo) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex flex-col max-h-fit w-64 text-main-font rounded-lg border border-main/30 bg-SoftMain shadow">
+        {/* Profile Section */}
+        <div className="flex flex-col items-center py-8">
+          {/* Profile Image */}
+          <div className="w-20 h-20 bg-gray-300 rounded-full animate-pulse mb-4"></div>
+          {/* Name */}
+          <div className="w-32 h-6 bg-gray-300 rounded-md animate-pulse mb-2"></div>
+        </div>
+
+        {/* Navigation Links */}
+        <nav className="flex flex-col py-4 px-6">
+          <div className="flex flex-col items-center space-y-6">
+            <div className="flex items-center w-40">
+              <div className="w-12 h-12 bg-gray-300 rounded-full animate-pulse mr-4"></div>
+              <div className="w-24 h-4 bg-gray-300 rounded-md animate-pulse"></div>
+            </div>
+
+            <div className="flex items-center w-40">
+              <div className="w-12 h-12 bg-gray-300 rounded-full animate-pulse mr-4"></div>
+              <div className="w-24 h-4 bg-gray-300 rounded-md animate-pulse"></div>
+            </div>
+
+            {/* Profile Button */}
+            <div className="flex items-center w-40 mx-auto mt-12">
+              <div className="w-12 h-12 bg-gray-300 rounded-full animate-pulse mr-4"></div>
+              <div className="w-24 h-4 bg-gray-300 rounded-md animate-pulse"></div>
+            </div>
+          </div>
+
+          {/* Logout Button */}
+          <div className="flex items-center w-40 mx-auto mt-12 cursor-pointer">
+            <div className="w-12 h-12 bg-gray-300 rounded-full animate-pulse mr-4"></div>
+            <div className="w-24 h-4 bg-gray-300 rounded-md animate-pulse"></div>
+          </div>
+        </nav>
+
+        {/* Footer Section */}
+        <div className="mt-auto px-4 py-6 text-xs text-gray-400">
+          <div className="w-3/4 mx-auto border-t border-gray-200">
+            <div className="w-32 h-4 bg-gray-300 rounded-md animate-pulse mx-auto mt-4 mb-2"></div>
+            <div className="w-40 h-4 bg-gray-300 rounded-md animate-pulse mx-auto mb-2"></div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const name = isAuthUser?.firstname;

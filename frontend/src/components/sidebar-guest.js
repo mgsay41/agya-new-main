@@ -9,14 +9,19 @@ import { BsQuestionDiamondFill } from "react-icons/bs";
 import { FaImages } from "react-icons/fa";
 
 const SidebarGuest = () => {
+  // State to manage the visibility of the login and signup popups
   const [loginPopup, setLoginPopup] = React.useState(false);
   const [signupPopup, setSignupPopup] = React.useState(false);
+
+  // Use context to manage authentication status
   const { setIsAuthUser } = useContext(GlobalContext);
 
+  // Fetch user authentication status from localStorage
   useEffect(() => {
     setIsAuthUser(JSON.parse(localStorage.getItem("userInfo")));
   }, [setIsAuthUser]);
 
+  // Navigation links for the sidebar
   const navigationLinks = [
     { icon: GoHomeFill, text: "Home", href: "/" },
     { icon: IoMdInformationCircle, text: "About", href: "/about" },
@@ -25,6 +30,7 @@ const SidebarGuest = () => {
     { icon: BsQuestionDiamondFill, text: "Help", href: "/help" },
   ];
 
+  // Component to render individual navigation links
   const NavigationLink = ({ icon: Icon, text, href }) => (
     <a
       href={href}
@@ -39,6 +45,7 @@ const SidebarGuest = () => {
 
   return (
     <>
+      {/* Conditionally render the login and signup popups */}
       {loginPopup && (
         <Login setLoginPopup={setLoginPopup} setSignupPopup={setSignupPopup} />
       )}
@@ -46,6 +53,7 @@ const SidebarGuest = () => {
         <Signup setLoginPopup={setLoginPopup} setSignupPopup={setSignupPopup} />
       )}
 
+      {/* Sidebar structure */}
       <div className="flex flex-col h-screen w-64 text-main-font border border-main/30 rounded-lg shadow-lg bg-SoftMain">
         {/* Profile Section */}
         <div className="flex flex-col items-center py-8">
@@ -60,7 +68,7 @@ const SidebarGuest = () => {
         {/* Navigation Links */}
         <nav className="flex flex-col py-4 px-6">
           <div className="flex flex-col items-center space-y-6">
-            {/* Map through navigation links */}
+            {/* Loop through navigation links and render them */}
             {navigationLinks.map((link) => (
               <NavigationLink
                 key={link.text}
@@ -83,6 +91,7 @@ const SidebarGuest = () => {
         {/* Footer Section */}
         <footer className="mt-auto px-4 py-6 text-xs text-gray-400">
           <div className="w-3/4 mx-auto border-t border-gray-200">
+            {/* Privacy links */}
             <p className="text-center mt-4 mb-2">
               <a href="#" className="hover:text-main">
                 Privacy Policy
@@ -96,6 +105,7 @@ const SidebarGuest = () => {
                 Terms of Use
               </a>
             </p>
+            {/* Footer attribution */}
             <p className="text-center">
               Designed and Developed by:{" "}
               <a href="https://absai.dev/#/Home" className="hover:text-main">
