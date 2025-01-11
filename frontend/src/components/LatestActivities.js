@@ -13,12 +13,15 @@ const LatestActivities = () => {
 
   const fetchActivities = async () => {
     try {
-      const response = await fetch("http://localhost:4000/api/activities/", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        "https://agya-backend.vercel.app/api/activities/",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
