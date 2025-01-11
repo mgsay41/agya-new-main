@@ -67,17 +67,23 @@ router.delete("/:id", async (req, res) => {
 
 router.delete("/:id/all", async (req, res) => {
   try {
-    const deletedNotification = await Notification.deleteMany(
-      req.params.id
-    );
-    if (!deletedNotification) {
-      return res.status(404).json({ message: "Notification not found" });
+    // Delete all notifications for the specific user ID
+    const deletedNotifications = await Notification.deleteMany({
+      userId: req.params.id, // Assuming your Notification model has a userId field
+    });
+
+    if (deletedNotifications.deletedCount === 0) {
+      return res.status(404).json({ message: "No notifications found" });
     }
-    res.status(204).json({ message: " All Notification cleard" });
+
+    // Send response with the number of deleted notifications
+    res.status(200).json({
+      message: `Successfully cleared ${deletedNotifications.deletedCount} notifications`,
+      deletedCount: deletedNotifications.deletedCount,
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
-
 
 export default router;

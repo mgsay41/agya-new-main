@@ -180,7 +180,7 @@ const Activity = () => {
     const fetchActivities = async () => {
       try {
         const response = await axios.get(
-          "https://agya-new-main-umye.vercel.app/api/activities"
+          "http://localhost:4000/api/activities"
         );
         const passedActivities = response.data.filter(
           (activity) => activity.status === "Passed"

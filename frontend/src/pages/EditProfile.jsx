@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Edit3 } from "lucide-react";
 import api from "../axios"; // Import your configured axios instance
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import { Link } from "react-router-dom";
 
 const EditProfile = () => {
   const [userInfo, setUserInfo] = useState(null); // State to hold user info
@@ -107,8 +109,21 @@ const EditProfile = () => {
   return (
     <div className="flex flex-col items-center py-8 bg-white min-h-screen">
       {/* Title */}
+      <Navbar />
+      <div className="w-full text-left ml-36 my-8">
+        <Link to="/profile">
+          {" "}
+          {/* Wrap "Profile" in a Link component */}
+          <span className="pb-1 text-[#777] border-b border-[#777]">
+            Profile
+          </span>
+        </Link>
+        <span className="text-[#777]"> /</span>{" "}
+        <span className="pb-1 text-[#777] border-b border-[#777]">
+          Edit Profile
+        </span>
+      </div>
       <h2 className="text-2xl font-bold text-gray-800 mb-6">Edit Profile</h2>
-
       {/* Profile Image */}
       <div className="relative">
         <img
@@ -130,12 +145,10 @@ const EditProfile = () => {
           onChange={handleImageChange}
         />
       </div>
-
       {/* Profile Name */}
       <h3 className="text-lg font-medium text-gray-800 mt-4">
         {formData.firstname} {formData.lastname}
       </h3>
-
       {/* Form */}
       <form
         onSubmit={handleSubmit}
@@ -151,7 +164,7 @@ const EditProfile = () => {
             name="firstname"
             value={formData.firstname}
             onChange={handleChange}
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-main focus:border-main"
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-main focus:border-main bg-white"
           />
         </div>
 
@@ -165,7 +178,7 @@ const EditProfile = () => {
             name="lastname"
             value={formData.lastname}
             onChange={handleChange}
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-main focus:border-main"
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-main focus:border-main bg-white"
           />
         </div>
 
@@ -179,7 +192,7 @@ const EditProfile = () => {
             name="affiliation"
             value={formData.affiliation}
             onChange={handleChange}
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-main focus:border-main"
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-main focus:border-main bg-white"
           />
         </div>
 
@@ -193,17 +206,19 @@ const EditProfile = () => {
             name="academic_title"
             value={formData.academic_title}
             onChange={handleChange}
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-main focus:border-main"
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-main focus:border-main bg-white"
           />
         </div>
 
         {/* Submit Button */}
-        <button
-          type="submit"
-          className="w-full bg-main text-white py-2 px-4 rounded-md hover:bg-brown-700 focus:ring focus:ring-main"
-        >
-          Update
-        </button>
+        <div className="flex justify-center">
+          <button
+            type="submit"
+            className="w-1/2 bg-main text-white py-2 px-4 rounded-md hover:bg-brown-700 focus:ring focus:ring-main"
+          >
+            Update
+          </button>
+        </div>
       </form>
     </div>
   );

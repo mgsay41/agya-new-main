@@ -105,7 +105,7 @@ const AddActivity = () => {
       formData.append("file", sponsorImage);
       try {
         const response = await fetch(
-          `https://agya-new-main-umye.vercel.app/api/uploads/activities/${activityId}/sponsors`,
+          `http://localhost:4000/api/uploads/activities/${activityId}/sponsors`,
           {
             method: "POST",
             body: formData,
@@ -164,7 +164,7 @@ const AddActivity = () => {
         status: "pending",
       };
       const activityResponse = await fetch(
-        "https://agya-new-main-umye.vercel.app/api/activities",
+        "http://localhost:4000/api/activities",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -180,7 +180,7 @@ const AddActivity = () => {
         const featuredFormData = new FormData();
         featuredFormData.append("file", featuredImage);
         const featuredResponse = await fetch(
-          `https://agya-new-main-umye.vercel.app/api/uploads/activities/${newActivity._id}`,
+          `http://localhost:4000/api/uploads/activities/${newActivity._id}`,
           {
             method: "POST",
             body: featuredFormData,
@@ -194,7 +194,7 @@ const AddActivity = () => {
         const sponsorUrls = await uploadSponsorImages(newActivity._id);
         if (sponsorUrls.length > 0) {
           await fetch(
-            `https://agya-new-main-umye.vercel.app/api/activities/${newActivity._id}`,
+            `http://localhost:4000/api/activities/${newActivity._id}`,
             {
               method: "PUT",
               headers: { "Content-Type": "application/json" },

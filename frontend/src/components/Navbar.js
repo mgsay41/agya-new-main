@@ -4,6 +4,7 @@ import { TbReportOff } from "react-icons/tb";
 import { Toast } from "primereact/toast";
 import Sidebar1 from "../components/sidebar";
 import SidebarGuest from "../components/sidebar-guest.js";
+import Login from "../components/Login";
 import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   Search,
@@ -34,6 +35,7 @@ const Navbar = () => {
   const [showAllNotifications, setShowAllNotifications] = useState(false);
   const [visible, setVisible] = useState(false);
   const toastBC = useRef(null);
+  const [showLoginPopup, setShowLoginPopup] = useState(false); // For login popup
 
   const navigate = useNavigate();
 
@@ -43,40 +45,44 @@ const Navbar = () => {
   };
 
   const clearAllNotifications = async () => {
-    const response = await fetch(
-      `https://agya-new-main-umye.vercel.app/api/notifications/${isAuthUser._id}/all`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const data = await response.json();
+    try {
+      const response = await fetch(
+        `http://localhost:4000/api/notifications/${isAuthUser.id}/all`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-    if (data) {
+      if (!response.ok) {
+        throw new Error("Failed to clear notifications");
+      }
+
+      const data = await response.json();
+
+      // Clear notifications from state
+      setNotifications([]);
+
       toastBC.current.show({
         severity: "success",
         summary: data.message,
-        sticky: true,
+        life: 2000, // Will show for 2 seconds
       });
-    } else {
+    } catch (error) {
       toastBC.current.show({
         severity: "error",
-        summary: data.message,
-        sticky: true,
+        summary: error.message || "Failed to clear notifications",
+        life: 2000, // Will show for 2 seconds
       });
     }
-    // const unreadNotifications = notifications.filter(
-    //   (notification) => !notification.isRead
-    // );
-    // setNotifications(unreadNotifications);
   };
 
   const markAsRead = async (id) => {
     try {
       const response = await fetch(
-        `https://agya-new-main-umye.vercel.app/api/notifications/${id}/read`,
+        `http://localhost:4000/api/notifications/${id}/read`,
         {
           method: "PATCH",
           headers: {
@@ -110,7 +116,7 @@ const Navbar = () => {
       const fetchNotifications = async () => {
         try {
           const response = await fetch(
-            `https://agya-new-main-umye.vercel.app/api/notifications/${isAuthUser.id}`,
+            `http://localhost:4000/api/notifications/${isAuthUser.id}`,
             { signal: controller.signal }
           );
           if (!response.ok) {
@@ -130,26 +136,8 @@ const Navbar = () => {
     }
   }, [isAuthUser]);
 
-  // useEffect(() => {
-
-  //       try {
-
-  //         const response = fetch(`https://agya-new-main-umye.vercel.app/api/tags/all`);
-
-  //         const data =  response.json();
-
-  //         setTags(data);
-
-  //       } catch (err) {
-
-  //         console.error("Error fetching:", err);
-
-  //       }
-
-  // }, []);
-
   useEffect(() => {
-    fetch("https://agya-new-main-umye.vercel.app/api/tags/all")
+    fetch("http://localhost:4000/api/tags/all")
       .then((response) => response.json())
       .then((data) => setTags(data))
       .catch((error) => console.error("Error fetching tags:", error));
@@ -182,16 +170,13 @@ const Navbar = () => {
         authorName: isAuthUser.firstname,
       };
 
-      const response = await fetch(
-        `https://agya-new-main-umye.vercel.app/api/posts`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(postBody),
-        }
-      );
+      const response = await fetch(`http://localhost:4000/api/posts`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(postBody),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to create a new post");
@@ -418,6 +403,7 @@ const Navbar = () => {
                 className="border border-main mt-4 resize-none w-full h-32 rounded-md p-2 focus:outline-main"
                 value={postText}
                 onChange={(e) => setPostText(e.target.value)}
+                placeholder="Add your post details ..."
               ></textarea>
 
               {/* Post Button */}
@@ -455,9 +441,9 @@ const Navbar = () => {
 
               <input
                 type="text"
-                placeholder="Search"
+                placeholder="Search articles by author, keyword, tag"
                 name="search"
-                className="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-xl border-none focus:outline-none focus:ring-2 focus:ring-main placeholder-gray-500"
+                className="w-full pl-10 pr-4 py-2 bg-main/10 rounded-xl border border-main/30 focus:outline-none focus:ring-2 focus:ring-main placeholder-gray-500"
                 onChange={(e) => setSearch(e.target.value)}
               />
             </form>
@@ -529,36 +515,73 @@ const Navbar = () => {
             {/* Dropdown Menu */}
             {activePopup === "dropdown" && (
               <div className="absolute top-14 pb-4 right-0 w-48 bg-main text-white rounded-xl shadow-lg z-50">
-                <div className="absolute -top-2 right-24 w-4 h-4 bg-main transform rotate-45"></div>
+                {/* Decorative div placed behind buttons */}
+                <div className="absolute -top-2 right-24 w-4 h-4 bg-main transform rotate-45 z-[-1]"></div>
+
                 <div
-                  className="flex items-center cursor-pointer gap-2 px-4 py-3 text-sm hover:bg-opacity-90"
-                  onClick={() => togglePopup("post")}
+                  className="flex items-center cursor-pointer gap-2 px-4 py-3 text-sm hover:bg-white hover:text-main rounded-md"
+                  onClick={(e) => {
+                    if (!isAuthUser) {
+                      e.preventDefault();
+                      setShowLoginPopup(true);
+                    } else {
+                      togglePopup("post");
+                    }
+                  }}
                 >
                   <FileText className="w-5 h-5" />
                   <span>New Post</span>
                 </div>
+
                 <hr className="border-t border-gray-300 w-11/12 mx-auto" />
+
                 <a
                   href="/new-article"
-                  className="flex items-center gap-2 px-4 py-3 text-sm hover:bg-opacity-90"
+                  onClick={(e) => {
+                    if (!isAuthUser) {
+                      e.preventDefault();
+                      setShowLoginPopup(true);
+                    }
+                  }}
+                  className="flex items-center gap-2 px-4 py-3 text-sm hover:bg-white hover:text-main rounded-md"
                 >
                   <FilePlus className="w-5 h-5" />
                   <span>New Article</span>
                 </a>
+
                 <hr className="border-t border-gray-300 w-11/12 mx-auto" />
+
                 <a
                   href="/activity/new-activity"
-                  className="flex items-center gap-2 px-4 py-3 text-sm hover:bg-opacity-90"
+                  onClick={(e) => {
+                    if (!isAuthUser) {
+                      e.preventDefault();
+                      setShowLoginPopup(true);
+                    }
+                  }}
+                  className="flex items-center gap-2 px-4 py-3 text-sm hover:bg-white hover:text-main rounded-md"
                 >
                   <Calendar className="w-5 h-5" />
                   <span>New Activity</span>
                 </a>
               </div>
             )}
+
             {/* Notification Button */}
             <button
-              className="p-3 rounded-xl bg-main text-white hover:bg-opacity-90 relative"
+              className={`p-3 rounded-xl text-white hover:bg-opacity-90 relative ${
+                Array.isArray(notifications) &&
+                notifications.some((notification) => !notification.isRead)
+                  ? "bg-main"
+                  : "bg-main/50 opacity-50 cursor-default"
+              }`}
               onClick={() => togglePopup("notifications")}
+              disabled={
+                !(
+                  Array.isArray(notifications) &&
+                  notifications.some((notification) => !notification.isRead)
+                )
+              }
             >
               {/* Bell Icon */}
               <Bell className="w-5 h-5" />
@@ -569,6 +592,7 @@ const Navbar = () => {
                   <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full"></span>
                 )}
             </button>
+
             <div className="card flex justify-content-center">
               <Sidebar visible={visible} onHide={() => setVisible(false)}>
                 {isAuthUser?.email ? (
@@ -586,6 +610,11 @@ const Navbar = () => {
             </div>
           </div>
         </div>
+
+        {showLoginPopup && (
+          <Login setLoginPopup={setShowLoginPopup} setSignupPopup={false} />
+        )}
+
         {/* moblie Search Bar */}
         <div className="flex-1 max-w-xl mx-auto items-center gap-2 md:hidden">
           <form
@@ -596,9 +625,9 @@ const Navbar = () => {
 
             <input
               type="text"
-              placeholder="Search"
+              placeholder="Search articles by author, keyword, tag"
               name="search"
-              className="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-xl border-none focus:outline-none focus:ring-2 focus:ring-main placeholder-gray-500"
+              className="w-full pl-10 pr-4 py-2 bg-main/10  rounded-xl border border-main/30 focus:outline-none focus:ring-2 focus:ring-main placeholder-gray-500"
               onChange={(e) => setSearch(e.target.value)}
             />
           </form>

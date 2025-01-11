@@ -109,7 +109,7 @@ export default function NewArticle() {
       };
 
       const articleResponse = await fetch(
-        "https://agya-new-main-umye.vercel.app/api/articles",
+        "http://localhost:4000/api/articles",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -128,7 +128,7 @@ export default function NewArticle() {
         formData.append("file", featuredImage);
 
         const imageResponse = await fetch(
-          `https://agya-new-main-umye.vercel.app/api/uploads/articles/${newArticle._id}`,
+          `http://localhost:4000/api/uploads/articles/${newArticle._id}`,
           {
             method: "POST",
             body: formData,
@@ -152,15 +152,12 @@ export default function NewArticle() {
 
   async function fetchTags() {
     try {
-      const response = await fetch(
-        "https://agya-new-main-umye.vercel.app/api/tags/all",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch("http://localhost:4000/api/tags/all", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
         const error = await response.json();
@@ -280,13 +277,13 @@ export default function NewArticle() {
                 <div className="w-full relative">
                   <input
                     type="text"
-                    className="mb-5 h-[35px] border py-[2px] px-[5px] border-[#e6e6d7] w-full"
+                    className="mb-5 h-[35px] rounded-lg border py-[2px] px-[5px] border-[#e6e6d7] w-full"
                     placeholder="Sources, bibliography, links, book titles"
                     value={newReference}
                     onChange={(e) => setNewReference(e.target.value)}
                   />
                   <IoMdAdd
-                    className="absolute right-0 bg-main text-white w-[25px] h-[25px] rounded-[5px] top-[6px] py-[2px] px-[8px] cursor-pointer"
+                    className="absolute right-2 bg-main text-white w-[25px] h-[25px] rounded-[5px] top-[6px] py-[2px] px-[8px] cursor-pointer"
                     onClick={() => {
                       if (newReference.trim()) {
                         setReferences([...references, newReference]);

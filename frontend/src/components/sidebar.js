@@ -7,15 +7,13 @@ import api from "../axios"; // Import your axios instance
 import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "../context/GlobelContext";
 
-import {
-  Home,
-  Info,
-  Calendar,
-  Image,
-  HelpCircle,
-  LogOut,
-  User,
-} from "lucide-react";
+import { GoHomeFill } from "react-icons/go";
+import { IoMdInformationCircle } from "react-icons/io";
+import { FaRegCalendarAlt } from "react-icons/fa";
+import { BsQuestionDiamondFill } from "react-icons/bs";
+import { FaImages } from "react-icons/fa";
+import { FaUser } from "react-icons/fa";
+import { MdOutlineLogout } from "react-icons/md";
 
 const Sidebar = () => {
   const { setIsAuthUser, isAuthUser } = useContext(GlobalContext);
@@ -55,7 +53,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
 
   const logout = async (e) => {
-    fetch("https://agya-new-main-umye.vercel.app/api/auth/logout", {
+    fetch("http://localhost:4000/api/auth/logout", {
       method: "POST",
       credentials: "include",
     }).then(() => {
@@ -72,14 +70,14 @@ const Sidebar = () => {
   const name = isAuthUser?.firstname;
 
   return (
-    <div className="flex flex-col max-h-fit w-64 text-main-font rounded-lg border border-gray-300 bg-white shadow">
+    <div className="flex flex-col max-h-fit w-64 text-main-font rounded-lg border border-main/30 bg-SoftMain shadow">
       {/* Profile Section */}
       <div className="flex flex-col items-center py-8">
         {/* Profile Image */}
         <img
           src={userInfo.image || "/default.png"} // Replace with the actual image URL
           alt={`${userInfo.firstname}'s profile`}
-          className="w-20 h-20 rounded-full mb-4"
+          className="w-20 h-20 rounded-full object-cover mb-4"
         />
         {/* Name */}
         <h2 className="text-lg font-semibold">
@@ -99,7 +97,7 @@ const Sidebar = () => {
             className="flex items-center text-sm font-medium hover:text-main w-40"
           >
             <span className="w-12 inline-flex justify-end">
-              <Home
+              <GoHomeFill
                 className={`w-5 h-5 ${
                   location.pathname === "/" ? "text-main" : ""
                 }`}
@@ -118,7 +116,7 @@ const Sidebar = () => {
             className="flex items-center text-sm font-medium hover:text-main w-40"
           >
             <span className="w-12 inline-flex justify-end">
-              <Info
+              <IoMdInformationCircle
                 className={`w-5 h-5 ${
                   location.pathname === "/about" ? "text-main" : ""
                 }`}
@@ -137,7 +135,7 @@ const Sidebar = () => {
             className="flex items-center text-sm font-medium hover:text-main w-40"
           >
             <span className="w-12 inline-flex justify-end">
-              <Calendar
+              <FaRegCalendarAlt
                 className={`w-5 h-5 ${
                   location.pathname === "/activities" ? "text-main" : ""
                 }`}
@@ -156,7 +154,7 @@ const Sidebar = () => {
             className="flex items-center text-sm font-medium hover:text-main w-40"
           >
             <span className="w-12 inline-flex justify-end">
-              <Image
+              <FaImages
                 className={`w-5 h-5 ${
                   location.pathname === "/gallery" ? "text-main" : ""
                 }`}
@@ -175,7 +173,7 @@ const Sidebar = () => {
             className="flex items-center text-sm font-medium hover:text-main w-40"
           >
             <span className="w-12 inline-flex justify-end">
-              <HelpCircle
+              <BsQuestionDiamondFill
                 className={`w-5 h-5 ${
                   location.pathname === "/help" ? "text-main" : ""
                 }`}
@@ -196,7 +194,7 @@ const Sidebar = () => {
             className="flex items-center text-sm font-medium hover:text-main w-40"
           >
             <span className="w-12 inline-flex justify-end">
-              <User
+              <FaUser
                 className={`w-5 h-5 ${
                   location.pathname === "/profile" ? "text-main" : ""
                 }`}
@@ -218,7 +216,7 @@ const Sidebar = () => {
           onClick={logout}
         >
           <span className="w-12 inline-flex justify-end">
-            <LogOut className="w-5 h-5" />
+            <MdOutlineLogout className="w-5 h-5" />
           </span>
           <span className="ml-4">Log out</span>
         </div>

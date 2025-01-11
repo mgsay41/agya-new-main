@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Bookmark } from "lucide-react";
+import { MdBook } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
 const LatestActivities = () => {
@@ -13,15 +13,12 @@ const LatestActivities = () => {
 
   const fetchActivities = async () => {
     try {
-      const response = await fetch(
-        "https://agya-new-main-umye.vercel.app/api/activities/",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch("http://localhost:4000/api/activities/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
@@ -50,7 +47,7 @@ const LatestActivities = () => {
   };
 
   return (
-    <div className="w-52 max-h-fit rounded-lg border border-gray-200 bg-white shadow">
+    <div className="w-52 max-h-fit rounded-lg border border-main/30 bg-SoftMain shadow">
       <div className="py-5 px-4">
         <h2 className="mb-4 text-base font-semibold text-gray-900">
           Latest Activities
@@ -64,7 +61,7 @@ const LatestActivities = () => {
           ) : (
             activities.map((activity, index) => (
               <div key={index} className="flex items-center gap-2">
-                <Bookmark className="h-4 w-4 text-main" />
+                <MdBook className="h-4 w-4 text-main" />
                 <button
                   className="text-[11px] underline text-main hover:underline"
                   onClick={() => {
