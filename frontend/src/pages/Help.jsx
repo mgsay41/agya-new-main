@@ -62,7 +62,7 @@ const Help = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/messages",
+        "https://agya-backend.vercel.app/api/messages",
         messageData
       );
       alert("Your message has been sent successfully.");

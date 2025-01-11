@@ -22,21 +22,24 @@ const Signup = ({ setLoginPopup, setSignupPopup }) => {
 
   const register = async (e) => {
     e.preventDefault();
-    const data = await fetch("http://localhost:4000/api/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        firstname: formData.firstname,
-        lastname: formData.lastname,
-        AcademicTitle: formData.academicTitle,
-        Affiliation: formData.affiliation,
-        email: formData.email,
-        password: formData.password,
-        confirmPassword: formData.confirmPassword,
-      }),
-    });
+    const data = await fetch(
+      "https://agya-backend.vercel.app/api/auth/register",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstname: formData.firstname,
+          lastname: formData.lastname,
+          AcademicTitle: formData.academicTitle,
+          Affiliation: formData.affiliation,
+          email: formData.email,
+          password: formData.password,
+          confirmPassword: formData.confirmPassword,
+        }),
+      }
+    );
     const finalData = await data.json();
     if (finalData.success) {
       alert(finalData.message);

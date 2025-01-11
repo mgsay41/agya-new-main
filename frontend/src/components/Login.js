@@ -9,17 +9,20 @@ const Login = ({ setLoginPopup, setSignupPopup }) => {
 
   const login = async (e) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:4000/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        email: loginEmail,
-        password: loginPassword,
-      }),
-    });
+    const response = await fetch(
+      "https://agya-backend.vercel.app/api/auth/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          email: loginEmail,
+          password: loginPassword,
+        }),
+      }
+    );
     const finalData = await response.json();
     if (finalData.success) {
       alert(finalData.message);

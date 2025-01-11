@@ -21,7 +21,7 @@ router.post("/:userId", uploadProfileImage, async (req, res) => {
     }
 
     // File path to save in the database
-    const filePath = `http://localhost:4000/uploads/profiles/${req.file.filename}`;
+    const filePath = `https://agya-backend.vercel.app/uploads/profiles/${req.file.filename}`;
 
     // Update the user's image in the database
     const updatedUser = await User.findByIdAndUpdate(

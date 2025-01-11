@@ -81,7 +81,7 @@ const PostCard = ({ onClick, item }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:4000/api/posts/like/${item._id}`,
+        `https://agya-backend.vercel.app/api/posts/like/${item._id}`,
         {
           method: "POST",
           headers: {
@@ -120,7 +120,7 @@ const PostCard = ({ onClick, item }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:4000/api/posts/dislike/${item._id}`,
+        `https://agya-backend.vercel.app/api/posts/dislike/${item._id}`,
         {
           method: "POST",
           headers: {

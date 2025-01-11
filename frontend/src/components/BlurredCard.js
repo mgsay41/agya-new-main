@@ -10,7 +10,7 @@ const TopArticleCard = () => {
     const fetchTopArticle = async () => {
       try {
         const response = await fetch(
-          "http://localhost:4000/api/articles/top-article"
+          "https://agya-backend.vercel.app/api/articles/top-article"
         );
         const data = await response.json();
         if (data && data._id && data.title) {

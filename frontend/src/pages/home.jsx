@@ -18,12 +18,15 @@ function Home() {
   }, []);
   const fetchPosts = async () => {
     try {
-      const response = await fetch("http://localhost:4000/api/posts", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        "https://agya-backend.vercel.app/api/posts",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
@@ -37,12 +40,15 @@ function Home() {
   };
   const fetchArticles = async () => {
     try {
-      const response = await fetch("http://localhost:4000/api/articles", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        "https://agya-backend.vercel.app/api/articles",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
