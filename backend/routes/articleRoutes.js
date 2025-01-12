@@ -78,20 +78,11 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/articles", async (req, res) => {
-  const page = req.query.page - 1 || 0;
-
-  const limit = req.query.limit || 9;
-
   const search = req.query.search || "";
 
   const articles = await Article.find({
     title: { $regex: ".*" + search + ".*", $options: "i" },
   })
-
-    .skip(page * limit)
-
-    .limit(limit)
-
     .populate(
       "authorId",
 
@@ -108,23 +99,12 @@ router.get("/articles", async (req, res) => {
   })
     .populate("userId", "firstname lastname")
 
-    .skip(page * limit)
-
-    .limit(limit);
-
-  const pageCount = parseInt(numberOfArticles / limit);
-
   if (articles) {
     return res.json({
       success: true,
-
       numberOfArticles,
       numberOfAdmin,
       numberOfUser,
-      page: page + 1,
-
-      pageCount: pageCount + 1,
-
       data: articles,
     });
   } else {
