@@ -40,10 +40,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(
-  cors({
-    credentials: true,
-    origin: true,
-  })
+  cors()
 );
 app.use(morgan("dev")); // Log HTTP requests
 
