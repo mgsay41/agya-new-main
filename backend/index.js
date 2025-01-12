@@ -40,7 +40,13 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(
-  cors()
+  cors({
+    credentials: true,
+    origin: [
+      "https://agya-beta.vercel.app",
+      "http://localhost:5173", // Add more origins as needed
+    ],
+  })
 );
 app.use(morgan("dev")); // Log HTTP requests
 
