@@ -94,5 +94,17 @@ router.delete("/comments/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+// get a comment
+router.get("/comments/admin/:id", async (req, res) => {
+  try {
+   const commentUser = await Comment.findById(req.params.id).populate("userId");
+   const commentPost = await Comment.findById(req.params.id).populate("postId");
+    res.json({ user: commentUser , post:commentPost});
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 
 export default router;
