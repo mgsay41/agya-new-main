@@ -92,6 +92,22 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+router.put("/reports/:id/read", async (req, res) => {
+  try {
+    const updatedReport = await Report.findByIdAndUpdate(
+      req.params.id,
+      { isRead: true },
+      { new: true } // Return the updated document
+    );
+    if (!updatedReport) {
+      return res.status(404).json({ message: "Report not found" });
+    }
+    res.status(200).json(updatedReport);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 // Delete a report
 router.delete("/:id", async (req, res) => {
