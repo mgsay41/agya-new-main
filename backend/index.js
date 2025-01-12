@@ -42,8 +42,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
     credentials: true,
-    origin: 'https://agya-beta.vercel.app',
-    preflightContinue: false,
+    origin: true,
   })
 );
 app.use(morgan("dev")); // Log HTTP requests
