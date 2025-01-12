@@ -58,6 +58,19 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+// Get post by ID
+router.get("/posts/admin/:id", async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    res.status(200).json(post);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 // Get posts by userId and populate user details
 router.get("/user/:userId", async (req, res) => {
