@@ -33,6 +33,26 @@ router.post("/", async (req, res) => {
   }
 });
 
+// Get a specific message by ID
+router.get("/all-messages", async (req, res) => {
+    const message = await Message.find();
+
+    const numberOfMessage = await Message.countDocuments()
+
+    if (message) {
+      return res.json({
+        success: true,
+        numberOfMessage,
+        data: message,
+      });
+    } else {
+      return res.json({
+        success: false,
+      });
+    }
+  }
+)
+
 // Get all messages for a specific user
 router.get("/:userId", async (req, res) => {
   const { userId } = req.params;
