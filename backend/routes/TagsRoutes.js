@@ -64,6 +64,24 @@ router.get("/all", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+// Get all tags
+router.get("/all-tags", async (req, res) => {
+     const tages = await Tag.find();
+    const numberOftages = await Tag.countDocuments()
+    
+    if (tages) {
+      return res.json({
+        success: true,
+        numberOftages,
+        data: tages,
+      });
+    } else {
+      return res.json({
+        success: false,
+      });
+    }
+});
+
 
 // Get a tag by ID
 router.get("/:id", async (req, res) => {
@@ -143,6 +161,25 @@ router.delete("/:id", async (req, res) => {
   } catch (err) {
     console.error("Error deleting tag:", err);
     res.status(500).json({ error: err.message });
+  }
+});
+// Delete a tag
+router.delete("/delete-tag/:id", async (req, res) => {
+   const { id } = req.params;
+    
+    const tag = await Tag.findByIdAndDelete(id);
+
+  if (tag) {
+    return res.json({
+      success: true,
+      message: "the tag was deleted",
+    });
+  }
+  if (!tag) {
+    return res.json({
+      success: false,
+      message: "No tag found with this ID",
+    });
   }
 });
 
