@@ -52,6 +52,27 @@ router.get("/", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+// Get all users
+router.get("/users", async (req, res) => {
+try {
+    const users = await User.find();
+    const numberOfUsers = await User.countDocuments()
+  if (users) {
+    return res.json({
+      success: true,
+      numberOfUsers,
+      data: users,
+    });
+  } else {
+    return res.json({
+      success: false,
+    });
+  }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 // Get user by ID
 router.get("/:id", async (req, res) => {
