@@ -24,6 +24,35 @@ router.post("/", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+// Create a new tag
+router.post("/add-tag", async (req, res) => {
+ const {
+        name
+    } = req.body;
+    if (
+        !name
+      ) {
+        return res.json({
+          success: false,
+          message: "please fill all the fields",
+        });
+      }
+      const tag = await Tag.create({
+        name,
+      });
+    
+      if (tag) {
+        res.json({
+          success: true,
+          message: "tag add successfully",
+        });
+      } else {
+        res.json({
+          success: false,
+          message: "tag add failed",
+        });
+      }
+});
 
 // Get all tags
 router.get("/all", async (req, res) => {
