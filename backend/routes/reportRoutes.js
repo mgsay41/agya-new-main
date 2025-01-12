@@ -63,6 +63,25 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/all-reports", async (req, res) => {
+  const reports = await Report.find();
+  const numberOfReports = await Report.countDocuments()
+
+  const pageCount = parseInt(numberOfReports / limit);
+
+  if (reports) {
+    return res.json({
+      success: true,
+      numberOfReports,
+      data: reports,
+    });
+  } else {
+    return res.json({
+      success: false,
+    });
+  }
+});
+
 // Get a specific report by ID
 router.get("/:id", async (req, res) => {
   try {
