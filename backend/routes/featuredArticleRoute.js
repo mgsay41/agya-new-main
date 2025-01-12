@@ -5,6 +5,6 @@ const router = express.Router();
 // User management routes
 router.post('/addFeatured', add);
 router.delete("/deleteFeatured", deleteFeatured);
-router.get('/all', getAll);
+router.get('/all-featured', getAll);
 
 export default router;
