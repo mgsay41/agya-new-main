@@ -23,6 +23,23 @@ const add = async (req, res) => {
     res.status(500).json({ message: "An error occurred while adding the article.", error: error.message });
   }
 };
+// Add a new featured article
+const update = async (req, res) => {
+  try {
+    const updatedArtical = await FeaturedArticles.updateMany(
+      {},
+      req.body,
+      { new: true }
+    );
+    if (!updatedArtical) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+    res.status(200).json(updatedArtical);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 
 // Remove a featured article by its ID
 const deleteFeatured = async (req, res) => {
