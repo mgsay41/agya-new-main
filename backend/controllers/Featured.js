@@ -72,4 +72,4 @@ const getAll = async (req, res) => {
   }
 };
 
-export { add, deleteFeatured, getAll };
+export { add, deleteFeatured, getAll,update };
