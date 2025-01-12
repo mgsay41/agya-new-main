@@ -66,9 +66,7 @@ router.get("/", async (req, res) => {
 router.get("/all-reports", async (req, res) => {
   const reports = await Report.find();
   const numberOfReports = await Report.countDocuments()
-
-  const pageCount = parseInt(numberOfReports / limit);
-
+  
   if (reports) {
     return res.json({
       success: true,
