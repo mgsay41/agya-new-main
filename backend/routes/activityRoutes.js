@@ -182,7 +182,6 @@ router.get("/activities", async (req, res) => {
       if (activities) {
         return res.json({
           success: true,
-          numberOfActivity,
           data: activities,
         });
       } else {
@@ -199,7 +198,6 @@ router.get("/activities/:type", async (req, res) => {
       if (activities) {
         return res.json({
           success: true,
-          numberOfActivity,
           data: activitie,
         });
       } else {
@@ -215,7 +213,6 @@ router.get("/padding-activities", async (req, res) => {
       if (activities) {
         return res.json({
           success: true,
-          numberOfActivity,
           data: activities,
         });
       } else {
@@ -232,7 +229,6 @@ router.get("/padding-activities/:type", async (req, res) => {
       if (activities) {
         return res.json({
           success: true,
-          numberOfActivity,
           data: activitie,
         });
       } else {
