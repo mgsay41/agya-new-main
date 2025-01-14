@@ -177,5 +177,164 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+router.get("/activities", async (req, res) => {
+  const page = req.query.page - 1 || 0;
+  const limit = req.query.limit || 9;
+  const activities = await Activity.find();
+        const numberOfActivity = await Activity.countDocuments()
+        .skip(page * limit)
+
+            
+      const pageCount = parseInt(numberOfActivity / limit);
+
+      if (activities) {
+        return res.json({
+          success: true,
+          numberOfActivity,
+          page: page + 1,
+          pageCount: pageCount + 1,
+          data: activities,
+        });
+      } else {
+        return res.json({
+          success: false,
+        });
+      }
+    
+});
+router.get("/activities/:type", async (req, res) => {
+  const {type} = req.params 
+  const activitie = await Activity.find({activityType : type});
+
+  const page = req.query.page - 1 || 0;
+  const limit = req.query.limit || 9;
+  const activities = await Activity.find();
+        const numberOfActivity = await Activity.countDocuments({activityType : type})
+        .skip(page * limit)
+        .limit(limit);
+
+            
+      const pageCount = parseInt(numberOfActivity / limit);
+
+      if (activities) {
+        return res.json({
+          success: true,
+          numberOfActivity,
+          page: page + 1,
+          pageCount: pageCount + 1,
+          data: activitie,
+        });
+      } else {
+        return res.json({
+          success: false,
+        });
+      }
+    
+});
+
+router.get("/padding-activities", async (req, res) => {
+  const page = req.query.page - 1 || 0;
+  const limit = req.query.limit || 9;
+    const activities = await Activity.find({status : "pending"});
+        const numberOfActivity = await Activity.countDocuments()
+        .skip(page * limit)
+        .limit(limit);
+
+            
+      const pageCount = parseInt(numberOfActivity / limit);
+
+      if (activities) {
+        return res.json({
+          success: true,
+          numberOfActivity,
+          page: page + 1,
+          pageCount: pageCount + 1,
+          data: activities,
+        });
+      } else {
+        return res.json({
+          success: false,
+        });
+      }
+    
+});
+router.get("/padding-activities/:type", async (req, res) => {
+  const {type} = req.params 
+  const activitie = await Activity.find({activityType : type , status : "pending" });
+
+  const page = req.query.page - 1 || 0;
+  const limit = req.query.limit || 9;
+  const activities = await Activity.find();
+        const numberOfActivity = await Activity.countDocuments({activityType : type ,status : "pending" })
+        .skip(page * limit)
+        .limit(limit);
+
+             
+      const pageCount = parseInt(numberOfActivity / limit);
+
+      if (activities) {
+        return res.json({
+          success: true,
+          numberOfActivity,
+          page: page + 1,
+          pageCount: pageCount + 1,
+          data: activitie,
+        });
+      } else {
+        return res.json({
+          success: false,
+        });
+      }
+    
+});
+
+// Get a specific activity by ID
+router.get("/activitiy/:id", async (req, res) => {
+  const {id} = req.params 
+  
+    const activity = await Activity.findById(id);
+
+    if (activity) {
+      return res.json({
+        success: true,
+        data: activity,
+      });
+    } else {
+      return res.json({
+        success: false,
+      });
+    }
+});
+
+// Update an activity
+router.put("/activities-updata/:id", async (req, res) => {
+  const {id} = req.params 
+    const updatedActivity = await Activity.findByIdAndUpdate(
+      id,
+      req.body,
+      { new: true }
+    );
+    if (updatedActivity) {
+      return res.json({
+        success: true,
+        data: updatedActivity,
+      });
+    } else {
+      return res.json({
+        success: false,
+      });
+    }
+});
+
+// Delete an activity
+router.delete("/activities/:id", async (req, res) => {
+  try {
+    await Activity.findByIdAndDelete(req.params.id);
+    res.status(204).json({ message: "Activity deleted" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 export default router;
