@@ -377,7 +377,7 @@ const AddActivity = () => {
             </div>
             <div>
               <h3 className="font-semibold mb-4">Sponsor Images</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {/* <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {sponsorPreviews.map((preview, index) => (
                   <div key={index} className="relative">
                     <img
@@ -394,7 +394,7 @@ const AddActivity = () => {
                     </button>
                   </div>
                 ))}
-              </div>
+              </div> */}
               <input
                 type="file"
                 multiple

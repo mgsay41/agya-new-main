@@ -148,10 +148,7 @@ function Article() {
             <h3 className="text-lg font-semibold mb-4">References and Links</h3>
             <ul className="space-y-3">
               {articles.references.map((link, index) => (
-                <li
-                  key={index}
-                  className="flex items-center gap-2 text-blue-600"
-                >
+                <li key={index} className="flex items-center gap-2 text-main">
                   <FaLink className="flex-shrink-0" />
                   <a
                     href={link}
@@ -170,7 +167,7 @@ function Article() {
         {/* Comment Button */}
         <div className="mt-8 text-center">
           <button
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors w-full md:w-auto"
+            className="bg-main text-white px-6 py-3 rounded-lg hover:bg-main/90 transition-colors w-full md:w-auto"
             onClick={() => setIsCommentPopupOpen(true)}
           >
             Add Comment
