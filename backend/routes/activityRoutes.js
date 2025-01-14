@@ -177,21 +177,32 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
 router.get("/activities", async (req, res) => {
-  const activities = await Activity.find();
-      if (activities) {
-        return res.json({
-          success: true,
-          activities,
-        });
-      } else {
-        return res.json({
-          success: false,
-        });
-      }
-    
+  try {
+    console.log('Received Request:', req.query); // Log query parameters
+    const activities = await Activity.find();
+    const numberOfActivity = await Activity.countDocuments();
+
+    if (activities) {
+      return res.json({
+        success: true,
+        numberOfActivity,
+        data: activities,
+      });
+    } else {
+      return res.json({
+        success: false,
+      });
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    return res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
 });
+
 router.get("/activities/:type", async (req, res) => {
   const {type} = req.params 
   const activitie = await Activity.find({activityType : type});
