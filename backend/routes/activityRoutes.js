@@ -178,21 +178,12 @@ router.delete("/:id", async (req, res) => {
   }
 });
 router.get("/activities", async (req, res) => {
-  const page = req.query.page - 1 || 0;
-  const limit = req.query.limit || 9;
   const activities = await Activity.find();
         const numberOfActivity = await Activity.countDocuments()
-        .skip(page * limit)
-
-            
-      const pageCount = parseInt(numberOfActivity / limit);
-
       if (activities) {
         return res.json({
           success: true,
           numberOfActivity,
-          page: page + 1,
-          pageCount: pageCount + 1,
           data: activities,
         });
       } else {
@@ -205,23 +196,12 @@ router.get("/activities", async (req, res) => {
 router.get("/activities/:type", async (req, res) => {
   const {type} = req.params 
   const activitie = await Activity.find({activityType : type});
-
-  const page = req.query.page - 1 || 0;
-  const limit = req.query.limit || 9;
   const activities = await Activity.find();
         const numberOfActivity = await Activity.countDocuments({activityType : type})
-        .skip(page * limit)
-        .limit(limit);
-
-            
-      const pageCount = parseInt(numberOfActivity / limit);
-
       if (activities) {
         return res.json({
           success: true,
           numberOfActivity,
-          page: page + 1,
-          pageCount: pageCount + 1,
           data: activitie,
         });
       } else {
@@ -233,22 +213,12 @@ router.get("/activities/:type", async (req, res) => {
 });
 
 router.get("/padding-activities", async (req, res) => {
-  const page = req.query.page - 1 || 0;
-  const limit = req.query.limit || 9;
     const activities = await Activity.find({status : "pending"});
         const numberOfActivity = await Activity.countDocuments()
-        .skip(page * limit)
-        .limit(limit);
-
-            
-      const pageCount = parseInt(numberOfActivity / limit);
-
       if (activities) {
         return res.json({
           success: true,
           numberOfActivity,
-          page: page + 1,
-          pageCount: pageCount + 1,
           data: activities,
         });
       } else {
@@ -261,23 +231,12 @@ router.get("/padding-activities", async (req, res) => {
 router.get("/padding-activities/:type", async (req, res) => {
   const {type} = req.params 
   const activitie = await Activity.find({activityType : type , status : "pending" });
-
-  const page = req.query.page - 1 || 0;
-  const limit = req.query.limit || 9;
   const activities = await Activity.find();
         const numberOfActivity = await Activity.countDocuments({activityType : type ,status : "pending" })
-        .skip(page * limit)
-        .limit(limit);
-
-             
-      const pageCount = parseInt(numberOfActivity / limit);
-
       if (activities) {
         return res.json({
           success: true,
           numberOfActivity,
-          page: page + 1,
-          pageCount: pageCount + 1,
           data: activitie,
         });
       } else {
