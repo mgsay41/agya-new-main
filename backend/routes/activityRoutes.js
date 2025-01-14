@@ -193,41 +193,41 @@ router.get("/activities", async (req, res) => {
       }
     
 });
-// router.get("/activities/:type", async (req, res) => {
-//   const {type} = req.params 
-//   const activitie = await Activity.find({activityType : type});
-//   const activities = await Activity.find();
-//         const numberOfActivity = await Activity.countDocuments({activityType : type})
-//       if (activities) {
-//         return res.json({
-//           success: true,
-//           numberOfActivity,
-//           data: activitie,
-//         });
-//       } else {
-//         return res.json({
-//           success: false,
-//         });
-//       }
+router.get("/activities/:type", async (req, res) => {
+  const {type} = req.params 
+  const activitie = await Activity.find({activityType : type});
+  const activities = await Activity.find();
+        const numberOfActivity = await Activity.countDocuments({activityType : type})
+      if (activities) {
+        return res.json({
+          success: true,
+          numberOfActivity,
+          data: activitie,
+        });
+      } else {
+        return res.json({
+          success: false,
+        });
+      }
     
-// });
+});
 
-// router.get("/padding-activities", async (req, res) => {
-//     const activities = await Activity.find({status : "pending"});
-//         const numberOfActivity = await Activity.countDocuments()
-//       if (activities) {
-//         return res.json({
-//           success: true,
-//           numberOfActivity,
-//           data: activities,
-//         });
-//       } else {
-//         return res.json({
-//           success: false,
-//         });
-//       }
+router.get("/padding-activities", async (req, res) => {
+    const activities = await Activity.find({status : "pending"});
+        const numberOfActivity = await Activity.countDocuments()
+      if (activities) {
+        return res.json({
+          success: true,
+          numberOfActivity,
+          data: activities,
+        });
+      } else {
+        return res.json({
+          success: false,
+        });
+      }
     
-// });
+});
 // router.get("/padding-activities/:type", async (req, res) => {
 //   const {type} = req.params 
 //   const activitie = await Activity.find({activityType : type , status : "pending" });
