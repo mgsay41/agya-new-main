@@ -179,7 +179,6 @@ router.delete("/:id", async (req, res) => {
 });
 router.get("/activities", async (req, res) => {
   const activities = await Activity.find();
-        const numberOfActivity = await Activity.countDocuments()
       if (activities) {
         return res.json({
           success: true,
@@ -197,7 +196,6 @@ router.get("/activities/:type", async (req, res) => {
   const {type} = req.params 
   const activitie = await Activity.find({activityType : type});
   const activities = await Activity.find();
-        const numberOfActivity = await Activity.countDocuments({activityType : type})
       if (activities) {
         return res.json({
           success: true,
@@ -214,7 +212,6 @@ router.get("/activities/:type", async (req, res) => {
 
 router.get("/padding-activities", async (req, res) => {
     const activities = await Activity.find({status : "pending"});
-        const numberOfActivity = await Activity.countDocuments()
       if (activities) {
         return res.json({
           success: true,
@@ -228,62 +225,60 @@ router.get("/padding-activities", async (req, res) => {
       }
     
 });
-// router.get("/padding-activities/:type", async (req, res) => {
-//   const {type} = req.params 
-//   const activitie = await Activity.find({activityType : type , status : "pending" });
-//   const activities = await Activity.find();
-//         const numberOfActivity = await Activity.countDocuments({activityType : type ,status : "pending" })
-//       if (activities) {
-//         return res.json({
-//           success: true,
-//           numberOfActivity,
-//           data: activitie,
-//         });
-//       } else {
-//         return res.json({
-//           success: false,
-//         });
-//       }
-    
-// });
+router.get("/padding-activities/:type", async (req, res) => {
+  const {type} = req.params 
+  const activitie = await Activity.find({activityType : type , status : "pending" });
+  const activities = await Activity.find();
+      if (activities) {
+        return res.json({
+          success: true,
+          numberOfActivity,
+          data: activitie,
+        });
+      } else {
+        return res.json({
+          success: false,
+        });
+      }
+});
 
 // Get a specific activity by ID
-// router.get("/activitiy/:id", async (req, res) => {
-//   const {id} = req.params 
+router.get("/activitiy/:id", async (req, res) => {
+  const {id} = req.params 
   
-//     const activity = await Activity.findById(id);
+    const activity = await Activity.findById(id);
 
-//     if (activity) {
-//       return res.json({
-//         success: true,
-//         data: activity,
-//       });
-//     } else {
-//       return res.json({
-//         success: false,
-//       });
-//     }
-// });
+    if (activity) {
+      return res.json({
+        success: true,
+        data: activity,
+      });
+    } else {
+      return res.json({
+        success: false,
+      });
+    }
+});
 
 // Update an activity
-// router.put("/activities-updata/:id", async (req, res) => {
-//   const {id} = req.params 
-//     const updatedActivity = await Activity.findByIdAndUpdate(
-//       id,
-//       req.body,
-//       { new: true }
-//     );
-//     if (updatedActivity) {
-//       return res.json({
-//         success: true,
-//         data: updatedActivity,
-//       });
-//     } else {
-//       return res.json({
-//         success: false,
-//       });
-//     }
-// });
+router.put("/activities-updata/:id", async (req, res) => {
+  const {id} = req.params 
+    const updatedActivity = await Activity.findByIdAndUpdate(
+      id,
+      req.body,
+      { new: true }
+    );
+    if (updatedActivity) {
+      return res.json({
+        success: true,
+        data: updatedActivity,
+      });
+    } else {
+      return res.json({
+        success: false,
+      });
+    }
+});
 
 // Delete an activity
 // router.delete("/activities/:id", async (req, res) => {
