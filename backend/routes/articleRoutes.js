@@ -112,6 +112,7 @@ router.get("/articles", async (req, res) => {
     return res.json({
       success: true,
       numberOfArticles,
+      lastmonth,
       numberOfAdmin,
       numberOfUser,
       data: articles,
