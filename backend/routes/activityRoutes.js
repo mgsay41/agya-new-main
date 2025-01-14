@@ -177,12 +177,13 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 router.get("/activities", async (req, res) => {
   const activities = await Activity.find();
       if (activities) {
         return res.json({
           success: true,
-          data: activities,
+          activities,
         });
       } else {
         return res.json({
