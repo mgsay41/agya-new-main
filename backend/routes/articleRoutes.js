@@ -1,5 +1,6 @@
 import express from "express";
 import Article from "../models/Article.js";
+import moment from "moment"
 
 const router = express.Router();
 
@@ -80,14 +81,34 @@ router.post("/", async (req, res) => {
 router.get("/articles", async (req, res) => {
   const search = req.query.search || "";
   const date = new Date();
-  const lastlastmonth = await Article.countDocuments({
-    createdAt : date.getMonth()-2
-  });
-    const lastmonth = await Article.countDocuments({
-      createdAt : date.getMonth()-1
-  });
-  const thismonth = await Article.countDocuments({
-    createdAt : date.getMonth()
+const startOfLastLastMonth = moment(date).subtract(2, 'months').startOf('month').toDate(); // First day of the month two months ago
+const endOfLastLastMonth = moment(date).subtract(2, 'months').endOf('month').toDate(); // Last day of the month two months ago
+const startOfMonth = moment(date).startOf('month').toDate(); // First day of the current month
+const endOfMonth = moment(date).endOf('month').toDate(); // Last day of the current month
+// Calculate the first day of the previous month
+const firstDayOfPreviousMonth = moment(date).subtract(1, 'months').startOf('month').toDate();
+
+// Calculate the last day of the previous month
+const lastDayOfPreviousMonth = moment(date).subtract(1, 'months').endOf('month').toDate();
+
+const lastLastMonthCount = await Article.countDocuments({
+  createdAt: {
+    $gte: startOfLastLastMonth,  // Greater than or equal to the first day of the month two months ago
+    $lte: endOfLastLastMonth     // Less than or equal to the last day of the month two months ago
+  }
+});
+// Count the documents created in the previous month
+const lastMonthCount = await Article.countDocuments({
+  createdAt: {
+    $gte: firstDayOfPreviousMonth,
+    $lte: lastDayOfPreviousMonth
+  }
+});
+const thisMonthCount = await Article.countDocuments({
+  createdAt: {
+    $gte: startOfMonth,  // Greater than or equal to the first day of the current month
+    $lte: endOfMonth     // Less than or equal to the last day of the current month
+  }
 });
   const articles = await Article.find({
     title: { $regex: ".*" + search + ".*", $options: "i" },
@@ -112,7 +133,9 @@ router.get("/articles", async (req, res) => {
     return res.json({
       success: true,
       numberOfArticles,
-      lastmonth,
+      lastMonthCount,
+      thisMonthCount ,
+      lastLastMonthCount,
       numberOfAdmin,
       numberOfUser,
       data: articles,
