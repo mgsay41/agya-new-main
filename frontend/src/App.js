@@ -47,11 +47,9 @@ const App = () => {
         </Route>
         <Route path="/activities" element={<ActivityDetailsLayout />}>
           <Route path="/activities" element={<Activities />} />
-        </Route>
-        <Route path="/activity" element={<ActivityDetailsLayout />}>
-          <Route path="/activity/new-activity" element={<AddActivity />} />
-          <Route path="/activity/edit-activity" element={<EditActivity />} />
-          <Route path="/activity/:id" element={<ActivityDetails />} />
+          <Route path="/activities/new-activity" element={<AddActivity />} />
+          <Route path="/activities/edit-activity" element={<EditActivity />} />
+          <Route path="/activities/:id" element={<ActivityDetails />} />
         </Route>
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/edit-password/:id" element={<EditPassword />} />

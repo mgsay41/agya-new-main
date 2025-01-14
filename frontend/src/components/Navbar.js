@@ -555,7 +555,7 @@ const Navbar = () => {
                 <hr className="border-t border-gray-300 w-11/12 mx-auto" />
 
                 <a
-                  href="/activity/new-activity"
+                  href="/activities/new-activity"
                   onClick={(e) => {
                     if (!isAuthUser) {
                       e.preventDefault();
