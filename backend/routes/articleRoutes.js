@@ -79,7 +79,16 @@ router.post("/", async (req, res) => {
 
 router.get("/articles", async (req, res) => {
   const search = req.query.search || "";
-
+  const date = new Date();
+  const lastlastmonth = await Article.countDocuments({
+    createdAt : date.getMonth()-2
+  });
+    const lastmonth = await Article.countDocuments({
+      createdAt : date.getMonth()-1
+  });
+  const thismonth = await Article.countDocuments({
+    createdAt : date.getMonth()
+});
   const articles = await Article.find({
     title: { $regex: ".*" + search + ".*", $options: "i" },
   })
