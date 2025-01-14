@@ -177,7 +177,7 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-router.get("/activite", async (req, res) => {
+router.get("/activ/activite", async (req, res) => {
   try {
     console.log('Received Request:', req.query); // Log query parameters
     const activities = await Activity.find();
