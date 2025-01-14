@@ -100,7 +100,7 @@ export const login = async (req, res) => {
 
   const user = await User.findOne({ email });
   
-  const ban = await User.findOne({ status : 'ban' });
+  const ban = await User.findOne({ email ,  status : 'ban' });
 
    if (ban) {
     return res.json({
