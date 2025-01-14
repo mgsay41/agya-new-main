@@ -99,6 +99,17 @@ export const login = async (req, res) => {
   }
 
   const user = await User.findOne({ email });
+  
+  const ban = await User.findOne({ status : 'ban' });
+
+   if (ban) {
+    return res.json({
+      success: false,
+      message: "this user has banned",
+    });
+  }
+
+
 
   if (!user) {
     return res.json({
