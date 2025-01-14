@@ -220,7 +220,7 @@ router.get("/activities/:type", async (req, res) => {
     
 });
 
-router.get("/padding-activities", async (req, res) => {
+router.get("/activ/padding-activities", async (req, res) => {
     const activities = await Activity.find({status : "pending"});
       if (activities) {
         return res.json({
