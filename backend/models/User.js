@@ -26,9 +26,11 @@ const userSchema = new mongoose.Schema(
     },
     affiliation: {
       type: String,
+        default: "none"
     },
     academic_title: {
       type: String,
+        default: "none"
     },
     status: {
       type: String,
