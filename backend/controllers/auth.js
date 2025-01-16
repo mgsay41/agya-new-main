@@ -68,8 +68,8 @@ export const register = async (req, res) => {
     firstname,
     lastname,
     email,
-    affiliation,
-    academic_title,
+    // affiliation,
+    // academic_title,
     password: hashPassword,
   });
 
