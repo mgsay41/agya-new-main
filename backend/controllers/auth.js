@@ -13,8 +13,8 @@ export const register = async (req, res) => {
     lastname,
     email,
     password,
-    Affiliation,
-    AcademicTitle,
+    affiliation,
+    academic_title,
     confirmPassword,
   } = req.body;
 
@@ -24,8 +24,8 @@ export const register = async (req, res) => {
     !lastname ||
     !email ||
     !password ||
-    !Affiliation ||
-    !AcademicTitle ||
+    !affiliation ||
+    !academic_title ||
     !confirmPassword
   ) {
     return res.json({
@@ -68,8 +68,8 @@ export const register = async (req, res) => {
     firstname,
     lastname,
     email,
-    Affiliation,
-    AcademicTitle,
+    affiliation,
+    academic_title,
     password: hashPassword,
   });
 
