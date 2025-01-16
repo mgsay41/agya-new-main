@@ -1,11 +1,13 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext,useRef } from "react";
 import { X } from "lucide-react";
 import { GlobalContext } from "../context/GlobelContext";
+import { Toast } from 'primereact/toast';
 
 const Login = ({ setLoginPopup, setSignupPopup }) => {
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const { setIsAuthUser } = useContext(GlobalContext);
+      const toastBC = useRef(null);
 
   const login = async (e) => {
     e.preventDefault();
@@ -25,12 +27,20 @@ const Login = ({ setLoginPopup, setSignupPopup }) => {
     );
     const finalData = await response.json();
     if (finalData.success) {
-      alert(finalData.message);
       localStorage.setItem("userInfo", JSON.stringify(finalData));
       setLoginPopup(false);
       setIsAuthUser(finalData);
+      toastBC.current.show({
+        severity: 'success',
+        summary: finalData.message,
+        sticky: true,
+    });
     } else {
-      alert(finalData.message);
+      toastBC.current.show({
+        severity: 'error',
+        summary: finalData.message,
+        sticky: true,
+    });
     }
   };
 
@@ -135,6 +145,7 @@ const Login = ({ setLoginPopup, setSignupPopup }) => {
           </button>
         </div>
       </form>
+            <Toast ref={toastBC} position="top-right" />
     </div>
   );
 };

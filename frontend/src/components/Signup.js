@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState,useRef } from "react";
 import { X } from "lucide-react";
+import { Toast } from 'primereact/toast';
 
 const Signup = ({ setLoginPopup, setSignupPopup }) => {
+      const toastBC = useRef(null);
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
-    academicTitle: "",
+    academic_title: "",
     affiliation: "",
     email: "",
     password: "",
@@ -32,8 +34,8 @@ const Signup = ({ setLoginPopup, setSignupPopup }) => {
         body: JSON.stringify({
           firstname: formData.firstname,
           lastname: formData.lastname,
-          AcademicTitle: formData.academicTitle,
-          Affiliation: formData.affiliation,
+          academic_title: formData.academic_title,
+          affiliation: formData.affiliation,
           email: formData.email,
           password: formData.password,
           confirmPassword: formData.confirmPassword,
@@ -42,11 +44,19 @@ const Signup = ({ setLoginPopup, setSignupPopup }) => {
     );
     const finalData = await data.json();
     if (finalData.success) {
-      alert(finalData.message);
+      toastBC.current.show({
+        severity: 'success',
+        summary: finalData.message,
+        sticky: true,
+    });
       setLoginPopup(true);
       setSignupPopup(false);
     } else {
-      alert(finalData.message);
+      toastBC.current.show({
+        severity: 'error',
+        summary: finalData.message,
+        sticky: true,
+    });
     }
   };
 
@@ -80,8 +90,8 @@ const Signup = ({ setLoginPopup, setSignupPopup }) => {
       label: "Affiliation",
     },
     {
-      id: "academicTitle",
-      name: "academicTitle",
+      id: "academic_title",
+      name: "academic_title",
       type: "text",
       placeholder: "Write your Academic title",
       label: "Academic Title",
@@ -198,6 +208,7 @@ const Signup = ({ setLoginPopup, setSignupPopup }) => {
           </div>
         </form>
       </div>
+      <Toast ref={toastBC} position="top-right" />
     </div>
   );
 };

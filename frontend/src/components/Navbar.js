@@ -2,6 +2,8 @@ import { MdOutlineReportGmailerrorred } from "react-icons/md";
 import { RiCalendarCheckLine } from "react-icons/ri";
 import { TbReportOff } from "react-icons/tb";
 import { Toast } from "primereact/toast";
+import Cookies from 'js-cookie';
+
 import Sidebar1 from "../components/sidebar";
 import SidebarGuest from "../components/sidebar-guest.js";
 import Login from "../components/Login";
@@ -19,6 +21,7 @@ import {
 import { GlobalContext } from "../context/GlobelContext"; // Adjust import based on your structure
 import { useNavigate } from "react-router-dom";
 import { Sidebar } from "primereact/sidebar";
+import CookieConsent from "./CookieConsent.js";
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [activePopup, setActivePopup] = useState(null); // 'notifications', 'post', 'dropdown', 'filter'
@@ -36,13 +39,17 @@ const Navbar = () => {
   const [visible, setVisible] = useState(false);
   const toastBC = useRef(null);
   const [showLoginPopup, setShowLoginPopup] = useState(false); // For login popup
-
+ const [cookie , setcookie] = useState("")
   const navigate = useNavigate();
 
   const togglePopup = (popupName) => {
     // Close if same popup, open new if different
     setActivePopup(activePopup === popupName ? null : popupName);
   };
+
+  useEffect(()=> {
+    Cookies.get('cookie') === "true" ? setcookie("true") : setcookie("false")
+  },[])
 
   const clearAllNotifications = async () => {
     try {
@@ -211,6 +218,9 @@ const Navbar = () => {
 
   return (
     <>
+    {
+      cookie === "true" ?  null : <CookieConsent/>
+    }
       {/* Notification Popup */}
       {activePopup === "notifications" && (
         <div

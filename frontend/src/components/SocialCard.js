@@ -1,4 +1,4 @@
-import { React, useState, useEffect, useContext } from "react";
+import { React, useState, useEffect, useContext,useRef } from "react";
 import {
   MoreVertical,
   MessageCircle,
@@ -12,6 +12,7 @@ import CommentPopup from "./commentsPopUp.js";
 import { GlobalContext } from "../context/GlobelContext.js";
 import Report from "./report.js";
 import ReactDOM from "react-dom";
+import { Toast } from "primereact/toast";
 
 const SocialCard = ({ onClick, item }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,6 +25,7 @@ const SocialCard = ({ onClick, item }) => {
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportButtonPosition, setReportButtonPosition] = useState(null);
   const [loading, setLoading] = useState(true); // Added loading state
+      const toastBC = useRef(null);
 
   const handleReportClick = (event) => {
     const buttonRect = event.currentTarget.getBoundingClientRect();
@@ -78,7 +80,11 @@ const SocialCard = ({ onClick, item }) => {
 
   const handleLike = async () => {
     if (!isAuthUser) {
-      alert("Please log in to like the article."); // Replace this with your login popup logic
+      toastBC.current.show({
+        severity: 'error',
+        summary: "Please log in to like the article.",
+        sticky: true,
+    });
       return;
     }
 
@@ -118,7 +124,11 @@ const SocialCard = ({ onClick, item }) => {
 
   const handleDislike = async () => {
     if (!isAuthUser) {
-      alert("Please log in to dislike the article."); // Replace this with your login popup logic
+      toastBC.current.show({
+        severity: 'success',
+        summary: "Please log in to dislike the article.",
+        sticky: true,
+    });
       return;
     }
 
@@ -328,6 +338,7 @@ const SocialCard = ({ onClick, item }) => {
         </div>
       )}
       {isModalOpen && <SharePostModal onClose={handleCloseModal} />}
+                  <Toast ref={toastBC} position="top-right" />
     </div>
   );
 };
