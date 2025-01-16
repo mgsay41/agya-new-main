@@ -70,7 +70,7 @@ export const register = async (req, res) => {
     email,
     Affiliation,
     AcademicTitle,
-    password: hashPassword,
+    password,
   });
   
   await newUser.save();
