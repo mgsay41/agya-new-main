@@ -63,27 +63,17 @@ export const register = async (req, res) => {
     });
   }
 
-  // const hashPassword = await bcrypt.hash(password, 10);
-  const newUser = new User({  
+  const hashPassword = await bcrypt.hash(password, 10);
+  const user = await User.create({
     firstname,
     lastname,
     email,
     Affiliation,
     AcademicTitle,
-    password,
+    password: hashPassword,
   });
-  
-  await newUser.save();
-  // const user = await User.create({
-  //   firstname,
-  //   lastname,
-  //   email,
-  //   Affiliation,
-  //   AcademicTitle,
-  //   password: hashPassword,
-  // });
 
-  if (newUser) {
+  if (user) {
     res.json({
       success: true,
       message: "Registration successful",
