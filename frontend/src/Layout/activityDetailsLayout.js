@@ -10,7 +10,7 @@ function ActivityDetailsLayout() {
   const { setIsAuthUser, isAuthUser } = useContext(GlobalContext);
   const auth = isAuthUser?.email;
   return (
-    <div className="px-4 md:px-[150px]">
+    <div className="px-4 md:px-[150px] overflow-hidden">
       <Navbar />
       <div className="flex my-10">
         {/* Sidebar - hidden on mobile, visible on md breakpoint and up */}

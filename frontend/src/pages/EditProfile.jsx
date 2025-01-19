@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import { Edit3 } from "lucide-react";
+import { Toast } from 'primereact/toast';
+
 import api from "../axios"; // Import your configured axios instance
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
 
 const EditProfile = () => {
+  const toastBC = useRef(null);
+
   const [userInfo, setUserInfo] = useState(null); // State to hold user info
   const [formData, setFormData] = useState({}); // State for form inputs
   const [isLoading, setIsLoading] = useState(true); // Loading state
@@ -84,13 +88,20 @@ const EditProfile = () => {
 
       // Update the user's other profile data
       const response = await api.put(`/users/${userInfo._id}`, formDataToSend);
-
-      alert("Profile updated successfully!");
+      toastBC.current.show({
+        severity: 'success',
+        summary: "Profile updated successfully!",
+        sticky: true,
+    });
       setUserInfo(response.data); // Update the local state with the updated user info
       navigate("/profile");
     } catch (error) {
       console.error("Error updating profile:", error);
-      alert("Failed to update profile.");
+      toastBC.current.show({
+        severity: 'success',
+        summary: "Failed to update profile.",
+        sticky: true,
+    });
     }
   };
 
@@ -220,6 +231,7 @@ const EditProfile = () => {
           </button>
         </div>
       </form>
+      <Toast ref={toastBC} position="top-right" />
     </div>
   );
 };

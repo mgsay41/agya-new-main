@@ -18,6 +18,7 @@ import { MdOutlineLogout } from "react-icons/md";
 const Sidebar = () => {
   const { setIsAuthUser, isAuthUser } = useContext(GlobalContext);
   const location = useLocation();
+  const toastBC = useRef(null);
 
   useEffect(() => {
     setIsAuthUser(JSON.parse(localStorage.getItem("userInfo")));
@@ -53,12 +54,17 @@ const Sidebar = () => {
   const navigate = useNavigate();
 
   const logout = async (e) => {
-    fetch("https://agya-backend.vercel.app/api/auth/logout", {
+    fetch("https://agyademo.uber.space/api/auth/logout", {
       method: "POST",
       credentials: "include",
     }).then(() => {
       localStorage.removeItem("userInfo");
       setIsAuthUser(null);
+      toastBC.current.show({
+        severity: "success",
+        summary: "logout successfully",
+        sticky: true,
+      });
       navigate("/");
     });
   };
@@ -292,6 +298,7 @@ const Sidebar = () => {
           <p className="text-center pb-4">All Rights Reserved ©2024 Agya.com</p>
         </div>
       </div>
+      <Toast ref={toastBC} position="top-right" />
     </div>
   );
 };

@@ -105,7 +105,7 @@ const AddActivity = () => {
       formData.append("file", sponsorImage);
       try {
         const response = await fetch(
-          `https://agya-backend.vercel.app/api/uploads/activities/${activityId}/sponsors`,
+          `https://agyademo.uber.space/api/uploads/activities/${activityId}/sponsors`,
           {
             method: "POST",
             body: formData,
@@ -164,7 +164,7 @@ const AddActivity = () => {
         status: "pending",
       };
       const activityResponse = await fetch(
-        "https://agya-backend.vercel.app/api/activities",
+        "https://agyademo.uber.space/api/activities",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -180,7 +180,7 @@ const AddActivity = () => {
         const featuredFormData = new FormData();
         featuredFormData.append("file", featuredImage);
         const featuredResponse = await fetch(
-          `https://agya-backend.vercel.app/api/uploads/activities/${newActivity._id}`,
+          `https://agyademo.uber.space/api/uploads/activities/${newActivity._id}`,
           {
             method: "POST",
             body: featuredFormData,
@@ -194,7 +194,7 @@ const AddActivity = () => {
         const sponsorUrls = await uploadSponsorImages(newActivity._id);
         if (sponsorUrls.length > 0) {
           await fetch(
-            `https://agya-backend.vercel.app/api/activities/${newActivity._id}`,
+            `https://agyademo.uber.space/api/activities/${newActivity._id}`,
             {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
@@ -377,8 +377,8 @@ const AddActivity = () => {
             </div>
             <div>
               <h3 className="font-semibold mb-4">Sponsor Images</h3>
-              {/* <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {sponsorPreviews.map((preview, index) => (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {sponsorPreviews === undefined || sponsorPreviews.length === 0 ? <div> no sponsor</div> : sponsorPreviews.map((preview, index) => (
                   <div key={index} className="relative">
                     <img
                       src={preview}
@@ -394,7 +394,7 @@ const AddActivity = () => {
                     </button>
                   </div>
                 ))}
-              </div> */}
+              </div>
               <input
                 type="file"
                 multiple

@@ -15,7 +15,7 @@ const LatestActivities = () => {
   const fetchActivities = async () => {
     try {
       const response = await fetch(
-        "https://agya-backend.vercel.app/api/activities/",
+        "https://agyademo.uber.space/api/activities/",
         {
           method: "GET",
           headers: {

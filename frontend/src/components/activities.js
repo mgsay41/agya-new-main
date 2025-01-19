@@ -23,7 +23,7 @@ const ActivityCard = ({
 
   return (
     <div className="border rounded-lg shadow-md overflow-hidden w-full flex flex-col lg:flex-row">
-      <div className="lg:w-1/3 w-full">
+      <div className="lg:w-[300px] w-full">
         <img
           src={featuredImage}
           alt={activityName}
@@ -94,7 +94,7 @@ const LatestActivityCard = ({
   const navigate = useNavigate();
   return (
     <div
-      className="border cursor-pointer rounded-lg shadow-md overflow-hidden min-w-[300px]"
+      className="border cursor-pointer rounded-lg shadow-md overflow-hidden min-w-[200px]"
       onClick={() => navigate(`/activity/${_id}`)}
     >
       <div className="relative">
@@ -180,7 +180,7 @@ const Activity = () => {
     const fetchActivities = async () => {
       try {
         const response = await axios.get(
-          "https://agya-backend.vercel.app/api/activities"
+          "https://agyademo.uber.space/api/activities"
         );
         const passedActivities = response.data.filter(
           (activity) => activity.status === "Passed"
@@ -209,7 +209,7 @@ const Activity = () => {
     }
   }, [selectedCategory, activitiesData]);
   return (
-    <div className="flex flex-col lg:flex-row relative">
+    <div className="flex flex-col lg:flex-row relative overflow-hidden">
       {/* Main Content */}
 
       <div className="flex flex-col w-full lg:w-[60%] px-4 lg:px-8">

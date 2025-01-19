@@ -109,7 +109,7 @@ export default function NewArticle() {
       };
 
       const articleResponse = await fetch(
-        "https://agya-backend.vercel.app/api/articles",
+        "https://agyademo.uber.space/api/articles",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -128,7 +128,7 @@ export default function NewArticle() {
         formData.append("file", featuredImage);
 
         const imageResponse = await fetch(
-          `https://agya-backend.vercel.app/api/uploads/articles/${newArticle._id}`,
+          `https://agyademo.uber.space/api/uploads/articles/${newArticle._id}`,
           {
             method: "POST",
             body: formData,
@@ -152,15 +152,12 @@ export default function NewArticle() {
 
   async function fetchTags() {
     try {
-      const response = await fetch(
-        "https://agya-backend.vercel.app/api/tags/all",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch("https://agyademo.uber.space/api/tags/all", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
         const error = await response.json();

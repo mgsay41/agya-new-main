@@ -3,10 +3,13 @@ import axios from "axios";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/sidebar";
 import SidebarGuest from "../components/sidebar-guest.js";
-import { useState, useContext } from "react";
+import { useState, useContext, useRef } from "react";
 import { GlobalContext } from "../context/GlobelContext.js";
+import { Toast } from "primereact/toast";
 
 const Help = () => {
+  const toastBC = useRef(null);
+
   const faqs = [
     {
       title: "What is this platform about?",
@@ -61,24 +64,35 @@ const Help = () => {
     };
 
     try {
-      const response = await axios.post(
-        "https://agya-backend.vercel.app/api/messages",
+      const data = await axios.post(
+        "https://agyademo.uber.space/api/messages",
         messageData
       );
-      alert("Your message has been sent successfully.");
+      const finalData = await data.json();
+      if(finalData) {
+        toastBC.current.show({
+          severity: "success",
+          summary:"Your message has been sent successfully.",
+          sticky: true,
+        });
+      }
       setEmail("");
       setName("");
       setSubject("");
       setDescription("");
     } catch (error) {
-      alert("An error occurred while sending your message.");
+      toastBC.current.show({
+        severity: "success",
+        summary:"An error occurred while sending your message.",
+        sticky: true,
+      })
     }
   };
 
   const auth = isAuthUser?.email;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen md:mx-[85px]">
       <div className="px-4 sm:px-6 md:px-8 lg:px-16 max-w-7xl mx-auto">
         <Navbar />
         <div className="flex flex-col lg:flex-row my-6 lg:my-10 gap-6">
@@ -225,6 +239,7 @@ const Help = () => {
           </div>
         </div>
       </div>
+            <Toast ref={toastBC} position="top-right" />
     </div>
   );
 };

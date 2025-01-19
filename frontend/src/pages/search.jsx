@@ -16,7 +16,7 @@ export default function Search() {
   useEffect(() => {
     try {
       fetch(
-        `https://agya-backend.vercel.app/api/articles/articles/search?search=${searchItem}`,
+        `https://agyademo.uber.space/api/articles/articles/search?search=${searchItem}`,
         {}
       ).then((response) => {
         response.json().then((data) => {

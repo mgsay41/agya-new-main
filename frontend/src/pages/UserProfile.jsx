@@ -158,7 +158,7 @@ const UserProfile = () => {
     return <div>Please log in</div>;
   }
   return (
-    <div className="w-full max-w-7xl mx-auto p-4 sm:p-6 md:p-8">
+    <div className="w-full max-w-7xl mx-auto p-4 sm:p-6 md:p-8 mt-[-50px] md:mt-[-300px]">
       {/* Profile Header */}
       <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
         <div className="relative">
@@ -185,9 +185,9 @@ const UserProfile = () => {
         </div>
       </div>
       {/* Section Title with Navigation Buttons */}
-      <div className="flex items-center justify-between mb-4">
         <h3 className="text-xl font-bold">Shared Activities</h3>
-        {sortedActivities.length > 3 && (
+      <div className="flex items-center justify-between mb-4">
+        {sortedActivities === undefined || sortedActivities.length === 0 ? <div className="  text-center block mx-auto mt-4"> No Shared Activities</div> : sortedActivities.length > 3 && (
           <div className="flex gap-4">
             <button
               className="bg-main hover:bg-main/90 text-white p-2 rounded-full disabled:opacity-50"
@@ -284,7 +284,7 @@ const UserProfile = () => {
       {/* Posts and Articles Section */}
       <h3 className="text-xl font-bold my-6">Your Activities</h3>
       <div className="flex flex-col gap-3 justify-center items-center">
-        {sortedItems.map((item, index) =>
+        {sortedItems === undefined || sortedItems.length === 0 ? <div> you dont't have activities</div>: sortedItems.map((item, index) =>
           item.type === "post" ? (
             <PostCard key={index} item={item} />
           ) : (

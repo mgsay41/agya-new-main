@@ -45,7 +45,7 @@ export default function NewArtical() {
         references: references,
       };
 
-      const response = await fetch("https://agya-backend.vercel.app/articles", {
+      const response = await fetch("https://agyademo.uber.space/articles", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

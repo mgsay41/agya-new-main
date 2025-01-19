@@ -104,7 +104,7 @@ const PostCard = ({ onClick, item }) => {
 
     try {
       const response = await fetch(
-        `https://agya-backend.vercel.app/api/posts/like/${item._id}`,
+        `https://agyademo.uber.space/api/posts/like/${item._id}`,
         {
           method: "POST",
           headers: {
@@ -143,7 +143,7 @@ const PostCard = ({ onClick, item }) => {
 
     try {
       const response = await fetch(
-        `https://agya-backend.vercel.app/api/posts/dislike/${item._id}`,
+        `https://agyademo.uber.space/api/posts/dislike/${item._id}`,
         {
           method: "POST",
           headers: {

@@ -2,6 +2,7 @@ import { MdOutlineReportGmailerrorred } from "react-icons/md";
 import { RiCalendarCheckLine } from "react-icons/ri";
 import { TbReportOff } from "react-icons/tb";
 import { Toast } from "primereact/toast";
+import Cookies from 'js-cookie';
 import Sidebar1 from "../components/sidebar";
 import SidebarGuest from "../components/sidebar-guest.js";
 import Login from "../components/Login";
@@ -19,6 +20,7 @@ import {
 import { GlobalContext } from "../context/GlobelContext"; // Adjust import based on your structure
 import { useNavigate } from "react-router-dom";
 import { Sidebar } from "primereact/sidebar";
+import CookieConsent from "./CookieConsent.js";
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [activePopup, setActivePopup] = useState(null); // 'notifications', 'post', 'dropdown', 'filter'
@@ -36,13 +38,17 @@ const Navbar = () => {
   const [visible, setVisible] = useState(false);
   const toastBC = useRef(null);
   const [showLoginPopup, setShowLoginPopup] = useState(false); // For login popup
-
+ const [cookie , setcookie] = useState("")
   const navigate = useNavigate();
 
   const togglePopup = (popupName) => {
     // Close if same popup, open new if different
     setActivePopup(activePopup === popupName ? null : popupName);
   };
+
+  useEffect(()=> {
+    Cookies.get('cookie') === "true" ? setcookie("true") : setcookie("false")
+  },[])
 
   const clearAllNotifications = async () => {
     try {
@@ -108,7 +114,10 @@ const Navbar = () => {
       console.error("Error marking notification as read:", err);
     }
   };
-
+  const show = () => {
+    toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please login first' });
+};
+const toast = useRef(null);
   // Fetch notifications when notificationOpen is true
   useEffect(() => {
     if (isAuthUser?.id) {
@@ -211,6 +220,9 @@ const Navbar = () => {
 
   return (
     <>
+    {
+      cookie === "true" ?  null : <CookieConsent/>
+    }
       {/* Notification Popup */}
       {activePopup === "notifications" && (
         <div
@@ -452,7 +464,7 @@ const Navbar = () => {
             </form>
 
             {/* Menu Button */}
-
+{/* 
             <button
               onClick={() => {
                 filterOpen === true
@@ -462,7 +474,7 @@ const Navbar = () => {
               className="p-3 rounded-xl bg-main text-white hover:bg-opacity-90"
             >
               <ListFilter className="w-8 h-5" />
-            </button>
+            </button> */}
             <div className=" relative">
               {filterOpen === true ? (
                 <div
@@ -526,7 +538,7 @@ const Navbar = () => {
                   onClick={(e) => {
                     if (!isAuthUser) {
                       e.preventDefault();
-                      setShowLoginPopup(true);
+                      show()
                     } else {
                       togglePopup("post");
                     }
@@ -543,7 +555,7 @@ const Navbar = () => {
                   onClick={(e) => {
                     if (!isAuthUser) {
                       e.preventDefault();
-                      setShowLoginPopup(true);
+                      show()
                     }
                   }}
                   className="flex items-center gap-2 px-4 py-3 text-sm hover:bg-white hover:text-main rounded-md"
@@ -559,7 +571,7 @@ const Navbar = () => {
                   onClick={(e) => {
                     if (!isAuthUser) {
                       e.preventDefault();
-                      setShowLoginPopup(true);
+                      show()
                     }
                   }}
                   className="flex items-center gap-2 px-4 py-3 text-sm hover:bg-white hover:text-main rounded-md"
@@ -679,6 +691,7 @@ const Navbar = () => {
         </div>
       </header>
       <Toast ref={toastBC} position="top-right" />
+      <Toast ref={toast} position="top-right" />
     </>
   );
 };

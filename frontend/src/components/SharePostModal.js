@@ -1,18 +1,29 @@
-import React from "react";
+import React, { useRef } from "react";
 import { X, Clipboard } from "lucide-react"; // Ensure lucide-react is installed: npm install lucide-react
 import { FaFacebookF, FaWhatsapp } from "react-icons/fa";
 import { BsTwitterX } from "react-icons/bs";
+import { Toast } from "primereact/toast";
 
 const SharePostModal = ({ onClose, item, type }) => {
+  const toastBC = useRef(null);
+
   const handleCopyLink = () => {
     if (type === "post") {
-      const link = `https://agya-backend.vercel.app/posts/${item._id}`;
+      const link = `https://agyademo.uber.space/posts/${item._id}`;
       navigator.clipboard.writeText(link);
-      alert("Link copied to clipboard!");
+      toastBC.current.show({
+        severity: "success",
+        summary: "Link copied to clipboard!",
+        sticky: true,
+      });
     } else {
-      const link = `https://agya-backend.vercel.app/article/${item._id}`;
+      const link = `https://agyademo.uber.space/article/${item._id}`;
       navigator.clipboard.writeText(link);
-      alert("Link copied to clipboard!");
+      toastBC.current.show({
+        severity: "success",
+        summary: "Link copied to clipboard!",
+        sticky: true,
+      });
     }
   };
 
@@ -70,8 +81,8 @@ const SharePostModal = ({ onClose, item, type }) => {
             type="text"
             value={
               type === "post"
-                ? `https://agya-backend.vercel.app/posts/${item._id}`
-                : `https://agya-backend.vercel.app/article/${item._id}`
+                ? `https://agyademo.uber.space/posts/${item._id}`
+                : `https://agyademo.uber.space/article/${item._id}`
             }
             readOnly
             className="flex-1 px-2 py-1 bg-transparent text-sm text-center text-gray-700 focus:outline-none"
@@ -85,6 +96,7 @@ const SharePostModal = ({ onClose, item, type }) => {
           </button>
         </div>
       </div>
+      <Toast ref={toastBC} position="top-right" />
     </div>
   );
 };

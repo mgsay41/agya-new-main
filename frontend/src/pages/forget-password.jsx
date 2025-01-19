@@ -43,7 +43,7 @@ export default function ForgetPassword() {
   const SendOTB = async (e) => {
     e.preventDefault();
     const response = await fetch(
-      "https://agya-backend.vercel.app/api/otp/sendOTP",
+      "https://agyademo.uber.space/api/otp/sendOTP",
       {
         method: "POST",
         headers: {
@@ -75,7 +75,7 @@ export default function ForgetPassword() {
   const notReceived = async (e) => {
     e.preventDefault();
     const response = await fetch(
-      "https://agya-backend.vercel.app/api/otp/sendOTP",
+      "https://agyademo.uber.space/api/otp/sendOTP",
       {
         method: "POST",
         headers: {
@@ -108,7 +108,7 @@ export default function ForgetPassword() {
   const VerifyOTP = async (e) => {
     e.preventDefault();
     const response = await fetch(
-      "https://agya-backend.vercel.app/api/otp/verifyOTP",
+      "https://agyademo.uber.space/api/otp/verifyOTP",
       {
         method: "POST",
         headers: {

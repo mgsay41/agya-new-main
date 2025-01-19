@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://agya-backend.vercel.app/api", // Your backend server URL
+  baseURL: "https://agyademo.uber.space/api", // Your backend server URL
 });
 
 export default api;

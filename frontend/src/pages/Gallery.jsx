@@ -12,7 +12,7 @@ const Gallery = () => {
   const [articleData, setArticlesData] = useState([]);
   useEffect(() => {
     try {
-      fetch(`https://agya-backend.vercel.app/api/articles/`, {}).then(
+      fetch(`https://agyademo.uber.space/api/articles/`, {}).then(
         (response) => {
           response.json().then((data) => {
             setArticlesData(data);

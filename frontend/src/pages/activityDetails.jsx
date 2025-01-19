@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Toast } from 'primereact/toast';
 import api from "../axios";
 import { MdOutlinePersonOutline } from "react-icons/md";
 import { GrLanguage } from "react-icons/gr";
@@ -7,6 +8,8 @@ import { HiOutlineTicket } from "react-icons/hi2";
 import DOMPurify from "dompurify";
 function ActivityDetails() {
   const { id } = useParams();
+  const toastBC = useRef(null);
+
   const navigate = useNavigate();
   const [activity, setActivity] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -34,12 +37,19 @@ function ActivityDetails() {
   const handleApply = async () => {
     const userInfo = localStorage.getItem("userInfo");
     if (!userInfo) {
-      alert("Please login to apply for this activity");
-      navigate("/login");
+      toastBC.current.show({
+        severity: 'error',
+        summary: "Please login to apply for this activity",
+        sticky: true,
+    });
       return;
     }
     if (hasApplied) {
-      alert("You have already applied for this activity");
+      toastBC.current.show({
+        severity: 'error',
+        summary: "You have already applied for this activity",
+        sticky: true,
+    });
       return;
     }
     try {
@@ -54,11 +64,19 @@ function ActivityDetails() {
       if (activity.apply) {
         window.location.href = activity.apply;
       } else {
-        alert("Application submitted successfully!");
+        toastBC.current.show({
+          severity: 'success',
+          summary: "Application submitted successfully!",
+          sticky: true,
+      });
       }
     } catch (err) {
       console.error("Error applying to activity:", err);
-      alert("Failed to submit application. Please try again later.");
+      toastBC.current.show({
+        severity: 'success',
+        summary: "Failed to submit application. Please try again later.",
+        sticky: true,
+    });
     }
   };
   if (loading) return <p>Loading...</p>;
@@ -150,6 +168,8 @@ function ActivityDetails() {
           </button>
         </div>
       </div>
+      <Toast ref={toastBC} position="top-right" />
+
     </div>
   );
 }

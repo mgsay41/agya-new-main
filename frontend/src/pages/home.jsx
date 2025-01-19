@@ -3,8 +3,7 @@ import FeaturedArticles from "../components/FeaturedArticles";
 import SocialCard from "../components/SocialCard";
 import PostCard from "../components/postCard";
 import BlurredCard from "../components/BlurredCard";
-import LatestActivities from "../components/LatestActivities";
-import { Link, useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 function Home() {
   const navigate = useNavigate();
@@ -18,15 +17,12 @@ function Home() {
   }, []);
   const fetchPosts = async () => {
     try {
-      const response = await fetch(
-        "https://agya-backend.vercel.app/api/posts",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch("https://agyademo.uber.space/api/posts", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
@@ -40,15 +36,12 @@ function Home() {
   };
   const fetchArticles = async () => {
     try {
-      const response = await fetch(
-        "https://agya-backend.vercel.app/api/articles",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch("https://agyademo.uber.space/api/articles", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
