@@ -49,7 +49,6 @@ router.post("/", async (req, res) => {
   }
 
   if (references) {
-    console.log(references);
     for (const reference of references) {
       if (!reference) {
         return res

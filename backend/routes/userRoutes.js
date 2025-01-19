@@ -32,16 +32,16 @@ const upload = multer({
 });
 
 // Create a new user
-router.post("/", async (req, res) => {
-  const { email, password, firstname, lastname } = req.body;
-  try {
-    const newUser = new User({ email, password, firstname, lastname });
-    await newUser.save();
-    res.status(201).json(newUser);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+// router.post("/", async (req, res) => {
+//   const { email, password, firstname, lastname } = req.body;
+//   try {
+//     const newUser = new User({ email, password, firstname, lastname });
+//     await newUser.save();
+//     res.status(201).json(newUser);
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
 
 // Get all users
 router.get("/", async (req, res) => {

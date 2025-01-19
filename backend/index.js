@@ -48,8 +48,6 @@ app.use(
 
 app.use(morgan("dev")); // Log HTTP requests
 
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
 // Database Connection
 const connectDB = async () => {
   try {
