@@ -52,6 +52,7 @@ router.get("/", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 // Get all users
 router.get("/users", async (req, res) => {
 try {

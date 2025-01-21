@@ -77,6 +77,7 @@ router.post("/", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 router.get("/articles", async (req, res) => {
   const search = req.query.search || "";
   const date = new Date();
