@@ -33,7 +33,7 @@ const Sidebar = () => {
 
       const fetchUserData = async () => {
         try {
-          const userResponse = await api.get(`/users/${user.id}`);
+          const userResponse = await api.get(`api/users/${user.id}`);
           setUserInfo((prevUserInfo) => ({
             ...prevUserInfo,
             ...userResponse.data,

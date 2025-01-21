@@ -35,10 +35,10 @@ const UserProfile = () => {
           postsResponse,
           articlesResponse,
         ] = await Promise.all([
-          api.get(`/users/${user.id}`),
-          api.get(`/activities?userId=${user.id}`),
-          api.get(`/posts/user/${user.id}`),
-          api.get(`/articles/user/${user.id}`),
+          api.get(`api/users/${user.id}`),
+          api.get(`api/activities?userId=${user.id}`),
+          api.get(`api/posts/user/${user.id}`),
+          api.get(`api/articles/user/${user.id}`),
         ]);
         setUserInfo(userResponse.data);
         setActivities(activitiesResponse.data || []);

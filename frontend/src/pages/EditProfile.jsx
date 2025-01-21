@@ -3,6 +3,8 @@ import { Edit3 } from "lucide-react";
 import { Toast } from 'primereact/toast';
 
 import api from "../axios"; // Import your configured axios instance
+import upload from "../axios"; // Import your configured axios instance
+
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
@@ -22,7 +24,7 @@ const EditProfile = () => {
       // Fetch full user data from the backend
       const fetchUserData = async () => {
         try {
-          const response = await api.get(`/users/${user.id}`); // Replace with your backend endpoint
+          const response = await api.get(`api/users/${user.id}`); // Replace with your backend endpoint
           setUserInfo(response.data);
           setFormData({
             firstname: response.data.firstname || "",
@@ -72,33 +74,30 @@ const EditProfile = () => {
       if (selectedImage) {
         const imageData = new FormData();
         imageData.append("file", selectedImage); // The key should match the multer configuration
-
         // Upload the image to the backend
-        const imageUploadResponse = await api.post(
-          `/uploads/profiles/${userInfo._id}`,
+        const response = await upload.post(
+          `upload`,
           imageData,
           {
             headers: { "Content-Type": "multipart/form-data" },
-          }
+          },
         );
-
+        
         // Update the formData with the new image URL from the response
-        formDataToSend.image = imageUploadResponse.data.user.image;
+        formDataToSend.image =`https://agyademo.uber.space/files/${response.data.link}`
       }
-
       // Update the user's other profile data
-      const response = await api.put(`/users/${userInfo._id}`, formDataToSend);
+      const response = await api.put(`api/users/${userInfo._id}`, formDataToSend);
       toastBC.current.show({
         severity: 'success',
         summary: "Profile updated successfully!",
         sticky: true,
     });
       setUserInfo(response.data); // Update the local state with the updated user info
-      navigate("/profile");
+      // navigate("/profile");
     } catch (error) {
-      console.error("Error updating profile:", error);
       toastBC.current.show({
-        severity: 'success',
+        severity: 'error',
         summary: "Failed to update profile.",
         sticky: true,
     });
@@ -118,7 +117,7 @@ const EditProfile = () => {
   }
 
   return (
-    <div className="flex flex-col items-center py-8 bg-white min-h-screen">
+    <div className="flex flex-col items-center px-[150px] py-8 bg-white min-h-screen">
       {/* Title */}
       <Navbar />
       <div className="w-full text-left ml-36 my-8">

@@ -17,7 +17,7 @@ function Post() {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await api.get(`/posts/${id}`, {
+        const response = await api.get(`api/posts/${id}`, {
           headers: { "Content-Type": "application/json" },
         });
         setPosts(response.data || {});

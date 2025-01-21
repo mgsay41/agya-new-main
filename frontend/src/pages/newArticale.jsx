@@ -1,5 +1,5 @@
 import { CiSearch } from "react-icons/ci";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { FaFile } from "react-icons/fa";
@@ -7,9 +7,12 @@ import { IoTrashBinOutline } from "react-icons/io5";
 import { IoMdAdd } from "react-icons/io";
 import { Edit3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { Toast } from "primereact/toast";
+
 import Navbar from "../components/Navbar";
 import { GlobalContext } from "../context/GlobelContext";
+import upload from "../axios"; // Import your configured axios instance
+import RichTextWithTranslate from "../components/richText";
 
 export default function NewArticle() {
   const navigate = useNavigate();
@@ -25,6 +28,7 @@ export default function NewArticle() {
   const [searchText, setSearchText] = useState("");
   const [uploading, setUploading] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const toastBC = useRef(null);
 
   useEffect(() => {
     setIsAuthUser(JSON.parse(localStorage.getItem("userInfo")));
@@ -55,23 +59,43 @@ export default function NewArticle() {
 
   const validateForm = () => {
     if (!title.trim()) {
-      toast.error("Please enter an article title");
+      toastBC.current.show({
+        severity: "error",
+        summary: "Please enter an article title",
+        sticky: true,
+      });
       return false;
     }
     if (!editorValue.trim()) {
-      toast.error("Please enter article content");
+      toastBC.current.show({
+        severity: "error",
+        summary: "Please enter article content",
+        sticky: true,
+      });
       return false;
     }
     if (!featuredImage) {
-      toast.error("Please upload a featured image");
+      toastBC.current.show({
+        severity: "error",
+        summary: "Profile updated successfully!",
+        sticky: true,
+      });
       return false;
     }
     if (tags.length === 0) {
-      toast.error("Please select at least one tag");
+      toastBC.current.show({
+        severity: "error",
+        summary: "Please select at least one tag",
+        sticky: true,
+      });
       return false;
     }
     if (!agreedToTerms) {
-      toast.error("Please agree to the terms before publishing");
+      toastBC.current.show({
+        severity: "error",
+        summary: "Please agree to the terms before publishing",
+        sticky: true,
+      });
       return false;
     }
     return true;
@@ -81,7 +105,11 @@ export default function NewArticle() {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        toast.error("Image size should be less than 5MB");
+        toastBC.current.show({
+          severity: "error",
+          summary: "Image size should be less than 5MB",
+          sticky: true,
+        });
         return;
       }
       setFeaturedImage(file);
@@ -99,52 +127,56 @@ export default function NewArticle() {
     try {
       setUploading(true);
 
-      const articleData = {
-        title,
-        content: editorValue,
-        authorId: isAuthUser.id,
-        tags: JSON.stringify(tags),
-        references,
-        authorName: isAuthUser.firstname,
-      };
-
-      const articleResponse = await fetch(
-        "https://agyademo.uber.space/api/articles",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(articleData),
-        }
-      );
-
-      if (!articleResponse.ok) {
-        throw new Error("Failed to create article");
-      }
-
-      const newArticle = await articleResponse.json();
-
       if (featuredImage) {
         const formData = new FormData();
         formData.append("file", featuredImage);
 
-        const imageResponse = await fetch(
-          `https://agyademo.uber.space/api/uploads/articles/${newArticle._id}`,
-          {
-            method: "POST",
-            body: formData,
-          }
-        );
+        const response = await upload.post(`upload`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
 
-        if (!imageResponse.ok) {
-          throw new Error("Failed to upload image");
+        if (response) {
+          const articleData = {
+            title,
+            content: editorValue,
+            authorId: isAuthUser.id,
+            tags: JSON.stringify(tags),
+            featuredImage: `https://agyademo.uber.space/files/${response.data.link}`,
+            references,
+            authorName: isAuthUser.firstname,
+          };
+  
+          const articleResponse = await fetch(
+            "http://localhost:4000/api/articles",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(articleData),
+            }
+          );
+  
+          if (!articleResponse.ok) {
+            throw new Error("Failed to create article");
+          }
+  
+          const newArticle = await articleResponse.json();
+          if (newArticle) {
+            toastBC.current.show({
+              severity: "success",
+              summary: "Article published successfully!",
+              sticky: true,
+            });
+          }
         }
       }
-
-      toast.success("Article published successfully!");
-      navigate("/");
+      // navigate("/");
     } catch (error) {
       console.error("Error:", error);
-      toast.error(error.message || "Failed to publish article");
+      toastBC.current.show({
+        severity: "error",
+        summary: error.message || "Failed to publish article",
+        sticky: true,
+      });
     } finally {
       setUploading(false);
     }
@@ -201,15 +233,7 @@ export default function NewArticle() {
             className="w-full mb-4 p-2 border border-gray-300 rounded-md"
           />
           <h3 className="font-semibold my-5">Description</h3>
-          <ReactQuill
-            theme="snow"
-            value={editorValue}
-            onChange={setEditorValue}
-            modules={modules}
-            formats={formats}
-            placeholder="write something ..."
-          />
-
+          <RichTextWithTranslate/>
           <h3 className="font-semibold my-5">Featured Image</h3>
           <div className="flex flex-col items-center mb-6">
             <div className="relative">
@@ -361,6 +385,7 @@ export default function NewArticle() {
           </button>
         </div>
       </form>
+      <Toast ref={toastBC} position="top-right" />
     </div>
   );
 }

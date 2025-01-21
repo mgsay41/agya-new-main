@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { Calendar } from "primereact/calendar";
 import { IoTrashBinOutline } from "react-icons/io5";
 import { Edit3 } from "lucide-react";
-import { toast } from "react-toastify";
+import { Toast } from "primereact/toast";
+import api from "../axios"; // Import your configured axios instance
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { GlobalContext } from "../context/GlobelContext";
-import { Toast } from "primereact/toast";
 const AddActivity = () => {
   const navigate = useNavigate();
   const toastBC = useRef(null);
@@ -30,6 +30,7 @@ const AddActivity = () => {
     externalLink: "",
     callToAction: "",
   });
+  const sponsorUrls = [];
   const [featuredImage, setFeaturedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   useEffect(() => {
@@ -44,7 +45,11 @@ const AddActivity = () => {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        toast.error("Image size should be less than 5MB");
+        toastBC.current.show({
+          severity: "error",
+          summary: "Image size should be less than 5MB",
+          sticky: true,
+        });
         return;
       }
       setFeaturedImage(file);
@@ -59,7 +64,11 @@ const AddActivity = () => {
     const files = Array.from(e.target.files);
     const oversizedFiles = files.filter((file) => file.size > 5 * 1024 * 1024);
     if (oversizedFiles.length > 0) {
-      toast.error("Some images are larger than 5MB");
+      toastBC.current.show({
+        severity: "error",
+        summary: "Some images are larger than 5MB",
+        sticky: true,
+      });
       return;
     }
     setSponsorImages((prev) => [...prev, ...files]);
@@ -85,43 +94,30 @@ const AddActivity = () => {
     ];
     const missingFields = required.filter((field) => !formData[field]);
     if (missingFields.length) {
-      toast.error(`Required fields missing: ${missingFields.join(", ")}`);
+      toastBC.current.show({
+        severity: "error",
+        summary: `Required fields missing: ${missingFields.join(", ")}`,
+        sticky: true,
+      });
       return false;
     }
     if (formData.location === "offline" && !formData.locationDetails) {
-      toast.error("Location details required for offline activities");
+      toastBC.current.show({
+        severity: "error",
+        summary: "Location details required for offline activities",
+        sticky: true,
+      });
       return false;
     }
     if (formData.price === "Paid" && !formData.priceAmount) {
-      toast.error("Price amount required for paid activities");
+      toastBC.current.show({
+        severity: "error",
+        summary: "Price amount required for paid activities",
+        sticky: true,
+      });
       return false;
     }
     return true;
-  };
-  const uploadSponsorImages = async (activityId) => {
-    const sponsorUrls = [];
-    for (const sponsorImage of sponsorImages) {
-      const formData = new FormData();
-      formData.append("file", sponsorImage);
-      try {
-        const response = await fetch(
-          `https://agyademo.uber.space/api/uploads/activities/${activityId}/sponsors`,
-          {
-            method: "POST",
-            body: formData,
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Failed to upload sponsor image");
-        }
-        const data = await response.json();
-        sponsorUrls.push(data.imageUrl);
-      } catch (error) {
-        console.error("Sponsor image upload failed:", error);
-        toast.error(`Failed to upload sponsor image: ${sponsorImage.name}`);
-      }
-    }
-    return sponsorUrls;
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -137,7 +133,42 @@ const AddActivity = () => {
     }
     try {
       setUploading(true);
-      const formattedDate =
+      if (featuredImage) {
+        const featuredFormData = new FormData();
+        featuredFormData.append("file", featuredImage);
+        const featuredResponse = await api.post(
+          `upload`,
+          featuredFormData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          },
+        );
+        if (featuredResponse) {
+
+          for (const sponsorImage of sponsorImages) {
+            const formData = new FormData();
+            formData.append("file", sponsorImage);
+            try {
+              const response = await api.post(
+                `upload`,
+                formData,
+                {
+                  headers: { "Content-Type": "multipart/form-data" },
+                },
+              );
+              if (response) {
+                sponsorUrls.push(`https://agyademo.uber.space/files/${response.data.link}`);
+              }
+            } catch (error) {
+              toastBC.current.show({
+                severity: "error",
+                summary: `Failed to upload sponsor image: ${sponsorImage.name}`,
+                sticky: true,
+              });
+            }
+          }
+        }
+        const formattedDate =
         formData.date instanceof Date
           ? formData.date.toISOString().split("T")[0]
           : formData.date;
@@ -151,7 +182,9 @@ const AddActivity = () => {
         activityType: formData.type,
         date: formattedDate,
         time: formattedTime,
+        featuredImage:`https://agyademo.uber.space/files/${featuredResponse.data.link}`,
         organization: formData.institution,
+        sponsors : sponsorUrls,
         location:
           formData.location === "offline"
             ? formData.locationDetails
@@ -171,42 +204,22 @@ const AddActivity = () => {
           body: JSON.stringify(activityData),
         }
       );
-      if (!activityResponse.ok) {
-        const error = await activityResponse.json();
-        throw new Error(error.message || "Failed to create activity");
+      if (activityResponse) {
+        toastBC.current.show({
+          severity: "success",
+          summary:"Activity created successfully!",
+          sticky: true,
+        });
       }
       const newActivity = await activityResponse.json();
-      if (featuredImage) {
-        const featuredFormData = new FormData();
-        featuredFormData.append("file", featuredImage);
-        const featuredResponse = await fetch(
-          `https://agyademo.uber.space/api/uploads/activities/${newActivity._id}`,
-          {
-            method: "POST",
-            body: featuredFormData,
-          }
-        );
-        if (!featuredResponse.ok) {
-          throw new Error("Failed to upload featured image");
-        }
       }
-      if (sponsorImages.length > 0) {
-        const sponsorUrls = await uploadSponsorImages(newActivity._id);
-        if (sponsorUrls.length > 0) {
-          await fetch(
-            `https://agyademo.uber.space/api/activities/${newActivity._id}`,
-            {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ sponsors: sponsorUrls }),
-            }
-          );
-        }
-      }
-      toast.success("Activity created successfully!");
-      navigate("/profile");
+      // navigate("/profile");
     } catch (error) {
-      toast.error(error.message || "Failed to create activity");
+      toastBC.current.show({
+        severity: "success",
+        summary:error.message || "Failed to create activity",
+        sticky: true,
+      });
     } finally {
       setUploading(false);
     }
