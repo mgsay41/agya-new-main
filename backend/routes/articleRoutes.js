@@ -6,7 +6,7 @@ const router = express.Router();
 
 // Create a new article
 router.post("/", async (req, res) => {
-  const { title, content, authorId, tags, references, authorName , articleType } = req.body;
+  const { title, content, authorId, featuredImage,  tags, references, authorName , articleType } = req.body;
 
 
   if (!title || title === ""){
@@ -65,6 +65,7 @@ router.post("/", async (req, res) => {
       authorId,
       authorName,
       tags,
+      featuredImage,
       references,
       articleType,
     });
@@ -76,7 +77,6 @@ router.post("/", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
 router.get("/articles", async (req, res) => {
   const search = req.query.search || "";
   const date = new Date();
