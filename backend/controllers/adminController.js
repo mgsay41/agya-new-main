@@ -6,7 +6,7 @@ const secret = "aTWbeQsdwdevd122421jhjgngh@#@!#$awwqQe";
 // Create an admin
 export const AddAdmin = async (req, res) => {
 
-        const { email, password, firstname, lastname } = req.body;
+        const { email, password, firstname, lastname , image } = req.body;
         if (
           !firstname ||
           !lastname ||
@@ -37,6 +37,7 @@ export const AddAdmin = async (req, res) => {
             password: hashPassword, // Ensure password is hashed in production
             firstname,
             lastname,
+                image,
         });
         await admin.save();
 
